@@ -1,7 +1,7 @@
 class CreateForemanPatchPlans < ActiveRecord::Migration[6.0]
   def change
     create_table :foreman_patch_cycle_plans do |t|
-      t.string    :name
+      t.string    :name, null: false
       t.text      :description
       t.timestamp :start_date
       t.integer   :interval
@@ -14,7 +14,7 @@ class CreateForemanPatchPlans < ActiveRecord::Migration[6.0]
     add_index :foreman_patch_cycle_plans, :name, unique: true, name: :foreman_patch_cycle_plans_name_uq
 
     create_table :foreman_patch_window_plans do |t|
-      t.string  :name
+      t.string  :name, null: false
       t.text    :description
       t.integer :cycle_plan_id
       t.integer :start_day
