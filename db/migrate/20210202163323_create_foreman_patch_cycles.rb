@@ -31,7 +31,7 @@ class CreateForemanPatchCycles < ActiveRecord::Migration[6.0]
 
     add_foreign_key :foreman_patch_windows, :foreman_patch_window_plans, column: :window_plan_id, name: :foreman_patch_window_window_plan_id_fk
     add_foreign_key :foreman_patch_windows, :foreman_patch_cycles, column: :cycle_id, name: :foreman_patch_windows_cycle_id_fk
-    add_foreign_key :foreman_patch_windows, :foreman_tasks_tasks, column: :task_id, name: :foreman_patch_windows_task_id_fk
+#    add_foreign_key :foreman_patch_windows, :foreman_tasks_tasks, column: :task_id, name: :foreman_patch_windows_task_id_fk
     add_foreign_key :foreman_patch_windows, :foreman_tasks_task_groups, column: :task_group_id, name: :foreman_patch_windows_task_group_id_fk
     add_foreign_key :foreman_patch_windows, :foreman_tasks_triggerings, column: :triggering_id, name: :foreman_patch_windows_triggering_id_fk
   end

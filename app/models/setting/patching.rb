@@ -1,16 +1,14 @@
-module Setting
-  class Patching < ::Setting
-    def self.default_settings
-    end
+class Setting::Patching < ::Setting
+  def self.default_settings
+    []
+  end
 
-    def self.humanized_category
-      N_('Patching')
-    end
+  def self.humanized_category
+    N_('Patching')
+  end
 
-    def self.load_defaults
-      BLANK_ATTRS.concat %w()
-      super
-    end
+  def self.load_defaults
+    BLANK_ATTRS.concat %w()
+    super
   end
 end
-
