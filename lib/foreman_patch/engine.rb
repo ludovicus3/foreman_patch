@@ -13,9 +13,22 @@ module ForemanPatch
       end
     end
 
+    initializer 'foreman_patch.load_default_settings', before: :load_config_initializers do |_app|
+      require_dependency File.expand_path('../../../app/models/setting/patching.rb', __FILE__)
+    end
+
+    initializer 'foreman_patch.require_dynflow', before: 'foreman_tasks.initialize_dynflow' do |_app|
+      ForemanTasks.dynflow.require!
+      ForemanTasks.dynflow.config.eager_load_paths << File.join(ForemanPatch::Engine.root, 'app/lib/actions/foreman_patch')
+    end
+
     initializer 'foreman_patch.register_plugin', :before => :finisher_hook do |_app|
       Foreman::Plugin.register :foreman_patch do
         requires_foreman '>= 1.16'
+
+        register_facet ForemanPatch::Host::GroupFacet, :group_facet do
+          extend_model ForemanPatch::Concerns::GroupFacetHostExtensions
+        end
 
         # Add permissions
         security_block :foreman_patch do
@@ -27,8 +40,8 @@ module ForemanPatch
     # Include concerns in this config.to_prepare block
     config.to_prepare do
       begin
-        Host::Managed.send(:include, ForemanPatch::HostExtensions)
-        HostsHelper.send(:include, ForemanPatch::HostsHelperExtensions)
+        Host::Managed.send(:include, ForemanPatch::Concerns::HostManagedExtensions)
+
       rescue => e
         Rails.logger.warn "ForemanPatch: skipping engine hook (#{e})"
       end
@@ -45,5 +58,13 @@ module ForemanPatch
       locale_domain = 'foreman_patch'
       Foreman::Gettext::Support.add_text_domain locale_domain, locale_dir
     end
+  end
+
+  def self.table_name_prefix
+    'foreman_patch_'
+  end
+
+  def self.use_relative_model_naming
+    true
   end
 end
