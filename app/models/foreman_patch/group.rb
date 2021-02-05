@@ -13,6 +13,7 @@ module ForemanPatch
     scoped_search on: :id, complete_value: false
     scoped_search on: :name, complete_value: true
     scoped_search on: :default_window_id, complete_value: true
+    scoped_search on: :priority, complete_value: true
 
     scoped_search relation: :default_window, on: :name, complete_value: true
   end

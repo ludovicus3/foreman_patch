@@ -5,6 +5,7 @@ class CreateForemanPatchGroups < ActiveRecord::Migration[6.0]
       t.text    :description
       t.integer :default_window_id
       t.integer :max_unavailable
+      t.integer :priority
 
       t.timestamps
     end
