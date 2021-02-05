@@ -1,5 +1,5 @@
 module ForemanPatch
-  class Window
+  class Window < ::ApplicationRecord
     belongs_to :window_plan, class_name: 'ForemanPatch::WindowPlan'
 
     belongs_to :cycle, class_name: 'ForemanPatch::Cycle', inverse_of: :windows

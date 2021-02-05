@@ -1,6 +1,6 @@
 module ForemanPatch
   class Group < ::ApplicationRecord
-    belongs_to :default_window, class_name: 'ForemanPatch::WindowPlans'
+    belongs_to :default_window, class_name: 'ForemanPatch::WindowPlan'
 
     has_many :window_groups, class_name: 'ForemanPatch::WindowGroup', foreign_key: :group_id, inverse_of: :group
     has_many :windows, through: :window_groups
@@ -9,6 +9,12 @@ module ForemanPatch
     has_many :hosts, through: :group_facets
 
     validates :name, presence: true, uniqueness: true
+
+    scoped_search on: :id, complete_value: false
+    scoped_search on: :name, complete_value: true
+    scoped_search on: :default_window_id, complete_value: true
+
+    scoped_search relation: :default_window, on: :name, complete_value: true
   end
 end
 

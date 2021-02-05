@@ -37,10 +37,15 @@ module ForemanPatch
       end
     end
 
+    initializer 'foreman_patch.apipie' do
+      Apipie.configuration.api_controllers_matcher << "#{ForemanPatch::Engine.root}/app/controllers/foreman_patch/api/*.rb"
+      Apipie.configuration.checksum_path += ['/foreman_patch/api/']
+    end
+
     # Include concerns in this config.to_prepare block
     config.to_prepare do
       begin
-        Host::Managed.send(:include, ForemanPatch::Concerns::HostManagedExtensions)
+        ::Host::Managed.send(:include, ForemanPatch::Concerns::HostManagedExtensions)
 
       rescue => e
         Rails.logger.warn "ForemanPatch: skipping engine hook (#{e})"
