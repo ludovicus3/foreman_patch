@@ -62,7 +62,7 @@ module ForemanPatch
       def cycle_plan_params
         params[:cycle_plan][:interval] = params[:cycle_plan][:every][:count]
         params[:cycle_plan][:units] = params[:cycle_plan][:every][:count]
-        params.require(:sync_plan).permit(:name, :description, :interval, :units, :start_date, :active_count)
+        params.require(:cycle_plan).permit(:name, :description, :interval, :units, :start_date, :active_count)
       end
     end
   end
