@@ -2,6 +2,12 @@ module ForemanPatch
   module Api
     class GroupsController < ApiController
 
+      resource_description do
+        resource_id 'patch_group'
+        api_version 'v2'
+        api_base_url '/foreman_patch/api'
+      end
+
       before_action :find_group, only: [:show]
 
       api :GET, '/groups', N_('List groups')
