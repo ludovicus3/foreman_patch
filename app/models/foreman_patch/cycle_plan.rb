@@ -4,7 +4,7 @@ module ForemanPatch
 
     has_many :window_plans, class_name: 'ForemanPatch::WindowPlan', foreign_key: :cycle_plan_id, dependent: :nullify, inverse_of: :cycle_plan
 
-    has_many :cycles, class_name: 'ForemanPatch::Cycle', foreign_key: :cycle_id, dependent: :nullify
+    has_many :cycles, class_name: 'ForemanPatch::Cycle', foreign_key: :cycle_plan_id, dependent: :nullify
 
     validates :name, presence: true, uniqueness: true
     validates :units, inclusion: {in: UNITS}, allow_blank: false
@@ -12,6 +12,7 @@ module ForemanPatch
     scoped_search on: :name, complete_value: true
     scoped_search on: :units, complete_value: true
     scoped_search on: :interval, complete_value: true
+    scoped_search on: :start_date, complete_value: false
   end
 end
 
