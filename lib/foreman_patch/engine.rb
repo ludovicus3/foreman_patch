@@ -27,6 +27,8 @@ module ForemanPatch
         requires_foreman '>= 1.16'
 
         register_facet ForemanPatch::Host::GroupFacet, :group_facet do
+          api_view list: 'foreman_patch/api/group_facet/base_with_root', single: 'foreman_patch/api/group_facet/show'
+          api_docs :group_facet_attributes, ::ForemanPatch::Api::HostGroupsController
           extend_model ForemanPatch::Concerns::GroupFacetHostExtensions
         end
 
