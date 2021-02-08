@@ -10,6 +10,8 @@ module ForemanPatch
     validates :units, inclusion: {in: UNITS}, allow_blank: false
 
     scoped_search on: :name, complete_value: true
+    scoped_search on: :units, complete_value: true
+    scoped_search on: :interval, complete_value: true
   end
 end
 
