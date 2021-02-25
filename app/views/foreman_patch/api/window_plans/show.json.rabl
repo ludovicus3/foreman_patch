@@ -1,7 +1,10 @@
 object @window_plan if @window_plan
 
-attributes :id, :name, :description, :start_day, :start_time, :cycle_plan_id
+extends 'foreman_patch/api/window_plans/base'
 
 child cycle_plan: :cycle_plan do
   attributes :id, :name
 end
+
+attributes :created_at, :updated_at
+
