@@ -16,9 +16,10 @@ class CreateForemanPatchPlans < ActiveRecord::Migration[6.0]
     create_table :foreman_patch_window_plans do |t|
       t.string  :name, null: false
       t.text    :description
-      t.integer :cycle_plan_id
+      t.integer :cycle_plan_id, null: false
       t.integer :start_day
       t.time    :start_time
+      t.integer :duration
 
       t.timestamps
     end
