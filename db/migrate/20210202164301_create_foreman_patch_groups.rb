@@ -5,7 +5,7 @@ class CreateForemanPatchGroups < ActiveRecord::Migration[6.0]
       t.text    :description
       t.integer :default_window_id
       t.integer :max_unavailable
-      t.integer :priority
+      t.integer :default_priority
 
       t.timestamps
     end
@@ -17,6 +17,7 @@ class CreateForemanPatchGroups < ActiveRecord::Migration[6.0]
     create_table :foreman_patch_window_groups do |t|
       t.integer :window_id, null: false
       t.integer :group_id, null: false
+      t.integer :priority, null: false
 
       t.timestamps
     end
