@@ -8,7 +8,7 @@ module ForemanPatch
         api_base_url '/foreman_patch/api'
       end
 
-      before_action :find_cycle_plan, only: [:show, :update, :destroy]
+      before_action :find_cycle_plan, only: [:show, :update, :execute, :destroy]
 
       api :GET, '/cycle_plans', N_('List cycle plans')
       param_group :search_and_pagination, ::Api::V2::BaseController

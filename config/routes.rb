@@ -7,9 +7,14 @@ Foreman::Application.routes.draw do
 
       resources :cycle_plans, only: [:index, :show, :create, :update, :destroy] do
         resources :window_plans, only: [:index, :create]
+        resources :cycles, only: [:index, :create]
       end
 
       resources :window_plans, only: [:index, :show, :update, :destroy] do
+      end
+
+      resources :cycles, only: [:index, :show, :destroy] do
+#        resources :windows, only: [:index, :create]
       end
     end
   end
