@@ -1,5 +1,10 @@
 object @group if @group
 
-extends 'api/v2/layouts/permissions'
+extends 'foreman_patch/api/groups/base'
 
-attributes :id, :name, :description, :max_unavailable, :default_window_id, :priority 
+child :default_window do |window_plan|
+  extends 'foreman_patch/api/window_plans/base'
+end
+
+attributes :created_at, :updated_at
+
