@@ -1,6 +1,5 @@
 module ForemanPatch
   class Window < ::ApplicationRecord
-    before_create :execute_window_plan, if: :window_plan_id?
 
     belongs_to :window_plan, class_name: 'ForemanPatch::WindowPlan'
 
@@ -14,13 +13,13 @@ module ForemanPatch
 
     belongs_to :triggering, class_name: 'ForemanTasks::Triggering'
 
-    has_many :window_groups, class_name: 'ForemanPatch::WindowGroups', inverse_of: :window
+    has_many :window_groups, class_name: 'ForemanPatch::WindowGroup', inverse_of: :window
     has_many :groups, class_name: 'ForemanPatch::Group', through: :window_groups 
 
     validates :cycle, presence: true
-    validates :name, presence: true, on: :update
-    validates :start_at, presence: true, on: :update
-    validates :end_by, presence: true, on: :update
+    validates :name, presence: true
+    validates :start_at, presence: true
+    validates :end_by, presence: true
 
     scoped_search on: :name, complete_value: true
     scoped_search on: :start_at, complete_value: false
@@ -30,18 +29,23 @@ module ForemanPatch
     scoped_search on: :window_plan_id, complete_value: false
     scoped_search relation: :window_plan, on: :name, complete_value: true, rename: 'window_plan', only_explicit: true
 
+    before_validation :build_from_window_plan, if: :window_plan_id?
+    after_create :load_groups_from_window_plan, if: :window_plan_id?
+
     private
 
-    def execute_window_plan
-      self.tap do |window|
-        window.name = window_plan.name if window.name.nil?
-        window.description = window_plan.description if window.description.nil?
-        window.start_at = (cycle.start_date + window_plan.start_day) + window_plan.start_time.seconds_since_midnight.seconds if window.start_at.nil?
-        window.end_by = window.start_at + window_plan.duration if window.end_by.nil?
+    def build_from_window_plan
+      self.name = window_plan.name if name.nil?
+      self.description = window_plan.description if description.nil?
 
-        window_plan.groups.each do |group|
-          window.window_plans.build(group: group, priority: group.default_priority)
-        end
+      offset = window_plan.start_time.seconds_since_midnight.seconds
+      self.start_at = (cycle.start_date + window_plan.start_day) + offset if start_at.nil?
+      self.end_by = start_at + window_plan.duration if end_by.nil?
+    end
+
+    def load_groups_from_window_plan
+      window_plan.groups.each do |group|
+        window_groups.create(group: group)
       end
     end
 

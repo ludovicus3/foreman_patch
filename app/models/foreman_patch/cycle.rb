@@ -1,8 +1,6 @@
 module ForemanPatch
   class Cycle < ::ApplicationRecord
 
-    before_create :execute_cycle_plan, if: :cycle_plan_id?
-
     belongs_to :cycle_plan, class_name: 'ForemanPatch::CyclePlan'
     delegate :name, to: :cycle_plan
 
@@ -12,13 +10,14 @@ module ForemanPatch
     scoped_search on: :name, complete_value: true
     scoped_search on: :start_date, complete_value: false
 
+    after_create :create_windows_from_cycle_plan, if: :cycle_plan_id?
+
     private
 
-    def execute_cycle_plan
+    def create_windows_from_cycle_plan
       cycle_plan.window_plans.each do |window_plan|
-        windows.build(window_plan: window_plan)
+        windows.create(window_plan: window_plan)
       end
-      self
     end
 
   end
