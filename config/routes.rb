@@ -17,7 +17,7 @@ Foreman::Application.routes.draw do
 #        resources :windows, only: [:index, :create]
       end
 
-      resources :groups, only: [:index, :show, :create, :update, :destroy do
+      resources :groups, only: [:index, :show, :create, :update, :destroy] do
       end
     end
   end

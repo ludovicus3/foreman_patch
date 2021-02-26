@@ -29,7 +29,7 @@ module ForemanPatch
         window.end_by = window.start_at + window_plan.duration if window.end_by.nil?
 
         window_plan.groups.each do |group|
-          window.groups << group unless window.groups.include? group
+          window.window_plans.build(group: group, priority: group.default_priority)
         end
       end
     end
