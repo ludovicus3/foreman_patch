@@ -36,7 +36,7 @@ module ForemanPatch
 
       api :POST, '/cycles/:cycle_id/windows', N_('Create a new patch window')
       param :cycle_id, Integer, N_('ID of the patch cycle'), required: true
-      param_group :window
+      param_group :window, as: :create
       def create
         @window = Window.new(window_params)
         @window.save!
