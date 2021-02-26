@@ -35,7 +35,7 @@ module ForemanPatch
 
       api :POST, '/cycle_plans/:cycle_plan_id/window_plans', 'Create a new window plan'
       param :cycle_plan_id, Integer, desc: N_('Id of cycle_plan')
-      param_group :window_plan
+      param_group :window_plan, as: :create
       def create
         @window_plan = WindowPlan.new(window_plan_params)
         @window_plan.save!

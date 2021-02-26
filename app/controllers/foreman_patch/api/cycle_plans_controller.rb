@@ -34,7 +34,7 @@ module ForemanPatch
       end
 
       api :POST, '/cycle_plans', 'Create a new cycle plan'
-      param_group :cycle_plan
+      param_group :cycle_plan, as: :create
       def create
         @cycle_plan = CyclePlan.new(cycle_plan_params)
         @cycle_plan.save!

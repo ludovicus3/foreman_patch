@@ -33,7 +33,7 @@ module ForemanPatch
       end
 
       api :POST, '/groups', N_('Create a new patch group')
-      param_group :group
+      param_group :group, as: :create
       def create
         @group = Group.new(group_params)
         @group.save!
