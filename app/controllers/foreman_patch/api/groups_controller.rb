@@ -3,7 +3,7 @@ module ForemanPatch
     class GroupsController < ApiController
 
       resource_description do
-        resource_id 'patch_group'
+        resource_id 'patch_groups'
         api_version 'v2'
         api_base_url '/foreman_patch/api'
       end

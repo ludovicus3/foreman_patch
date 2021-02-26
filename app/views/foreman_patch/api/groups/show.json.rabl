@@ -2,7 +2,7 @@ object @group if @group
 
 extends 'foreman_patch/api/groups/base'
 
-child :default_window do |window_plan|
+child :default_window do |default_window|
   extends 'foreman_patch/api/window_plans/base'
 end
 

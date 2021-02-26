@@ -3,7 +3,7 @@ module ForemanPatch
     class WindowsController < ApiController
 
       resource_description do
-        resource_id 'windows'
+        resource_id 'patch_windows'
         api_version 'v2'
         api_base_url '/foreman_patch/api'
       end

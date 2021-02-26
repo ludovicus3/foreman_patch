@@ -3,7 +3,7 @@ module ForemanPatch
     class WindowPlansController < ApiController
 
       resource_description do
-        resource_id 'window_plans'
+        resource_id 'patch_window_plans'
         api_version 'v2'
         api_base_url '/foreman_patch/api'
       end
