@@ -8,6 +8,8 @@ module ForemanPatch
     has_many :group_facets, class_name: 'ForemanPatch::Host::GroupFacet', foreign_key: :group_id, inverse_of: :group
     has_many :hosts, through: :group_facets
 
+    belongs_to :template, class_name: 'JobTemplate'
+
     validates :name, presence: true, uniqueness: true
 
     scoped_search on: :id, complete_value: false

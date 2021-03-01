@@ -13,7 +13,7 @@ module ForemanPatch
 
     belongs_to :triggering, class_name: 'ForemanTasks::Triggering'
 
-    has_many :window_groups, class_name: 'ForemanPatch::WindowGroup', inverse_of: :window
+    has_many :window_groups, class_name: 'ForemanPatch::WindowGroup', inverse_of: :window, order: :priority
     has_many :groups, class_name: 'ForemanPatch::Group', through: :window_groups 
 
     validates :cycle, presence: true

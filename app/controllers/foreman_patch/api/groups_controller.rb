@@ -29,6 +29,7 @@ module ForemanPatch
           param :default_window_plan_id, Integer, desc: N_('ID of the default window plan')
           param :max_unavailable, Integer, desc: N_('Maximum number of hosts that can be patched at a time')
           param :default_priority, Integer, desc: N_('Default priority of group within its window (Lowest goes first)')
+          param :template_id, Integer, desc: N_('ID of the template used for patching')
         end
       end
 
@@ -59,7 +60,7 @@ module ForemanPatch
       end
 
       def group_params
-        params.require(:group).permit(:name, :description, :default_window_plan_id, :max_unavailable, :default_priority)
+        params.require(:group).permit(:name, :description, :default_window_plan_id, :max_unavailable, :default_priority, :template_id)
       end
     end
   end
