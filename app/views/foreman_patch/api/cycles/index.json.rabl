@@ -1,3 +1,3 @@
 collection @cycles
 
-extends "forman_pach/api/cycles/show"
+extends "foreman_patch/api/cycles/show"

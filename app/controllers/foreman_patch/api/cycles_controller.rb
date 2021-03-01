@@ -19,8 +19,8 @@ module ForemanPatch
         @cycles = resource_scope_for_index
       end
 
-      api :GET, '/cycles/:id', 'Show cycle details'
-      param :id, :identifier, desc: 'Id of the group'
+      api :GET, '/cycles/:id', N_('Show cycle details')
+      param :id, :identifier, desc: N_('Id of the group'), required: true
       def show
       end
 
@@ -59,7 +59,7 @@ module ForemanPatch
         %w(cycle_plan_id)
       end
 
-      def find_cycle_plan
+      def find_cycle
         @cycle ||= Cycle.find(params[:id])
       end
 

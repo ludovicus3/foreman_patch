@@ -1,3 +1,3 @@
 object @cycle
 
-attributes :id, :start_date
+attributes :id, :name, :description, :start_date

@@ -2,7 +2,7 @@ object @cycle
 
 extends 'foreman_patch/api/cycles/base'
 
-child :windows do
+child windows: :windows do
   extends 'foreman_patch/api/windows/base'
 end
 
