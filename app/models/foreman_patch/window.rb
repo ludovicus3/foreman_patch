@@ -1,5 +1,6 @@
 module ForemanPatch
   class Window < ::ApplicationRecord
+    include ForemanTasks::Concerns::ActionSubject
 
     belongs_to :window_plan, class_name: 'ForemanPatch::WindowPlan'
 
@@ -28,9 +29,18 @@ module ForemanPatch
     scoped_search relation: :cycle, on:  :name, complete_value: true, rename: 'cycle', only_explicit: true
     scoped_search on: :window_plan_id, complete_value: false
     scoped_search relation: :window_plan, on: :name, complete_value: true, rename: 'window_plan', only_explicit: true
+    scoped_search on: :state, complete_value: true
 
     before_validation :build_from_window_plan, if: :window_plan_id?
     after_create :load_groups_from_window_plan, if: :window_plan_id?
+
+    def state
+      if task.nil?
+        'planned'
+      else
+        task.state
+      end
+    end
 
     private
 

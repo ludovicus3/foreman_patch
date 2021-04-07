@@ -1,11 +1,17 @@
 module ForemanPatch
   class WindowGroup < ::ApplicationRecord
+    include ForemanTasks::Concerns::ActionSubject
 
     belongs_to :window, class_name: 'ForemanPatch::Window'
     belongs_to :group, class_name: 'ForemanPatch::Group'
 
+    belongs_to :task, class_name: 'ForemanTasks::Task'
+    has_many :sub_tasks, through: :task
+
     validates :window, presence: true
     validates :group, presence: true, uniqueness: { scope: :window }
+
+    delegate :template, to: :group
 
     before_create :ensure_priority
 
