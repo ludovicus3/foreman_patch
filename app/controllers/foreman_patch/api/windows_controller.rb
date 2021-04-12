@@ -55,10 +55,23 @@ module ForemanPatch
         @window.destroy!
       end
 
+      api :POST, '/windows/:id/schedule', N_('Schedule a window')
+      param :id, Integer, desc: N_('ID of the window')
+      def schedule
+        ::ForemanTasks.delay(::Actions::ForemanPatch::Window::Patch, delay_options, @window)
+      end
+
       private
 
       def allow_nested_id
         %w(cycle_id)
+      end
+
+      def delay_options
+        {
+          start_at: @window.start_at.utc
+          end_by: @window.end_by.try(:utc)
+        }
       end
 
       def find_window

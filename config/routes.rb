@@ -13,7 +13,12 @@ Foreman::Application.routes.draw do
         resources :windows, only: [:index, :create]
       end
 
-      resources :windows, only: [:index, :show, :update, :destroy]
+      resources :windows, only: [:index, :show, :update, :destroy] do
+        member do
+          post :schedule
+        end
+      end
+
       resources :groups, only: [:index, :show, :create, :update, :destroy]
     end
   end
