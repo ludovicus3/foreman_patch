@@ -69,7 +69,7 @@ module ForemanPatch
 
       def delay_options
         {
-          start_at: @window.start_at.utc
+          start_at: @window.start_at.utc,
           end_by: @window.end_by.try(:utc)
         }
       end
