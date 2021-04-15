@@ -1,7 +1,7 @@
 class CreateInvocation < ActiveRecord::Migration[6.0]
   def change
     create_table :foreman_patch_invocations do |t|
-      t.integer :host_id
+      t.integer :host_id, null: false
       t.integer :window_group_id, null: false
       t.uuid :task_id
     end

@@ -15,6 +15,10 @@ module ForemanPatch
 
     before_create :ensure_priority
 
+    def invocation_for_host(host)
+      invocations.find_or_create_by(host: host) if group.hosts.include?(host)
+    end
+
     private
 
     def ensure_priority
