@@ -11,6 +11,8 @@ module ForemanPatch
     validates :window, presence: true
     validates :group, presence: true, uniqueness: { scope: :window }
 
+    has_many :invocations, class_name: 'ForemanPatch::Invocation', foreign_key: :window_group_id, inverse_of: :window_group
+
     delegate :template, to: :group
 
     before_create :ensure_priority

@@ -36,6 +36,7 @@ module ForemanPatch
         security_block :foreman_patch do
         end
 
+        RemoteExecutionFeature.register(:power_action, N_("Power Action"), description: N_("Power Action"), provided_inputs: ['action'])
       end
     end
 
