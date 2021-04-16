@@ -13,7 +13,7 @@ module Actions
           window_group.task_id = task.id
           window_group.save!
 
-          limit_concurrency_level window_group.max_unavailable
+          limit_concurrency_level window_group.max_unavailable unless window_group.max_unavailable.nil?
           plan_self
         end
 
@@ -33,7 +33,7 @@ module Actions
         end
 
         def window_group
-          @window_group ||= ForemanPatch::WindowGroup.find(input[:window_group][:id])
+          @window_group ||= ::ForemanPatch::WindowGroup.find(input[:window_group][:id])
         end
 
         def batch(from, size)

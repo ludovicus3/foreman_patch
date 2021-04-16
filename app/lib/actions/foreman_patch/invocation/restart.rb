@@ -8,7 +8,7 @@ module Actions
           attr_reader :feature
 
           def initialize
-            @feature = RemoteExecutionFeature.feature('power_action')
+            @feature = ::RemoteExecutionFeature.feature('power_action')
           end
 
           def template
@@ -52,7 +52,7 @@ module Actions
         end
 
         def host
-          @host ||= Host.find(input[:host][:id])
+          @host ||= ::Host.find(input[:host][:id])
         end
 
         def feature

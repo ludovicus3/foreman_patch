@@ -8,7 +8,7 @@ module Actions
           attr_reader :feature
 
           def initialize
-            @feature = RemoteExecutionFeature.feature('katello_package_update')
+            @feature = ::RemoteExecutionFeature.feature('katello_package_update')
           end
 
           def template

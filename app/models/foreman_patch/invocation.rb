@@ -8,5 +8,12 @@ module ForemanPatch
 
     belongs_to :task, class_name: 'ForemanTasks::Task'
 
+    def to_action_input
+      {
+        id: id,
+        name: host.name
+      }
+    end
+
   end
 end

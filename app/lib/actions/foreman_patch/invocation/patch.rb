@@ -24,7 +24,7 @@ module Actions
         end
 
         def host
-          @host ||= input[:host][:id]
+          @host ||= ::Host.find(input[:host][:id])
         end
 
         def invocation

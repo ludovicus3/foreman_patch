@@ -4,7 +4,8 @@ module Actions
       class Patch < Actions::EntryAction
 
         def delay(delay_options, window)
-          window.update_attribute(task_id: task.id) if window.task_id != task.id
+          window.task_id = task.id
+          window.save!
 
           task.add_missing_task_groups(window.task_group)
           # action_subject() locks the resource which we do not want to do yet
@@ -14,7 +15,8 @@ module Actions
         end
 
         def plan(window)
-          window.update_attribute(task_id: task.id) if window.task_id != task.id
+          window.task_id = task.id
+          window.save!
 
           window.task_group.save! if window.task_group.try(:new_record?)
           task.add_missing_task_groups(window.task_group) if window.task_group
@@ -42,7 +44,7 @@ module Actions
         end
 
         def window
-          @window ||= ForemanPatch::Window.find(input[:window][:id])
+          @window ||= ::ForemanPatch::Window.find(input[:window][:id])
         end
 
         def rescue_strategy_for_self
