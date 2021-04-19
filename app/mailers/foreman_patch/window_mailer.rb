@@ -2,6 +2,8 @@ module ForemanPatch
   class WindowMailer < ApplicationMailer
 
     def results(options)
+      user = ::User.find(options[:user])
+
       @window = options[:window]
 
       set_local_for(user) do
