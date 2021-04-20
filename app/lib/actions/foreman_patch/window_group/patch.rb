@@ -10,6 +10,8 @@ module Actions
         def plan(window_group)
           action_subject(window_group)
 
+          window_group.resolve_hosts!
+
           window_group.task_id = task.id
           window_group.save!
 
@@ -18,8 +20,7 @@ module Actions
         end
 
         def create_sub_plans
-          current_batch.map do |host|
-            invocation = window_group.invocation_for_host(host)
+          current_batch.map do |invocation|
             trigger(Actions::ForemanPatch::Invocation::Patch, invocation)
           end
         end
@@ -37,11 +38,11 @@ module Actions
         end
 
         def batch(from, size)
-          window_group.hosts.offset(from).limit(size)
+          window_group.invocations.offset(from).limit(size)
         end
 
         def total_count
-          window_group.hosts.count
+          window_group.invocations.count
         end
 
         def humanized_name

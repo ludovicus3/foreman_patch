@@ -30,7 +30,7 @@ module Actions
           provider = feature.template.provider
           proxy_selector = provider.required_proxy_selector_for(feature.template) || ::RemoteExecutionProxySelector.new
 
-          proxy = determine_proxy!(proxy_selector, feature.template.provider_type.to_s, host)
+          proxy = proxy_selector.determine_proxy(host, feature.template.provider_type.to_s)
 
           renderer = InputTemplateRenderer.new(feature.template, host)
           script = renderer.render
@@ -47,29 +47,24 @@ module Actions
           plan_self
         end
 
+        def run
+          error! _('Package update failed') if exit_status != 0
+        end
+
         def rescue_strategy
           ::Dynflow::Action::Rescue::Fail
         end
 
         def host
-          @host ||= Host.find(input[:host][:id])
+          @host ||= ::Host.find(input[:host][:id])
         end
 
         def feature
           @feature ||= UpdatePackagesFeature.new
         end
 
-        private
-
-        def determine_proxy!(proxy_selector, provider, host)
-          proxy = proxy_selector.determine_proxy(host, provider)
-
-          if proxy == :not_available
-            raise _('Applicable proxies are offline')
-          elsif proxy == :not_defined
-            raise _('Could not use any proxy')
-          end
-          proxy
+        def exit_status
+          delegated_output[:exit_status]
         end
 
       end

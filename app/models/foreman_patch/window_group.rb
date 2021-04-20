@@ -14,11 +14,14 @@ module ForemanPatch
     delegate :name, :max_unavailable, to: :group
 
     has_many :invocations, class_name: 'ForemanPatch::Invocation', foreign_key: :window_group_id, inverse_of: :window_group
+    has_many :hosts, through: :invocations
 
     before_create :ensure_priority
 
-    def invocation_for_host(host)
-      invocations.find_or_create_by!(host: host) if group.hosts.include?(host)
+    def resolve_hosts!
+      group.hosts.each do |host|
+        invocations.find_or_create_by!(host: host)
+      end
     end
 
     private

@@ -2,8 +2,9 @@ module Actions
   module ForemanPatch
     module Invocation
       class Patch < Actions::EntryAction
+
         def plan(invocation)
-          action_subject(host, invocation_id: invocation.id)
+          action_subject(invocation.host, invocation_id: invocation.id)
 
           invocation.task_id = task.id
           invocation.save!
@@ -11,8 +12,13 @@ module Actions
           sequence do
             plan_action(Actions::ForemanPatch::Invocation::UpdatePackages, host)
             plan_action(Actions::ForemanPatch::Invocation::Restart, host)
-            plan_self
           end
+          plan_self
+        end
+
+        def finalize
+          host.group_facet.last_patched_at = Time.current
+          host.save!
         end
 
         def humanized_name
@@ -28,7 +34,7 @@ module Actions
         end
 
         def invocation
-          @invocation ||= input[:invocation_id]
+          @invocation ||= ::ForemanPatch::Invocation.find(input[:invocation_id])
         end
 
       end

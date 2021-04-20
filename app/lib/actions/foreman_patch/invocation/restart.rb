@@ -30,7 +30,7 @@ module Actions
           provider = feature.template.provider
           proxy_selector = provider.required_proxy_selector_for(feature.template) || ::RemoteExecutionProxySelector.new
 
-          proxy = determine_proxy!(proxy_selector, feature.template.provider_type.to_s, host)
+          proxy = proxy_selector.determine_proxy(host, feature.template.provider_type.to_s)
 
           renderer = InputTemplateRenderer.new(feature.template, host, nil, {'action' => 'restart'})
           script = renderer.render
@@ -47,6 +47,10 @@ module Actions
           plan_self
         end
 
+        def exit_status
+          delegated_output[:exit_status]
+        end
+
         def rescue_strategy
           ::Dynflow::Action::Rescue::Fail
         end
@@ -57,19 +61,6 @@ module Actions
 
         def feature
           @feature ||= RestartFeature.new
-        end
-
-        private
-
-        def determine_proxy!(proxy_selector, provider, host)
-          proxy = proxy_selector.determine_proxy(host, provider)
-
-          if proxy == :not_available
-            raise _('Applicable proxies are offline')
-          elsif proxy == :not_defined
-            raise _('Could not use any proxy')
-          end
-          proxy
         end
 
       end
