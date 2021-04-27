@@ -1,0 +1,12 @@
+<%= _("The patching of a host has failed.") %>
+
+  <%= _("Hostname:") %> <%= @host.fqdn %>
+  <%= _("IP:") %>      <%= @host.ip %>
+
+<%= _("View in Foreman:") %>
+<%= host_url(id: @host) %>
+
+<%= _("Output: ") %>
+<% output_line_set['output'].gsub("\r\n", "\n").sub(/\n\Z/, '').split("\n", -1).each do |line| %>
+  <%= (@line_counter += 1).to_s.rjust(4) %>: <%= line %>
+<% end %>

@@ -1,0 +1,50 @@
+<% content_for(:head) do %>
+  <style>
+	div.printable {
+	  display: block;
+	  padding: 9.5px;
+	  margin: 0 0 10px;
+	  font-size: 12px;
+	  word-break: break-all;
+	  word-wrap: break-word;
+	  color: rgba(255, 255, 255, 1);
+	  background-color: rgba(47, 47, 47, 1);
+	  border: 1px solid #000000;
+	  border-radius: 0px;
+	  font-family: Menlo, Monaco, Consolas, monospace;
+	  min-height: 50px;
+	}
+
+	div.line.stderr, div.line.error, div.line.debug {
+	  color: red;
+	}
+
+	div.line span.counter {
+	  float: left;
+	  clear: left;
+	}
+
+	div.line div.content {
+	  position: relative;
+	  margin-left: 50px;
+	  white-space: pre-wrap;
+	}
+  </style>
+<% end %>
+<h2 class="headline"><%= _("Patching Failure").html_safe %></h2>
+<div class="dashboard">
+  <table>
+    <tr>
+      <td width="18%" class="hosts-rows"><b><%= _("Hostname") %></b></td>
+      <td width="82%" class="hosts-rows"><%= link_to @host, host_url(id: @host) %></td>
+    </tr>
+    <tr>
+      <td width="18%" class="hosts-rows"><b><%= _("IP") %></b></td>
+      <td width="82%" class="hosts-rows"><%= @host.ip %></td>
+    </tr>
+  </table>
+</div>
+<div class="printable">
+  <%= render partial: 'output_line_set', collection: normalize_line_sets(@output) %>
+</div>
+

@@ -22,7 +22,7 @@ module Actions
           end
         end
 
-        def finallize
+        def finalize
           ::User.current = nil
         end
 

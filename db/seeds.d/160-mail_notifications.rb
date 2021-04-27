@@ -8,6 +8,13 @@ User.as(::User.anonymous_api_admin.login) do
       mailer: 'ForemanPatch::WindowMailer',
       method: 'results',
       subscription_type: 'alert',
+    },
+    {
+      name: :patch_invocation_failure,
+      description: N_('Notification of an error in the host patching process'),
+      mailer: 'ForemanPatch::InvocationMailer',
+      method: 'failure',
+      subscription_type: 'alert',
     }
   ]
 

@@ -2,7 +2,6 @@ module Actions
   module ForemanPatch
     module Invocation
       class Patch < Actions::EntryAction
-
         def plan(invocation)
           action_subject(invocation.host, invocation_id: invocation.id)
 
@@ -14,11 +13,6 @@ module Actions
             plan_action(Actions::ForemanPatch::Invocation::Restart, host)
           end
           plan_self
-        end
-
-        def finalize
-          host.group_facet.last_patched_at = Time.current
-          host.save!
         end
 
         def humanized_name
