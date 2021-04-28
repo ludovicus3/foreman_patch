@@ -7,6 +7,4 @@
 <%= host_url(id: @host) %>
 
 <%= _("Output: ") %>
-<% output_line_set['output'].gsub("\r\n", "\n").sub(/\n\Z/, '').split("\n", -1).each do |line| %>
-  <%= (@line_counter += 1).to_s.rjust(4) %>: <%= line %>
-<% end %>
+<% render partial: 'output_line_set', collection: normalize_line_sets(@output) %>
