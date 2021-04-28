@@ -1,0 +1,9 @@
+<div class="host-list">
+  <h2><%= window_group.name %></h2>
+  <div class="dashboard">
+    <%= render partial: 'window_group_stats', locals: { list: window_group.invocations } %>
+  </div>
+<% if window_group.invocations.count(&:failed?) %>
+  <%= render partial: 'window_group_failures', locals: { list: window_group.invocations } %>
+<% end %>
+</div>

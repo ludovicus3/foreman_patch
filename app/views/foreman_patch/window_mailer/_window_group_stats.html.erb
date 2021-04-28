@@ -1,0 +1,26 @@
+<table class="center">
+  <tr>
+    <td>
+      <%= list.count(&:succeeded?) %>
+    </td>
+    <td>
+      <%= n_('Success', 'Successes', list.count(&:succeeded?)) %>
+    </td>
+  </tr>
+  <tr>
+    <td>
+      <%= list.count(&:failed?) %>
+    </td>
+    <td>
+      <%= n_('Failure', 'Failures', list.count(&:failed?)) %>
+    </td>
+  </tr>
+  <tr>
+    <td>
+      <%= list.count %>
+    </td>
+    <td>
+      <%= n_('Host', 'Hosts', list.count) %>
+    </td>
+  </tr>
+</table>

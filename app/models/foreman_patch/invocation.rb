@@ -8,6 +8,14 @@ module ForemanPatch
 
     belongs_to :task, class_name: 'ForemanTasks::Task'
 
+    def failed?
+      task.state == 'stopped' and task.result == 'error'
+    end
+
+    def succeeded?
+      task.state == 'stopped' and task.result == 'success'
+    end
+
     def to_action_input
       {
         id: id,

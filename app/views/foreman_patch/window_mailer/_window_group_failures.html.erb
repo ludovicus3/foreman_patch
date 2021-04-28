@@ -1,0 +1,10 @@
+<div class="host-list">
+<h2><%= _("Failures") %></h2>
+<table>
+<% list.each do |item| %>
+  <tr>
+    <td class="host-rows"><%= item.host.name %></td>
+  </tr>
+<% end %>
+</table>
+</div>
