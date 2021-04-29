@@ -35,7 +35,7 @@ module Actions
         def finalize
           if exit_status == 0
             host.group_facet.last_patched_at = Time.current
-            host.save!
+            host.group_facet.save!
           end
         end
 
