@@ -39,18 +39,6 @@ module Actions
           plan_self
         end
 
-        def finalize
-          users = User.select { |user| user.receives?(:patch_window_results) }.compact
-
-          begin
-            MailNotification[:patch_window_results].deliver(users: users, window: window) unless users.blank?
-          rescue
-            message = _('Unable to send patch window results: %{error}' % {error: error})
-            Rails.logger.error(message)
-            output[:result] = message
-          end
-        end
-
         def window
           @window ||= ::ForemanPatch::Window.find(input[:window][:id])
         end

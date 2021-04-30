@@ -1,0 +1,4 @@
+<h2 class="headline"><%= (_('Patching Initiated for <b>%{group}</b>') % {group: @group}).html_safe %></h2>
+<div class="hosts">
+  <%= render partial: 'list', locals: {title: _("Hosts to be patched"), list: @hosts} %>
+</div>

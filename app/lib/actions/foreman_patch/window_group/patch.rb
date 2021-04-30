@@ -16,6 +16,7 @@ module Actions
           window_group.save!
 
           limit_concurrency_level window_group.max_unavailable unless window_group.max_unavailable.nil?
+
           plan_self
         end
 
@@ -31,6 +32,26 @@ module Actions
 
         def run(event = nil)
           super unless event == Dynflow::Action::Skip
+        end
+
+        def initiate
+          users = ::User.select { |user| user.receives?(:patch_group_initiated) }.compact
+
+          begin
+            MailNotification[:patch_group_initiated].deliver(users: users, group: window_group) unless users.blank?
+          rescue => error
+            Rails.logger.error(error)
+          end
+
+          super
+        end
+
+        def on_finish
+          users = ::User.select { |user| user.receives?(:patch_group_completed) }.compact
+
+          MailNotification[:patch_group_completed].deliver(users: users, group: window_group) unless users.blank?
+        rescue => error
+          Rails.logger.error(error)
         end
 
         def window_group

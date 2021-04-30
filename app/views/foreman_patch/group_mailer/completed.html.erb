@@ -1,0 +1,8 @@
+<h2 class="headline"><%= (_('Patching Completed for <b>%{group}</b>') % {group: @group}).html_safe %></h2>
+<div class="dashboard">
+  <%= render partial: 'dashboard', locals: {hosts_sum: @total, successes_sum: @successes.size, failures_sum: @failures.size} %>
+</div>
+<div class="hosts">
+  <%= render partial: 'list', locals: {title: _("Hosts successfully patched"), list: @successes} %>
+  <%= render partial: 'list', locals: {title: _("Hosts which failed to fully patch"), list: @failures} %>
+</div>

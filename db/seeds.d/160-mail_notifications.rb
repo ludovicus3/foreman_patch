@@ -3,10 +3,17 @@ User.as(::User.anonymous_api_admin.login) do
 
   notifications = [
     {
-      name: :patch_window_results,
-      description: N_('A summary of the results of a patch window'),
-      mailer: 'ForemanPatch::WindowMailer',
-      method: 'results',
+      name: :patch_group_initiated,
+      description: N_('Notification that a patch group is about to start patching'),
+      mailer: 'ForemanPatch::GroupMailer',
+      method: 'initiated',
+      subscription_type: 'alert',
+    },
+    {
+      name: :patch_group_completed,
+      description: N_('Notification that a patch group has completed patching'),
+      mailer: 'ForemanPatch::GroupMailer',
+      method: 'completed',
       subscription_type: 'alert',
     },
     {

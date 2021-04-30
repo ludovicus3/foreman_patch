@@ -1,0 +1,17 @@
+<div class="host-list">
+  <h2><%= title %></h2>
+  <% if list.size > 0 %>
+    <table>
+      <% list.each_slice(4) do |row| %>
+        <tr>
+          <% row.each do |host| %>
+            <td class="hosts-rows"><%= host %></td>
+          <% end %>
+        </tr>
+      <% end %>
+    </table>
+    <p class="total"><%= n_('Total of one host', 'Total of %{hosts} hosts', list.size) % {hosts: list.size} %></p>
+  <% else %>
+    <b><%= _('None!') %></b>
+  <% end %>
+</div>

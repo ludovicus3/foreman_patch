@@ -1,0 +1,25 @@
+<table class="center">
+  <tbody>
+    <tr>
+      <td class="dashboard">
+        <%= (n_('<b style="color: #6bb5df;">%{hosts_sum}</b>
+                 <p>Host</p>',
+                '<b style="color: #6bb5df;">%{hosts_sum}</b>
+                 <p>Hosts</p>', hosts_sum) % {hosts_sum: hosts_sum}).html_safe %>
+      </td>
+      <td class="dashboard">
+        <%= (n_('<b style="color: #6bb5df;">%{hosts_sum}</b>
+                 <p>Success</p>',
+                '<b style="color: #6bb5df;">%{hosts_sum}</b>
+                 <p>Successes</p>', successes_sum) % {hosts_sum: successes_sum}).html_safe %>
+      </td>
+      <td class="dashboard">
+        <%= (n_('<b style="color: #6bb5df;">%{hosts_sum}</b>
+                 <p>Failure</p>',
+                '<b style="color: #6bb5df;">%{hosts_sum}</b>
+                 <p>Failures</p>', failures_sum) % {hosts_sum: failures_sum}).html_safe %>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
