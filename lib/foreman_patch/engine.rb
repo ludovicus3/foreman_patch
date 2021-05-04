@@ -45,6 +45,10 @@ module ForemanPatch
       Apipie.configuration.checksum_path += ['/foreman_patch/api/']
     end
 
+    initializer 'foreman_patch.helpers' do |_app|
+      ActionView::Base.include ForemanPatch::HostsHelper
+    end
+
     # Include concerns in this config.to_prepare block
     config.to_prepare do
       begin

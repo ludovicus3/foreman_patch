@@ -1,0 +1,9 @@
+<% f ||= form %>
+<% spinner_path = asset_path('spinner.gif') %>
+
+<% pg_select_id = :host_patch_group_id %>
+<% pg_select_name = 'host[group_facet_attributes][group_id]' %>
+<% pg_select_attr = 'group_facet.group' %>
+<%= field(f, pg_select_attr, {label: _("Default Patch Group")}) do
+  select_tag pg_select_id, patch_groups_for_host(@host, include_blank: true), data: {"spinner_path" => spinner_path}, class: 'form-control', name: pg_select_name
+end %>
