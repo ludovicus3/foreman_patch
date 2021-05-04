@@ -36,6 +36,10 @@ module ForemanPatch
         security_block :foreman_patch do
         end
 
+        describe_host do
+          multiple_actions_provider :patch_host_multiple_actions
+        end
+
         RemoteExecutionFeature.register(:power_action, N_("Power Action"), description: N_("Power Action"), provided_inputs: ['action'])
       end
     end
@@ -53,6 +57,7 @@ module ForemanPatch
     config.to_prepare do
       begin
         ::Host::Managed.send(:include, ForemanPatch::Concerns::HostManagedExtensions)
+        HostsController.prepend ForemanPatch::Concerns::HostsControllerExtensions
 
       rescue => e
         Rails.logger.warn "ForemanPatch: skipping engine hook (#{e})"

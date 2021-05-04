@@ -1,0 +1,11 @@
+<%= render 'selected_hosts', hosts: @hosts %>
+
+<%= form_for :patch_group, url: update_multiple_patch_group_hosts_path(host_ids: params[:host_ids]) do |f| %>
+  <%= selectable_f f, :id, 
+    [[_('Select patch group'), 'disabled']] +
+    [[_('*Clear patch group*'), '']] +
+    ForemanPatch::Group.all.map {|pg| [pg.name, pg.id]}, 
+    {},
+    label: _('Patch Group'),
+    onchange: 'tfm.hosts.table.toggleMultipleOkButton(this)' %>
+<% end %>
