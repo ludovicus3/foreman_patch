@@ -11,6 +11,7 @@ module Actions
           sequence do
             plan_action(Actions::ForemanPatch::Invocation::UpdatePackages, host)
             plan_action(Actions::ForemanPatch::Invocation::Restart, host)
+            plan_action(Actions::ForemanPatch::Invocation::EnsureServices, host)
           end
           plan_self
         end

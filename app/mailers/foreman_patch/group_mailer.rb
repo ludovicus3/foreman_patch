@@ -26,6 +26,16 @@ module ForemanPatch
       end
     end
 
+    def report(options)
+      user = options[:user]
+
+      @group = options[:group].name
+      @result = options[:result]
+
+      set_locale_for(user) do
+        mail(to: user.mail, subject: (_("%s Preliminary Report") % @group))
+      end
+    end
   end
 end
 

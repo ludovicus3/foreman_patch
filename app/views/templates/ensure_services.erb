@@ -1,0 +1,17 @@
+<%#
+kind: job_template
+name: Ensure Services - SSH Default
+job_category: Services
+description_format: 'Ensure Services'
+feature: ensure_services
+provider_type: SSH
+%>
+
+<% if @host.operatingsystem.family == "Redhat" && @host.operatingsystem.major.to_i > 6 %>
+systemctl is-system-running
+if [ $? -ne 0 ]; then
+  systemctl list-units --failed
+  exit 1
+fi
+<% else %>
+<% end %>

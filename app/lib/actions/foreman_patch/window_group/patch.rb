@@ -46,6 +46,9 @@ module Actions
           super
         end
 
+        def check_for_errors!
+        end
+
         def on_finish
           users = ::User.select { |user| user.receives?(:patch_group_completed) }.compact
 
