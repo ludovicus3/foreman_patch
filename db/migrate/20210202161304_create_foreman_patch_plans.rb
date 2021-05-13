@@ -3,7 +3,7 @@ class CreateForemanPatchPlans < ActiveRecord::Migration[6.0]
     create_table :foreman_patch_cycle_plans do |t|
       t.string    :name, null: false
       t.text      :description
-      t.timestamp :start_date
+      t.date      :start_date
       t.integer   :interval
       t.string    :units
       t.integer   :active_count
