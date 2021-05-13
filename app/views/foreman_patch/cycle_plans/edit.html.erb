@@ -1,0 +1,24 @@
+<% stylesheet 'foreman_patch/foreman_patch' %>
+
+<% title _("Edit %s") % @cycle_plan.name %>
+
+<%= form_for @cycle_plan do |f| %>
+  <%= base_errors_for @cycle_plan %>
+  <ul class="nav nav-tabs" data-tabs="tabs">
+    <li class="active"><a href="#primary" data-toggle="tab"><%= _("Cycle") %></a></li>
+    <li><a href="#windows" data-toggle="tab"><%= _("Windows") %></a></li>
+  </ul>
+
+  <div class="tab-content">
+
+    <div class="tab-pane active" id="primary">
+      <%= render 'fields', f: f %>
+    </div>
+    <div class="tab-pane" id="windows">
+      <%= render 'windows', f: f, cycle_plan: @cycle_plan %>
+    </div>
+
+  </div>
+
+  <%= submit_or_cancel f, false, {cancel_path: foreman_patch_cycle_plans_path} %>
+<% end %>

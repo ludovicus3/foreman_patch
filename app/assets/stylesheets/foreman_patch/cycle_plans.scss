@@ -1,0 +1,13 @@
+td.day {
+  background-color: white;
+  height: 120px;
+
+  .event {
+    border: 1px solid #ccc;
+    margin: 3px;
+  }
+}
+
+td.disabled {
+  background-color: grey;
+}

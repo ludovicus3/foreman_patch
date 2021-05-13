@@ -6,6 +6,19 @@ module ForemanPatch
     config.autoload_paths += Dir["#{config.root}/app/helpers/concerns"]
     config.autoload_paths += Dir["#{config.root}/app/models/concerns"]
 
+    assets_to_precompile = 
+      Dir.chdir(root) do
+        Dir['app/assets/javascripts/**/*', 'app/assets/stylesheets/**/*', 'app/assets/images/**/*'].map do |file|
+          file.split(File::SEPARATOR, 4).last.gsub(/\.scss\Z/, '')
+        end
+      end
+    initializer 'foreman_patch.assets.precompile' do |app|
+      app.config.assets.precompile += assets_to_precompile
+    end
+    initializer 'foreman_patch.configure_assets', group: :assets do
+      SETTINGS[:foreman_patch] = { assets: { precompile: assets_to_precompile } }
+    end
+
     # Add any db migrations
     initializer 'foreman_patch.load_app_instance_data' do |app|
       ForemanPatch::Engine.paths['db/migrate'].existent.each do |path|
@@ -36,13 +49,24 @@ module ForemanPatch
         security_block :foreman_patch do
         end
 
+        automatic_assets(false)
+        precompile_assets(*assets_to_precompile)
+
+        divider :top_menu, caption: N_('Patching'), parent: :content_menu
+        menu :top_menu, :patching_plans, caption: N_('Plans'),
+          url_hash: { controller: 'foreman_patch/cycle_plans', action: :index },
+          parent: :content_menu
+
         describe_host do
           multiple_actions_provider :patch_host_multiple_actions
         end
 
         RemoteExecutionFeature.register(:power_action, N_("Power Action"), description: N_("Power Action"), provided_inputs: ['action'])
+        RemoteExecutionFeature.register(:ensure_services, N_("Ensure Services"), description: N_("Ensure Services are running"))
       end
     end
+
+
 
     initializer 'foreman_patch.apipie' do
       Apipie.configuration.api_controllers_matcher << "#{ForemanPatch::Engine.root}/app/controllers/foreman_patch/api/*.rb"

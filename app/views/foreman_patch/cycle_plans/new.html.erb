@@ -1,0 +1,8 @@
+<% title _("Create Cycle Plan") %>
+
+<%= form_for @cycle_plan do |f| %>
+  <%= base_errors_for @cycle_plan %>
+  <%= render partial: 'fields' %>
+  <%= submit_or_cancel f, false, {cancel_path: foreman_patch_cycle_plans_path} %>
+<% end %>
+
