@@ -1,0 +1,5 @@
+{
+  "extends": [
+    "styleline-config-standard",
+  ],
+}
