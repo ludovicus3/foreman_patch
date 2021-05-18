@@ -1,0 +1,9 @@
+<%= form_for @group, as: :group do |f| %>
+  <%= base_errors_for @group %>
+  <%= text_f f, :name %>
+  <%= textarea_f f, :description %>
+  <%= selectable_f f, :default_window_plan_id, ForemanPatch::WindowPlan.all.collect { |c| [c.name, c.id] }, { include_blank: true }, { label: _('Default Window Plan'), required: false } %>
+  <%= text_f f, :max_unavailable %>
+
+  <%= submit_or_cancel f, false, {cancel_path: foreman_patch_groups_path} %>
+<% end %>

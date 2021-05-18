@@ -1,5 +1,7 @@
 module ForemanPatch
   class Group < ::ApplicationRecord
+    include Authorizable
+
     belongs_to :default_window_plan, class_name: 'ForemanPatch::WindowPlan'
 
     has_many :window_groups, class_name: 'ForemanPatch::WindowGroup', foreign_key: :group_id, inverse_of: :group

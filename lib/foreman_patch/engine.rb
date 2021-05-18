@@ -53,6 +53,11 @@ module ForemanPatch
         precompile_assets(*assets_to_precompile)
 
         divider :top_menu, caption: N_('Patching'), parent: :content_menu
+
+        menu :top_menu, :patching_groups, caption: N_('Groups'),
+          url_hash: { controller: 'foreman_patch/groups', action: :index },
+          parent: :content_menu
+
         menu :top_menu, :patching_plans, caption: N_('Plans'),
           url_hash: { controller: 'foreman_patch/cycle_plans', action: :index },
           parent: :content_menu
