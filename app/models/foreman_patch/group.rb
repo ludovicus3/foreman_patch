@@ -14,10 +14,14 @@ module ForemanPatch
 
     scoped_search on: :id, complete_value: false
     scoped_search on: :name, complete_value: true
-    scoped_search on: :default_window_plan_id, complete_value: true
+    scoped_search on: :default_window_plan_id, complete_value: true, rename: :default_window_id
     scoped_search on: :priority, complete_value: true
 
-    scoped_search relation: :default_window_plan, on: :name, complete_value: true
+    scoped_search relation: :default_window_plan, on: :name, complete_value: true, rename: :default_window
+
+    def hosts_count
+      hosts.count
+    end
   end
 end
 

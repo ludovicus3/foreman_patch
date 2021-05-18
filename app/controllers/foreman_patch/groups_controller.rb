@@ -1,10 +1,20 @@
 module ForemanPatch
   class GroupsController < ApplicationController
+    include Foreman::Controller::AutoCompleteSearch
+    include Foreman::Controller::CsvResponder
 
     before_action :find_group, only: [:edit, :update, :destroy]
 
     def index
-      @groups = resource_base_search_and_page
+      respond_to do |format|
+        format.html do
+          @groups = resource_base_search_and_page
+          render :index
+        end
+        format.csv do
+          csv_response(resource_base_with_search)
+        end
+      end
     end
 
     def new
@@ -45,6 +55,10 @@ module ForemanPatch
 
     def resource_class
       ForemanPatch::Group
+    end
+
+    def csv_columns
+      [:name, :default_window_plan, :hosts_count]
     end
 
     private
