@@ -1,0 +1,8 @@
+<% output_line_set['output'].gsub("\r\n", "\n").sub(/\n\Z/, '').split("\n", -1).each do |line| %>
+  <div class="line <%= output_line_set['output_type'] %>" data-timestamp="<%= output_line_set['timestamp'] %>">
+    <span class="counter" title data-original-title="<%= Time.at(output_line_set['timestamp'].to_f) %>"><%= (@line_counter += 1).to_s.rjust(4).gsub(' ', '&nbsp;').html_safe %>:</span>
+    <div class="content">
+      <span style="color: default"><%= line %></span>
+    </div>
+  </div>
+<% end %>

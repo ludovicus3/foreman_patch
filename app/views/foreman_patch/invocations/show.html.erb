@@ -1,0 +1,39 @@
+<% 
+items = [{ caption: _('Patch Cycles'), url: foreman_patch_cycles_path },
+         { caption: @cycle.name, url: foreman_patch_cycle_path(@cycle) },
+         { caption: @window.name, url: foreman_patch_window_path(@window) },
+         { caption: @group.name, url: foreman_patch_window_group_path(@group) }]
+
+if @host
+  items << { caption: _('Patching Invocation for %s') % @host.name }
+  breadcrumbs(resource_url: foreman_patch_api_window_group_path(@group.id),
+              name_field: 'host_name',
+              switcher_item_url: foreman_patch_invocation_path(':id'),
+              items: items)
+else
+  breadcrumbs(items: items, switchable: false)
+end
+%>
+
+<% stylesheet 'foreman_remote_execution/foreman_remote_execution' %>
+
+<ul class="nav nav-tabs" data="tabs">
+  <li class="active"><a href="#primary" data-toggle="tab"><%= _('Primary') %></a></li>
+  <% @invocation.phases.each do |phase| %>
+    <li><a href="#<%= phase.class.name.demodulize.underscore %>" data-toggle="tab"><%= phase.humanized_name.titlecase %></a></li>
+  <% end %>
+</ul>
+
+<div class="tab-content">
+  <div class="tab-pane active" id="primary">
+    <%= render partial: 'primary' %>
+  </div>
+
+  <% @invocation.phases.each do |phase| %>
+    <%= render partial: 'phase', locals: { phase: phase } %>
+  <% end %>
+</div>
+
+<script>
+  <%= render partial: 'refresh.js' %>
+</script>

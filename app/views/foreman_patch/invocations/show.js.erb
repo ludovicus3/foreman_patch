@@ -1,0 +1,17 @@
+var scrolledToBottom = (($(window).scrollTop() + $(window).height() == $(document).height()) && $("div.tab-pane#<%= @phase %>").hasClass("active"));
+
+var lines = '<%=j render partial: 'output_line_set', collection: @line_sets %>'
+var target = $("div.terminal#<%= @phase %> div.pritable");
+
+<% if @since %>
+    target.append(lines);
+<% else %>
+    target.html(lines);
+<% end %>
+
+<%= render partial: 'refresh.js' %>
+
+if (scrolledToBottom) {
+  $("html, body").animate({ scrollTop: $(document).height() }, "slow");
+}
+
