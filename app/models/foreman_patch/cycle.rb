@@ -15,6 +15,10 @@ module ForemanPatch
     before_validation :plan_cycle, if: :cycle_plan_id?
     after_create :plan_windows, if: :cycle_plan_id?
 
+    def completed?
+      end_date.past?
+    end
+
     private
 
     def plan_cycle
