@@ -55,7 +55,7 @@ module Actions
           users = ::User.select { |user| user.receives?(:patch_invocation_failure) }.compact
 
           begin
-            MailNotification[:patch_invocation_failure].deliver(user: users, host: host, output: feature_output) unless users.blank?
+            MailNotification[:patch_invocation_failure].deliver(user: users, host: host, output: live_output) unless users.blank?
           rescue => error
             message = _('Unable to send patch invocation failure: %{error}') % {error: error}
           end

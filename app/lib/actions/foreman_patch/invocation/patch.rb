@@ -2,6 +2,7 @@ module Actions
   module ForemanPatch
     module Invocation
       class Patch < Actions::EntryAction
+
         def plan(invocation)
           action_subject(invocation.host, invocation_id: invocation.id)
 
@@ -23,6 +24,8 @@ module Actions
         def rescue_strategy
           ::Dynflow::Action::Rescue::Fail
         end
+
+        private
 
         def host
           @host ||= ::Host.find(input[:host][:id])

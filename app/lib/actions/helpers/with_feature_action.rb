@@ -54,7 +54,7 @@ module Actions
         @template ||= feature.job_template
       end
 
-      def feature_output
+      def live_output
         continuous_output.sort!
         continuous_output.raw_outputs
       end
