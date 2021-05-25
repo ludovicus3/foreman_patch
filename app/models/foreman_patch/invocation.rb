@@ -8,6 +8,10 @@ module ForemanPatch
 
     belongs_to :task, class_name: 'ForemanTasks::Task'
 
+    scope :with_window_group, ->(window_group) { where(window_group_id: window_group_id) }
+
+    scoped_search relation: :host, on: :name, rename: 'host.name', complete_value: true
+
     def failed?
       task.state == 'stopped' and task.result == 'error'
     end

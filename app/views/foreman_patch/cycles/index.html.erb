@@ -1,0 +1,41 @@
+<% title _("Patch Cycles") %>
+
+<table class="<%= table_css_classes 'table-condensed table-fixed' %>">
+  <thead>
+    <tr>
+      <th><%= sort :name, as: _('Name') %></th>
+      <th class="col-md-2"><%= sort :start_date, as: _('Start Date') %></th>
+      <th class="col-md-1"><%= _('Pending') %></th>
+      <th class="col-md-1"><%= _('Running') %></th>
+      <th class="col-md-1"><%= _('Completed') %></th>
+      <th class="col-md-1"><%= _('Total Windows') %></th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @cycles.each do |cycle| %>
+      <tr>
+        <td>
+          <%= link_to cycle.name, cycle_path(cycle) %>
+        </td>
+        <td>
+          <%= cycle.start_date %>
+        </td>
+        <td>
+          <%= cycle_result(cycle, ['planned', 'scheduled']) %>
+        </td>
+        <td>
+          <%= cycle_result(cycle, 'running') %>
+        </td>
+        <td>
+          <%= cycle_result(cycle, ['stopped', 'cancelled']) %>
+        </td>
+        <td>
+          <%= cycle.windows.count %>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<%= will_paginate_with_info @cycles %>
+

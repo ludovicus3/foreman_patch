@@ -16,7 +16,7 @@
   <tbody>
     <% @cycle_plans.each do |cycle_plan| %>
       <tr>
-        <td class="ellipsis"><%= link_to cycle_plan.name, hash_for_edit_foreman_patch_cycle_plan_path(id: cycle_plan) %></td>
+        <td class="ellipsis"><%= link_to cycle_plan.name, hash_for_edit_cycle_plan_path(id: cycle_plan) %></td>
         <td class="ellipsis"><%= cycle_plan.description %></td>
         <td><%= cycle_plan.start_date %></td>
         <td><%= n_("Every one %{singular}", "Every %{count} %{plural}", cycle_plan.interval) % {count: cycle_plan.interval, singular: cycle_plan.units.singularize, plural: cycle_plan.units } %></td>

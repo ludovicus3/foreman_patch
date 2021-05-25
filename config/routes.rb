@@ -28,14 +28,3 @@ ForemanPatch::Engine.routes.draw do
 
   resources :cycle_plans, only: [:index, :new, :create, :edit, :update, :destroy]
 end
-
-Foreman::Application.routes.draw do
-  mount ForemanPatch::Engine, at: '/foreman_patch'
-
-  resources :hosts, only: [] do
-    collection do
-      post 'select_multiple_patch_group'
-      post 'update_multiple_patch_group'
-    end
-  end
-end

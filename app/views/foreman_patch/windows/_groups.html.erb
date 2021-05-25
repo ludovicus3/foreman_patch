@@ -1,0 +1,24 @@
+<table class="<%= table_css_classes %>">
+  <thead>
+    <tr>
+      <th><%= _('Group') %></th>
+      <th><%= _('Order') %></th>
+      <th><%= _('Host Count') %></th>
+      <th><%= _('Status') %></th>
+      <th><%= _('Actions') %></th>
+    </tr>
+  </thead>
+  <tbody>
+    <% groups.each do |group| %>
+      <tr>
+        <td class="ellipsis"><%= link_to group.name, window_group_path(group) %></td>
+        <td><%= group.priority %></td>
+        <td><%= group.hosts.count %></td>
+        <td><%= group.status_label %></td>
+        <td>TODO</td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+

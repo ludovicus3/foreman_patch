@@ -1,0 +1,41 @@
+<% title @cycle.name %>
+
+<% title_actions link_to(_('Create Window'), hash_for_new_cycle_window_path(cycle_id: @cycle.id), 
+                         class: 'btn btn-default',
+                         disabled: @cycle.end_date.past?,
+                         title: _('Create a new window for this cycle'))
+%>
+
+<div class="hosts">
+  <table class="table table-bordered table-fixed">
+    <thead>
+      <tr>
+        <th><%= _('Sunday') %></th>
+        <th><%= _('Monday') %></th>
+        <th><%= _('Tuesday') %></th>
+        <th><%= _('Wednesday') %></th>
+        <th><%= _('Thursday') %></th>
+        <th><%= _('Friday') %></th>
+        <th><%= _('Saturday') %></th>
+      </tr>
+    </thead>
+    <tbody>
+      <% start = @cycle.start_date.beginning_of_week - 1 %>
+      <% stop = @cycle.end_date.end_of_week - 1 %>
+      <% (start..stop).each_slice(7) do |week| %>
+        <tr>
+          <% week.each do |day| %>
+            <td class="day <%= ((@cycle.start_date..@cycle.end_date).include? day) ? '' : 'disabled' %>">
+              <div><%= (day.day == 1 or day == start) ? day.strftime('%b') : '' %> <%= day.day %></div>
+              <% cycle_windows(@cycle, day).each do |window| %>
+                <div class="event ellipsis"><%= link_to("#{window.start_at.strftime('%l:%M %p') window.name}", edit_window_path(window)) %></div>
+              <% end %>
+            </td>
+          <% end %>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+</div>
+
+

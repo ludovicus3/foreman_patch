@@ -1,6 +1,6 @@
 <% phase_tag_id = phase.label.demodulize.underscore %>
 <div class="tab-pane" id="<%= phase_tag_id %>">
-  <div id="<%= phase_tag_id %>" class="terminal" data-refresh-url="<%= foreman_patch_invocation_path(@invocation) %>">
+  <div id="<%= phase_tag_id %>" class="terminal" data-refresh-url="<%= invocation_path(@invocation) %>">
     <% if @error %>
       <div class="line error"><%= @error %></div>
     <% else %>

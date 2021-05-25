@@ -1,0 +1,5 @@
+//$('div#title_action div.btn-group').html(' button_group(window_group_task_buttons(@window_group.task)).html_safe ');
+
+<% if @auto_refresh %>
+  delayed_refresh($('script#group_invocation_refresh').data('refresh-url'), group_invocation_refresh_data());
+<% end %>

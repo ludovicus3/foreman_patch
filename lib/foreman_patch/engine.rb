@@ -1,22 +1,14 @@
 module ForemanPatch
   class Engine < ::Rails::Engine
     engine_name 'foreman_patch'
+    isolate_namespace ForemanPatch
 
     config.autoload_paths += Dir["#{config.root}/app/controllers/concerns"]
     config.autoload_paths += Dir["#{config.root}/app/helpers/concerns"]
     config.autoload_paths += Dir["#{config.root}/app/models/concerns"]
 
-    assets_to_precompile = 
-      Dir.chdir(root) do
-        Dir['app/assets/javascripts/**/*', 'app/assets/stylesheets/**/*', 'app/assets/images/**/*'].map do |file|
-          file.split(File::SEPARATOR, 4).last.gsub(/\.scss\Z/, '')
-        end
-      end
-    initializer 'foreman_patch.assets.precompile' do |app|
-      app.config.assets.precompile += assets_to_precompile
-    end
     initializer 'foreman_patch.configure_assets', group: :assets do
-      SETTINGS[:foreman_patch] = { assets: { precompile: assets_to_precompile } }
+      SETTINGS[:foreman_patch] = { assets: { precompile: ['foreman_patch.css'] } }
     end
 
     # Add any db migrations
@@ -24,6 +16,12 @@ module ForemanPatch
       ForemanPatch::Engine.paths['db/migrate'].existent.each do |path|
         app.config.paths['db/migrate'] << path
       end
+    end
+
+    initializer 'foreman_patch.mount_engine', before: :sooner_routes_load do |app|
+      app.routes_reloader.paths << "#{ForemanPatch::Engine.root}/config/routes/mount_engine.rb"
+      app.routes_reloader.paths << "#{ForemanPatch::Engine.root}/config/api_routes.rb"
+      app.routes_reloader.paths.unshift("#{ForemanPatch::Engine.root}/config/routes/overrides.rb")
     end
 
     initializer 'foreman_patch.load_default_settings', before: :load_config_initializers do |_app|
@@ -36,45 +34,7 @@ module ForemanPatch
     end
 
     initializer 'foreman_patch.register_plugin', :before => :finisher_hook do |_app|
-      Foreman::Plugin.register :foreman_patch do
-        requires_foreman '>= 1.16'
-
-        register_facet ForemanPatch::Host::GroupFacet, :group_facet do
-          api_view list: 'foreman_patch/api/group_facet/base_with_root', single: 'foreman_patch/api/group_facet/show'
-          api_docs :group_facet_attributes, ::ForemanPatch::Api::HostGroupsController
-          extend_model ForemanPatch::Concerns::GroupFacetHostExtensions
-        end
-
-        # Add permissions
-        security_block :foreman_patch do
-        end
-
-        automatic_assets(false)
-        precompile_assets(*assets_to_precompile)
-
-        divider :top_menu, caption: N_('Patching'), parent: :content_menu
-
-        menu :top_menu, :patching_groups, caption: N_('Groups'),
-          url_hash: { controller: 'foreman_patch/groups', action: :index },
-          parent: :content_menu
-
-        menu :top_menu, :patching_plans, caption: N_('Plans'),
-          url_hash: { controller: 'foreman_patch/cycle_plans', action: :index },
-          parent: :content_menu
-
-        describe_host do
-          multiple_actions_provider :patch_host_multiple_actions
-        end
-
-        RemoteExecutionFeature.register(:power_action, N_("Power Action"), description: N_("Power Action"), provided_inputs: ['action'])
-        RemoteExecutionFeature.register(:ensure_services, N_("Ensure Services"), description: N_("Ensure Services are running"))
-      end
-    end
-
-
-
-    initializer 'foreman_patch.apipie' do
-      Apipie.configuration.api_controllers_matcher << "#{ForemanPatch::Engine.root}/app/controllers/foreman_patch/api/*.rb"
+      require 'foreman_patch/plugin'
       Apipie.configuration.checksum_path += ['/foreman_patch/api/']
     end
 

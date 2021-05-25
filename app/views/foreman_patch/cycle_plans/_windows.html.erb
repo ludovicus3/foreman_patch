@@ -19,7 +19,7 @@
         <% week.each do |day| %>
           <td class="day <%= ((0...length).include? day) ? '' : 'disabled' %>">
             <% cycle_plan.window_plans.where(start_day: day).order(:start_time).each do |window| %>
-              <div class="event ellipsis"><%= window.start_time %> <%= window.name %></div>
+              <div class="event ellipsis"><%= window.start_time.strftime('%l:%M %p') %> <%= window.name %></div>
             <% end %>
           </td>
         <% end %>

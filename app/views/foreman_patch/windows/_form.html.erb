@@ -1,0 +1,21 @@
+<%= form_for @window, url: (@window.new_record? ? cycle_window_path(cycle_id: @cycle) : window_path(id: @window)) do |f| %>
+  <%= base_errors_for @window %>
+  <ul class="nav nav-tabs" data-tabs="tabs">
+    <li class="active"><a href="#primary" data-toggle="tab"><%= _('Window') %></a></li>
+    <li><a href="#groups" data-toggle="tab"><%= _('Groups') %></a></li>
+  </ul>
+
+  <div class="tab-content">
+    <div class="tab-pane active" id="primary">
+      <%= text_f f, :name %>
+      <%= text_f f, :description %>
+      <%= text_f f, :start_at %>
+      <%= text_f f, :end_by %>
+    </div>
+    <div class="tab-pane" id="groups">
+      <%= render partial: 'groups' %>
+    </div>
+  </div>
+
+  <%= submit_or_cancel f, false, { cancel_path: cycle_path(id: (@window.new_record? ? @cycle : @window.cycle)) } %>
+<% end %>

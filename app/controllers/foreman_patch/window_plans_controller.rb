@@ -1,25 +1,26 @@
 module ForemanPatch
-  class CyclePlansController < ApplicationController
+  class WindowPlansController < ApplicationController
 
     before_action :find_resource, only: [:edit, :update, :destroy]
 
     def index
+      @cycle = 
       @cycle_plans = resource_base_search_and_page
     end
 
     def new
-      @cycle_plan = CyclePlan.new
+      @window_plans = WindowPlan.new
     end
 
     def create
-      @cycle_plan = CyclePlan.new(cycle_plan_params)
+      @window_plan = WindowPlan.new(window_plan_params)
     end
 
     def edit
     end
 
     def update
-      if @cycle_plan.update(cycle_plan_params)
+      if @window_plan.update(window_plan_params)
         process_success success_hash
       else
         process_error
@@ -27,7 +28,7 @@ module ForemanPatch
     end
 
     def destroy
-      if @cycle_plan.destroy
+      if @window_plan.destroy
         process_success success_hash
       else
         process_error
@@ -35,13 +36,18 @@ module ForemanPatch
     end
 
     def resource_class
-      ForemanPatch::CyclePlan
+      ForemanPatch::WindowPlan
     end
 
     private
 
-    def cycle_plan_params
-      params.require(:cycle_plan).permit(:name, :description, :state_date, :interval, :units, :active_count)
+    def allowed_nested_id
+      %w(cycle_plan_id)
+    end
+
+    def window_plan_params
+      params[:window_plan][:cycle_plan_id] = params[:cycle_plan_id] unless params[:cycle_plan_id].nil?
+      params.require(:window_plan).permit(:name, :description, :state_day, :start_time, :cycle_plan_id)
     end
 
     def success_hash

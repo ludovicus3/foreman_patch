@@ -34,6 +34,10 @@ module ForemanPatch
     before_validation :build_from_window_plan, if: :window_plan_id?
     after_create :load_groups_from_window_plan, if: :window_plan_id?
 
+    def ticket
+      "not implemented"
+    end
+
     def state
       if task.nil?
         'planned'

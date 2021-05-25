@@ -3,7 +3,8 @@ module ForemanPatch
     include Foreman::Controller::AutoCompleteSearch
     include Foreman::Controller::CsvResponder
 
-    before_action :find_group, only: [:edit, :update, :destroy]
+    before_action :find_resource, only: [:edit, :update, :destroy]
+    before_action :setup_search_options, only: :index
 
     def index
       respond_to do |format|
@@ -49,10 +50,6 @@ module ForemanPatch
       end
     end
 
-    def controller_name
-      'foreman_patch_groups'
-    end
-
     def resource_class
       ForemanPatch::Group
     end
@@ -62,10 +59,6 @@ module ForemanPatch
     end
 
     private
-
-    def find_group
-      @group ||= Group.find(params[:id])
-    end
 
     def group_params
       params.require(:group).permit(:name, :description, :default_window_plan_id, :max_unavailable, :default_priority)

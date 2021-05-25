@@ -1,14 +1,14 @@
 <% 
-items = [{ caption: _('Patch Cycles'), url: foreman_patch_cycles_path },
-         { caption: @cycle.name, url: foreman_patch_cycle_path(@cycle) },
-         { caption: @window.name, url: foreman_patch_window_path(@window) },
-         { caption: @group.name, url: foreman_patch_window_group_path(@group) }]
+items = [{ caption: _('Patch Cycles'), url: cycles_path },
+         { caption: @cycle.name, url: cycle_path(@cycle) },
+         { caption: @window.name, url: window_path(@window) },
+         { caption: @group.name, url: window_group_path(@group) }]
 
 if @host
   items << { caption: _('Patching Invocation for %s') % @host.name }
-  breadcrumbs(resource_url: foreman_patch_api_window_group_path(@group.id),
+  breadcrumbs(resource_url: api_window_group_invocations_path(@group.id),
               name_field: 'host_name',
-              switcher_item_url: foreman_patch_invocation_path(':id'),
+              switcher_item_url: invocation_path(':id'),
               items: items)
 else
   breadcrumbs(items: items, switchable: false)
