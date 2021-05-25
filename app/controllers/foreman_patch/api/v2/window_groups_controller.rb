@@ -9,13 +9,20 @@ module ForemanPatch
           api_base_url '/foreman_patch/api'
         end
 
+        before_action :find_window, only: [:index]
         before_action :find_resource, only: [:update, :show, :destroy]
 
         api :GET, '/window_groups', N_('List window_groups')
+        api :GET, '/windows/:window_id/window_groups'. N_('List window groups within a given window')
+        param :window_id, :identifier
         param_group :search_and_pagination, ::Api::V2::BaseController
         add_scoped_search_description_for(ForemanPatch::WindowGroup)
         def index
-          @window_groups = resource_scope_for_index
+          if @window
+            @window_groups = @window.window_groups.search_for(*search_options).paginate(paginate_options)
+          else
+            @window_groups = resource_scope_for_index
+          end
         end
 
         api :GET, '/window_groups/:id', 'Show window_group details'
@@ -60,8 +67,8 @@ module ForemanPatch
 
         private
 
-        def find_window_group
-          @window_group = ForemanPatch::WindowGroup.find(params[:id])
+        def find_window
+          @window ||= ForemanPatch::Window.find(params[:window_id])
         end
 
         def window_group_params

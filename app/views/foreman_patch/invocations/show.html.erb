@@ -2,17 +2,13 @@
 items = [{ caption: _('Patch Cycles'), url: cycles_path },
          { caption: @cycle.name, url: cycle_path(@cycle) },
          { caption: @window.name, url: window_path(@window) },
-         { caption: @group.name, url: window_group_path(@group) }]
+         { caption: @group.name, url: window_group_path(@group) },
+         { caption: _('Patching Invocation for %s') % @host.name }]
 
-if @host
-  items << { caption: _('Patching Invocation for %s') % @host.name }
-  breadcrumbs(resource_url: api_window_group_invocations_path(@group.id),
-              name_field: 'host_name',
-              switcher_item_url: invocation_path(':id'),
-              items: items)
-else
-  breadcrumbs(items: items, switchable: false)
-end
+breadcrumbs(resource_url: api_window_group_invocations_path(@group.id),
+            name_field: 'host_name',
+            switcher_item_url: invocation_path(':id'),
+            items: items)
 %>
 
 <% stylesheet 'foreman_remote_execution/foreman_remote_execution' %>

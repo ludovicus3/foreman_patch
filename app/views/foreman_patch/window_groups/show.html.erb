@@ -1,4 +1,15 @@
-<% title @window_group.name %>
+<% 
+items = [{ caption: _('Cycles'), url: cycles_path },
+         { caption: @cycle.name, url: cycle_path(@cycle) },
+         { caption: @window.name, url: window_path(@window) },
+         { caption: @window_group.name }]
+
+breadcrumbs(resource_url: api_window_window_groups_path(@window.id),
+            name_field: 'name',
+            switcher_item_url: window_group_path(':id'),
+            items: items)
+%>
+
 <% javascript 'charts' %>
 <% javascript *webpack_asset_paths('foreman_remote_execution', extension: 'js') %>
 

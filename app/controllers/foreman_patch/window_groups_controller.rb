@@ -6,6 +6,8 @@ module ForemanPatch
     helper ForemanPatch::PatchingHelper
 
     def show
+      @window = @window_group.window
+      @cycle = @window.cycle
       @auto_refresh = @window_group.task.try(:pending)
 
       respond_to do |format|

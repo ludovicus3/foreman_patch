@@ -13,6 +13,7 @@ ForemanPatch::Engine.routes.draw do
       end
 
       resources :windows, only: [:index, :show, :update, :destroy] do
+        resources :window_groups, only: [:index]
         member do
           post :schedule
         end
