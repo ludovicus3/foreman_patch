@@ -9,14 +9,12 @@ module ForemanPatch
     has_many :sub_tasks, through: :task
 
     validates :window, presence: true
-    validates :group, presence: true, uniqueness: { scope: :window }
-
-    delegate :name, :max_unavailable, to: :group
+    validates :group, uniqueness: { scope: :window_id }, allow_nil: true
 
     has_many :invocations, class_name: 'ForemanPatch::Invocation', foreign_key: :window_group_id, inverse_of: :window_group
     has_many :hosts, through: :invocations
 
-    scoped_search relation: :group, on: :name, complete_value: true
+    scoped_search on: :name, complete_value: true
 
     before_create :ensure_priority
 
