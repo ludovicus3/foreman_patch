@@ -1,35 +1,36 @@
-Foreman::Application.routes.draw do
-  namespace :foreman_patch do
-
-    namespace :api do
-      resources :cycle_plans, only: [:index, :show, :create, :update, :destroy] do
-        resources :window_plans, only: [:index, :create]
-        resources :cycles, only: [:index, :create]
-      end
-
-      resources :window_plans, only: [:index, :show, :update, :destroy]
-
-      resources :cycles, only: [:index, :create, :show, :update, :destroy] do
-        resources :windows, only: [:index, :create]
-      end
-
-      resources :windows, only: [:index, :show, :update, :destroy] do
-        member do
-          post :schedule
-        end
-      end
-
-      resources :groups, only: [:index, :show, :create, :update, :destroy]
+ForemanPatch::Engine.routes.draw do
+  resources :groups, only: [:index, :new, :create, :edit, :update, :destroy] do
+    collection do
+      get 'auto_complete_search'
     end
-
-    resources :groups, only: [:index, :new, :create, :edit, :update, :destroy] do
-      collection do
-        get 'auto_complete_search'
-      end
-    end
-
-    resources :cycle_plans, only: [:index, :new, :create, :edit, :update, :destroy]
   end
+
+  resources :cycles, only: [:index, :show, :destroy] do
+    collection do
+      get 'auto_complete_search'
+    end
+
+    resources :windows, only: [:new, :create]
+  end
+
+  resources :windows, only: [:show, :destroy]
+
+  resources :window_groups, only: [:show] do
+    collection do
+      get 'chart'
+    end
+    member do
+      post 'move'
+    end
+  end
+
+  resources :invocations, only: [:show]
+
+  resources :cycle_plans, only: [:index, :new, :create, :edit, :update, :destroy]
+end
+
+Foreman::Application.routes.draw do
+  mount ForemanPatch::Engine, at: '/foreman_patch'
 
   resources :hosts, only: [] do
     collection do
@@ -37,5 +38,4 @@ Foreman::Application.routes.draw do
       post 'update_multiple_patch_group'
     end
   end
-
 end
