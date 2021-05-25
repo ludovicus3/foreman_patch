@@ -18,6 +18,7 @@ module ForemanPatch
     end
 
     def show
+      @cycle = @window.cycle
     end
 
     def destroy

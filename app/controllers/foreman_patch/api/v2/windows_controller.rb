@@ -9,7 +9,8 @@ module ForemanPatch
           api_base_url '/foreman_patch/api'
         end
 
-        before_action :find_window, only: [:show, :update, :destroy]
+        before_action :find_cycle, only: [:index]
+        before_action :find_resource, only: [:show, :update, :destroy]
 
         api :GET, '/windows', N_('List windows')
         api :GET, '/cycles/:cycle_id/windows', N_('List windows from cycle')
@@ -17,7 +18,11 @@ module ForemanPatch
         param_group :search_and_pagination, ::Api::V2::BaseController
         add_scoped_search_description_for(ForemanPatch::Window)
         def index
-          @windows = resource_scope_for_index
+          if @cycle
+            @windows = @cycle.windows.search_for(*search_options).paginate(paginate_options)
+          else
+            @windows = resource_scope_for_index
+          end
         end
 
         api :GET, '/windows/:id', 'Show window details'
@@ -62,6 +67,10 @@ module ForemanPatch
           ::ForemanTasks.delay(::Actions::ForemanPatch::Window::Patch, delay_options, @window)
         end
 
+        def resource_class
+          ForemanPatch::Window
+        end
+
         private
 
         def allow_nested_id
@@ -75,8 +84,8 @@ module ForemanPatch
           }
         end
 
-        def find_window
-          @window ||= Window.find(params[:id])
+        def find_cycle
+          @cycle ||= ForemanPatch::Cycle.find(params[:cycle_id])
         end
 
         def window_params

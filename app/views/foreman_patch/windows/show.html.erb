@@ -1,4 +1,13 @@
-<% title @window.name %>
+<% 
+items = [{ caption: _('Cycles'), url: cycles_path },
+         { caption: @cycle.name, url: cycle_path(@cycle) },
+         { caption: @window.name }]
+
+breadcrumbs(resource_url: api_cycle_windows_path(@cycle.id),
+            name_field: 'name',
+            switcher_item_url: window_path(':id'),
+            items: items)
+%>
 
 <% title_actions %>
 
