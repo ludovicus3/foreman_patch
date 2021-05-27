@@ -1,9 +1,10 @@
 module ForemanPatch
   class InvocationsController < ApplicationController
 
-    def show
-      @invocation = Invocation.find(params[:id])
+    helper ForemanPatch::PatchingHelper
 
+    def show
+      @invocation = ForemanPatch::Invocation.find(params[:id])
       @host = @invocation.host
 
       @group = @invocation.window_group

@@ -13,6 +13,14 @@ breadcrumbs(resource_url: api_window_group_invocations_path(@group.id),
 
 <% stylesheet 'foreman_remote_execution/foreman_remote_execution' %>
 
+<%=
+  title_actions(link_to(_('Back to Group'), window_group_path(@group), class: 'btn btn-default'),
+                button_group(link_to_function(_('Toggle STDERR'), '$("div.line.stderr").toggle()', class: 'btn btn-default'),
+                             link_to_function(_('Toggle STDOUT'), '$("div.line.stdout").toggle()', class: 'btn btn-default'),
+                             link_to_function(_('Toggle DEBUG'), '$("div.line.debug").toggle()', class: 'btn btn-default')),
+                button_group(invocation_task_buttons(@invocation.task, @invocation)))
+%>
+
 <ul class="nav nav-tabs" data="tabs">
   <li class="active"><a href="#primary" data-toggle="tab"><%= _('Primary') %></a></li>
   <% @invocation.phases.each do |phase| %>

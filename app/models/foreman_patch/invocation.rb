@@ -12,14 +12,6 @@ module ForemanPatch
 
     scoped_search relation: :host, on: :name, rename: 'host.name', complete_value: true
 
-    def failed?
-      task.state == 'stopped' and task.result == 'error'
-    end
-
-    def succeeded?
-      task.state == 'stopped' and task.result == 'success'
-    end
-
     def phases
       task.main_action.planned_actions unless task.blank?
     end
@@ -34,6 +26,18 @@ module ForemanPatch
 
     def queued?
       status == HostStatus::ExecutionStatus::QUEUED
+    end
+
+    def pending?
+      status == HostStatus::ExecutionStatus::RUNNING
+    end
+
+    def failed?
+      status == HostStatus::ExecutionStatus::ERROR
+    end
+
+    def success?
+      status == HostStatus::ExecutionStatus::OK
     end
 
     def to_action_input

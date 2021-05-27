@@ -67,14 +67,10 @@ module ForemanPatch
 
       unless params[:search].nil?
         @resource_base = @resource_base.joins(:foreman_patch_invocations)
-          .where(:foreman_patch_invocations => { :window_group_id => @window_group.id})
+          .where(foreman_patch_invocations: { window_group_id: @window_group.id })
       end
       @hosts = resource_base_search_and_page
       @total_hosts = resource_base_with_search.size
-    end
-
-    def find_window
-      @window ||= Window.find(params[:window_id])
     end
 
   end
