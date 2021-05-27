@@ -1,6 +1,10 @@
 module ForemanPatch
   module PatchingHelper
 
+    def group_hosts_authorizer
+      @group_hosts_authorizer ||= Authorizer.new(User.current, collection: @hosts)
+    end
+
     def patch_invocation_status(task, parent_task)
       return (parent_task.result == 'cancelled' ? _('cancelled') : 'N/A') if task.nil?
       return task.state if task.state == 'running' || task.state == 'planned'
@@ -11,6 +15,19 @@ module ForemanPatch
 
     def patch_invocation_actions(task, host, group, invocation)
       links = []
+
+      if authorized_for(main_app.hash_for_host_path(host).merge(auth_object: host, permission: :view_hosts, authorizer: group_hosts_authorizer))
+        links << { title: _('Host Detail'),
+                   action: { href: main_app.host_path(host), 'data-method': 'get', id: "#{host.name}-actions-detail" } }
+      end
+
+      if task.present? && authorized_for(main_app.hash_for_foreman_tasks_task_path(task).merge(auth_object: task, permission: :view_foreman_tasks))
+        links << { title: _('Task Detail'),
+                   action: { href: main_app.foreman_tasks_task_path(task),
+                             'data-method': 'get',
+                             id: "#{host.name}-actions-task" }
+        }
+      end
 
       links
     end
