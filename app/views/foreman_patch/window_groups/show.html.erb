@@ -13,7 +13,9 @@ breadcrumbs(resource_url: api_window_window_groups_path(@window.id),
 <% javascript 'charts' %>
 <% javascript *webpack_asset_paths('foreman_remote_execution', extension: 'js') %>
 
-<% title_actions %>
+<% if @window_group.task %>
+  <% title_actions button_group(group_task_buttons(@window_group.task))%>
+<% end %>
 
 <div class="row">
   <%= render partial: 'results', locals: { window_group: @window_group } %>
