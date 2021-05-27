@@ -36,9 +36,12 @@ module Actions
             socket = TCPSocket.new(host.ip, Setting[:remote_execution_ssh_port])
             socket.close
 
+            continuous_output.add_output(_('Server status: up'))
+
             { up: true }
           rescue => error
-            Rails.logger.debug(error.message)
+            continuous_output.add_output(_('Server status: down'))
+
             { up: false }
           end
         end
