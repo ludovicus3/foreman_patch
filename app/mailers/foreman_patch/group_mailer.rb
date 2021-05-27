@@ -17,7 +17,7 @@ module ForemanPatch
 
       @group = options[:group].name
       @total = options[:group].invocations.count
-      @successes = options[:group].invocations.select(&:succeeded?).map { |invocation| invocation.host.name }
+      @successes = options[:group].invocations.select(&:success?).map { |invocation| invocation.host.name }
       @failures = options[:group].invocations.select(&:failed?).map { |invocation| invocation.host.name }
        
 

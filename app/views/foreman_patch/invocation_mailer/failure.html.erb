@@ -36,7 +36,7 @@
   <table>
     <tr>
       <td width="18%" class="hosts-rows"><b><%= _("Hostname") %></b></td>
-      <td width="82%" class="hosts-rows"><%= link_to @host, host_url(id: @host) %></td>
+      <td width="82%" class="hosts-rows"><%= link_to @host.name, main_app.host_path(@host) %></td>
     </tr>
     <tr>
       <td width="18%" class="hosts-rows"><b><%= _("IP") %></b></td>
@@ -45,6 +45,6 @@
   </table>
 </div>
 <div class="printable">
-  <%= render partial: 'output_line_set', collection: normalize_line_sets(@output) %>
+  <%= render partial: 'template_invocations/output_line_set', collection: normalize_line_sets(@output) %>
 </div>
 

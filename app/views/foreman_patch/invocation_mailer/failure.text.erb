@@ -4,7 +4,7 @@
   <%= _("IP:") %>      <%= @host.ip %>
 
 <%= _("View in Foreman:") %>
-<%= host_url(id: @host) %>
+<%= main_app.host_url(id: @host) %>
 
 <%= _("Output: ") %>
 <% render partial: 'output_line_set', collection: normalize_line_sets(@output) %>
