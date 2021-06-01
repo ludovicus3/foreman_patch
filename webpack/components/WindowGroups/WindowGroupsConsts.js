@@ -1,0 +1,1 @@
+export const WINDOW_GROUPS = 'WINDOW_GROUPS';

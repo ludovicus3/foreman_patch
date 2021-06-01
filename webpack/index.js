@@ -2,17 +2,10 @@
 /* eslint-disable import/no-extraneous-dependencies */
 /* eslint-disable import/extensions */
 import componentRegistry from 'foremanReact/components/componentRegistry';
-import { registerReducer } from 'foremanReact/common/MountingService';
-import reducers from './ForemanPatch/ForemanPatchReducers';
-import ForemanPatch from './ForemanPatch';
+import WindowGroups from './components/WindowGroups';
 
-// register reducers
-Object.entries(reducers).forEach(([key, reducer]) =>
-  registerReducer(key, reducer)
-);
+const components = [
+  { name: 'WindowGroups', type: WindowGroups },
+];
 
-// register components for erb mounting
-componentRegistry.register({
-  name: 'ForemanPatch',
-  type: ForemanPatch,
-});
+components.forEach(component => componentRegistry.register(component));
