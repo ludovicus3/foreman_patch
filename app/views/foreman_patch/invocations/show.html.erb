@@ -12,6 +12,7 @@ breadcrumbs(resource_url: api_window_group_invocations_path(@group.id),
 %>
 
 <% stylesheet 'foreman_remote_execution/foreman_remote_execution' %>
+<% javascript 'foreman_remote_execution/template_invocation' %>
 
 <%=
   title_actions(link_to(_('Back to Group'), window_group_path(@group), class: 'btn btn-default'),

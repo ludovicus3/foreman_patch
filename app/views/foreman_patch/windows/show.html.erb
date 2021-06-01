@@ -1,3 +1,5 @@
+<%= webpacked_plugins_js_for :foreman_patch %>
+
 <% 
 items = [{ caption: _('Cycles'), url: cycles_path },
          { caption: @cycle.name, url: cycle_path(@cycle) },
@@ -20,6 +22,6 @@ breadcrumbs(resource_url: api_cycle_windows_path(@cycle.id),
   </div>
 </div>
 <hr/>
-<div id="groups" data-refresh_required="true">
-  <%= render partial: 'groups', locals: { groups: @window.window_groups } %>
+<div id="window_groups">
+  <%= react_component('WindowGroups') %>
 </div>

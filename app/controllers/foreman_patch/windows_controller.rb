@@ -4,6 +4,8 @@ module ForemanPatch
     before_action :find_cycle, only: [:new, :create]
     before_action :find_resource, only: [:show, :destroy]
 
+    helper ForemanPatch::WindowPatchingHelper
+
     def new
       @window = Window.new
     end
@@ -19,6 +21,13 @@ module ForemanPatch
 
     def show
       @cycle = @window.cycle
+
+      @auto_refresh = @window.task.try(:pending?)
+
+      respond_to do |format|
+        format.json
+        format.html
+      end
     end
 
     def destroy
