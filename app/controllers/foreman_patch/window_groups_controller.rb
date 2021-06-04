@@ -24,14 +24,6 @@ module ForemanPatch
       @window_groups = WindowGroup.where(window: @window)
     end
 
-    def move
-      direction = params[:direction]
-
-      if direction == :up
-      else
-      end
-    end
-
     def chart
       progress_report = @window_group.progress_report
       success = progress_report[:success]
@@ -54,6 +46,9 @@ module ForemanPatch
           pending: pending,
         },
       }
+    end
+
+    def update
     end
 
     def resource_class

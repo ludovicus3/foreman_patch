@@ -2,6 +2,8 @@ module ForemanPatch
   class CyclesController < ApplicationController
     include Foreman::Controller::AutoCompleteSearch
 
+    helper ForemanPatch::CalendarHelper
+
     before_action :find_resource, only: [:show, :destroy]
 
     def index
