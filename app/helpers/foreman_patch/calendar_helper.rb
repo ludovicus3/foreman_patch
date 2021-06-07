@@ -29,7 +29,7 @@ module ForemanPatch
     def each_weekday(range, &block)
       each_week(range) do |week|
         week.map do |day|
-          content_tag :td, class: day_css_classes(day, range.include?(day)) do
+          content_tag :td, id: day.strftime('%Y%m%d'), class: day_css_classes(day, range.include?(day)) do
             concat content_tag(:h6, (day.day == 1) ? day.strftime('%b %-d') : day.strftime('%-d'))
             concat content_tag(:div, capture(day, &block), class: 'day')
           end
