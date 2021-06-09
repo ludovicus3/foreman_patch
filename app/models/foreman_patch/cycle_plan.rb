@@ -13,6 +13,15 @@ module ForemanPatch
     scoped_search on: :units, complete_value: true
     scoped_search on: :interval, complete_value: true
     scoped_search on: :start_date, complete_value: false
+
+    def frequency
+      interval.send(units)
+    end
+
+    def next_cycle
+      cycles.order(:start_date).last.start_date + frequency
+    end
+
   end
 end
 

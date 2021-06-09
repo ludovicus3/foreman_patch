@@ -1,12 +1,11 @@
 module ForemanPatch
   module CyclePlansHelper
 
-    def plan_date_range(cycle_plan)
-    end
-      
-    def planned_windows(cycle_plan, date)
-      cycle.windows.select do |window|
-        window.start_at.to_date === date
+    def plan_windows(cycle_plan, day)
+      day = (day - cycle_plan.next_cycle).to_i
+
+      cycle_plan.window_plans.select do |window|
+        window.start_day == day
       end
     end
 

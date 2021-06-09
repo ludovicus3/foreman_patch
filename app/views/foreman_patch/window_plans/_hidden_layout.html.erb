@@ -1,0 +1,7 @@
+
+<div class="hidden" id="windowPlanHidden<%= local_assigns[:id] %>" data-window-id="<%= local_assigns[:id] %>">
+  <%= field_set_tag "", id: "windowPlan", :'data-url' => new_window_plan_path do %>
+    <% f.hidden_field(:_destroy, class: :destroyFlag, value: (local_assigns[:id].nil? ? 1 : 0)) %>
+    <%= yield %>
+  <% end %>
+</div>

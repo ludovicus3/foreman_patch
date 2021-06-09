@@ -1,30 +1,13 @@
-<table class="table table-bordered table-fixed">
-  <thead>
-    <tr>
-      <th><%= _('Sunday') %></th>
-      <th><%= _('Monday') %></th>
-      <th><%= _('Tuesday') %></th>
-      <th><%= _('Wednesday') %></th>
-      <th><%= _('Thursday') %></th>
-      <th><%= _('Friday') %></th>
-      <th><%= _('Saturday') %></th>
-    </tr>
-  </thead>
-  <tbody>
-    <% start = -cycle_plan.start_date.wday %>
-    <% length = cycle_plan.interval.send(cycle_plan.units).value / ActiveSupport::Duration::SECONDS_PER_DAY %>
-    <% stop = length + 6 - (cycle_plan.start_date + length).wday %>
-    <% (start..stop).each_slice(7) do |week| %>
-      <tr>
-        <% week.each do |day| %>
-          <td class="day <%= ((0...length).include? day) ? '' : 'disabled' %>">
-            <% cycle_plan.window_plans.where(start_day: day).order(:start_time).each do |window| %>
-              <div class="event ellipsis"><%= window.start_time.strftime('%l:%M %p') %> <%= window.name %></div>
-            <% end %>
-          </td>
-        <% end %>
-      </tr>
+<fieldset id="windowPlans" data-url="<%= new_window_plan_path %>">
+  <%= calendar(@cycle_plan.next_cycle...(@cycle_plan.next_cycle + @cycle_plan.frequency)) do |day| %>
+    <% plan_windows(@cycle_plan, day).each do |window| %>
+      <div class="event" id="windowPlan<%= window.id %>" data-window-plan-id="<%= window.id %>">
+        <div class="ellipsis"><%= "#{window.start_time.strftime('%l:%M %p')} #{window}" %></div>
+        <div class="pull-right">
+          <button type="button" class="btn btn-default" onclick="edit_window_plan(<%= window.id %>)"><%= _('Edit') %></button>
+          <button type="button" class="btn btn-danger" onclick="remove_window_plan(<%= window.id %>)"><%= _('Delete') %></button>
+        </div>
+      </div>
     <% end %>
-  </tbody>
-</table>
-
+  <% end %>
+</fieldset>
