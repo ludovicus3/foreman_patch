@@ -1,5 +1,7 @@
 module ForemanPatch
   class CyclePlan < ::ApplicationRecord
+    include ForemanTasks::Concerns::ActionSubject
+
     UNITS = ['days', 'weeks', 'months'].freeze
 
     has_many :window_plans, class_name: 'ForemanPatch::WindowPlan', foreign_key: :cycle_plan_id, dependent: :nullify, inverse_of: :cycle_plan
@@ -18,8 +20,10 @@ module ForemanPatch
       interval.send(units)
     end
 
-    def next_cycle
-      cycles.order(:start_date).last.start_date + frequency
+    def next_cycle_date(date = Date.current)
+      next_date = start_date
+      next_date += frequency until next_date > date
+      next_date
     end
 
   end

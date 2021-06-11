@@ -3,11 +3,6 @@ module ForemanPatch
 
     before_action :find_resource, only: [:edit, :update, :destroy]
 
-    def index
-      @cycle = 
-      @cycle_plans = resource_base_search_and_page
-    end
-
     def new
       @window_plans = WindowPlan.new
     end

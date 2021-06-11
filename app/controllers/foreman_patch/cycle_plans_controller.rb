@@ -3,7 +3,7 @@ module ForemanPatch
 
     helper ForemanPatch::CalendarHelper
 
-    before_action :find_resource, only: [:edit, :update, :destroy]
+    before_action :find_resource, only: [:show, :edit, :update, :destroy]
 
     def index
       @cycle_plans = resource_base_search_and_page
@@ -15,6 +15,9 @@ module ForemanPatch
 
     def create
       @cycle_plan = CyclePlan.new(cycle_plan_params)
+    end
+
+    def show
     end
 
     def edit
