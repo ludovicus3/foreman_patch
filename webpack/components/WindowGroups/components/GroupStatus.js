@@ -24,6 +24,7 @@ const GroupStatus = ({ status }) => {
           <Icon type="pf" name="running" /> {status}
         </div>
       );
+    case 'scheduled':
     case 'planned':
       return (
         <div>

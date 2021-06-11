@@ -2,6 +2,7 @@ module ForemanPatch
   module WindowPatchingHelper
 
     def group_status(task, parent_task)
+      return 'scheduled' if parent_task.nil?
       return (parent_task.result == 'cancelled' ? _('cancelled') : 'N/A') if task.nil?
       return task.state if task.state == 'running' || task.state == 'planned'
 
