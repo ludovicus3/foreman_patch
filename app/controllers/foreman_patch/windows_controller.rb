@@ -5,6 +5,7 @@ module ForemanPatch
     before_action :find_resource, only: [:show, :destroy]
 
     helper ForemanPatch::WindowPatchingHelper
+    helper ForemanPatch::TicketHelper
 
     def new
       @window = Window.new

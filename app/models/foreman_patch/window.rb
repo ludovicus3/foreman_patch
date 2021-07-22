@@ -33,9 +33,23 @@ module ForemanPatch
 
     before_validation :build_from_window_plan, if: :window_plan_id?
     after_create :load_groups_from_window_plan, if: :window_plan_id?
+    before_save :publish
 
     def ticket
-      "not implemented"
+      return @ticket if defined? @ticket
+
+      unless ticket_id.blank?
+        @ticket = ForemanPatch::Ticket.load(self)
+      end
+      @ticket
+    end
+
+    def publish
+      @ticket = ForemanPatch::Ticket.save(self)
+
+      self.ticket_id = @ticket.fetch(Setting[:ticket_id_field], ticket_id)
+
+      @ticket
     end
 
     def state
@@ -44,6 +58,10 @@ module ForemanPatch
       else
         task.state
       end
+    end
+
+    class Jail < ::Safemode::Jail
+      allow :id, :name, :description, :cycle, :start_at, :end_by, :window_groups
     end
 
     private
