@@ -1,0 +1,6 @@
+<h2>Summary</h2>
+<ul>
+  <% windows.each do |window| %>
+    <li><%= window.start_at.strftime('%Y-%m-%d at %l:%M %p') %> <%= window.name %></li>
+  <% end %>
+</ul>

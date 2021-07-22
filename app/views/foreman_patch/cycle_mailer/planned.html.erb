@@ -1,0 +1,7 @@
+<h2 class="headline"><%= (_('<b>%{cycle}</b> planned starting %{start_date}') % {cycle: @cycle.name, start_date: @cycle.start_date}).html_safe %></h2>
+<div class="dashboard">
+  <%= render partial: 'summary', locals: { windows: @cycle.windows } %>
+</div>
+<div class="hosts">
+  <%= render partial: 'details', locals: { windows: @cycle.windows } %>
+</div>

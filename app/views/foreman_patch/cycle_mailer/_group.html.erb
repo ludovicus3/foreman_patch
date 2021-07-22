@@ -1,0 +1,12 @@
+<div class="host-list">
+  <h3><%= group.name %></h3>
+  <table>
+    <tbody>
+      <% group.hosts.each_slice(4).each do |row| %>
+        <tr>
+          <% 4.times do |i| %><td><%= row[i] %></td><% end %>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+</div>

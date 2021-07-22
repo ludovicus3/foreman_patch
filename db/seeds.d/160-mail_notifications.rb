@@ -22,6 +22,13 @@ User.as(::User.anonymous_api_admin.login) do
       mailer: 'ForemanPatch::InvocationMailer',
       method: 'failure',
       subscription_type: 'alert',
+    },
+    {
+      name: :patch_cycle_planned,
+      description: N_('Notification on the creation of a new patch cycle'),
+      mailer: 'ForemanPatch::CycleMailer',
+      method: 'planned',
+      subscription_type: 'alert',
     }
   ]
 
