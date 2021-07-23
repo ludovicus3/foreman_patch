@@ -21,6 +21,10 @@ module ForemanPatch
       end_date.past?
     end
 
+    class Jail < ::Safemode::Jail
+      allow :id, :name, :description, :start_date, :end_date, :windows
+    end
+
     private
 
     def plan_cycle
