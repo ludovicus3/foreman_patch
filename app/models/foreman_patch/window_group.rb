@@ -16,7 +16,8 @@ module ForemanPatch
 
     scoped_search on: :name, complete_value: true
 
-    before_create :ensure_priority
+    before_validation :build_from_group, if: :group_id?
+    after_create :load_invocations_from_group, if: :group_id?
 
     def status
       HostStatus::ExecutionStatus::ExecutionTaskStatusMapper.new(task).status
@@ -65,10 +66,25 @@ module ForemanPatch
       end
     end
 
+    class Jail < ::Safemode::Jail
+      allow :id, :name, :description, :invocations, :hosts, :priority, :max_unavailable, :status 
+    end
+
     private
 
-    def ensure_priority
-      self.priority = group.default_priority if priority.nil?
+    def build_from_group
+      unless group.blank?
+        self.name = group.name if name.blank?
+        self.description = group.description if description.blank?
+        self.priority = group.default_priority if priority.blank?
+        self.max_unavailable = group.max_unavailable if max_unavailable.blank?
+      end
+    end
+
+    def load_invocations_from_group
+      group.hosts.each do |host|
+        invocations.create(host: host)
+      end
     end
   end
 end
