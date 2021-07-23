@@ -47,5 +47,8 @@ module ForemanPatch
       }
     end
 
+    class Jail < ::Safemode::Jail
+      allow :id, :host, :status
+    end
   end
 end
