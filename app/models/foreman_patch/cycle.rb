@@ -30,7 +30,7 @@ module ForemanPatch
     def plan_cycle
       self.name = cycle_plan.name if name.nil?
       self.description = cycle_plan.description if description.nil?
-      self.end_date = start_date + cycle_plan.frequency if end_date.nil?
+      self.end_date = start_date + cycle_plan.frequency - 1 if end_date.nil?
     end
 
     def plan_windows
