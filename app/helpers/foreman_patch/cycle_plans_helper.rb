@@ -2,7 +2,7 @@ module ForemanPatch
   module CyclePlansHelper
 
     def plan_windows(cycle_plan, day)
-      day = (day - cycle_plan.next_cycle_date).to_i
+      day = (day - cycle_plan.next_cycle_start.to_date).to_i
 
       cycle_plan.window_plans.select do |window|
         window.start_day == day

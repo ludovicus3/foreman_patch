@@ -9,11 +9,6 @@ module ForemanPatch
     belongs_to :task, class_name: 'ForemanTasks::Task'
     has_many :sub_tasks, through: :task
 
-    belongs_to :task_group, class_name: 'ForemanPatch::WindowTaskGroup'
-    has_many :tasks, through: :task_group, class_name: 'ForemanTasks::Task'
-
-    belongs_to :triggering, class_name: 'ForemanTasks::Triggering'
-
     has_many :window_groups, -> { order(priority: :asc) }, class_name: 'ForemanPatch::WindowGroup', inverse_of: :window
     has_many :groups, class_name: 'ForemanPatch::Group', through: :window_groups 
 
@@ -33,23 +28,11 @@ module ForemanPatch
 
     before_validation :build_from_window_plan, if: :window_plan_id?
     after_create :load_groups_from_window_plan, if: :window_plan_id?
-    before_save :publish
 
     def ticket
       return @ticket if defined? @ticket
 
-      unless ticket_id.blank?
-        @ticket = ForemanPatch::Ticket.load(self)
-      end
-      @ticket
-    end
-
-    def publish
-      @ticket = ForemanPatch::Ticket.save(self)
-
-      self.ticket_id = @ticket.fetch(Setting[:ticket_id_field], ticket_id)
-
-      @ticket
+      @ticket = ForemanPatch::Ticket.load(self) unless ticket_id.blank?
     end
 
     def state
