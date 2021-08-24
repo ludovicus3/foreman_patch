@@ -10,7 +10,8 @@ module ForemanPatch
     has_many :sub_tasks, through: :task
 
     has_many :window_groups, -> { order(priority: :asc) }, class_name: 'ForemanPatch::WindowGroup', inverse_of: :window
-    has_many :groups, class_name: 'ForemanPatch::Group', through: :window_groups 
+    has_many :groups, class_name: 'ForemanPatch::Group', through: :window_groups
+    has_many :hosts, through: :window_groups
 
     validates :cycle, presence: true
     validates :name, presence: true

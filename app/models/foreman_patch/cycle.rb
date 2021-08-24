@@ -1,10 +1,12 @@
 module ForemanPatch
   class Cycle < ::ApplicationRecord
+    include ForemanTasks::Concerns::ActionSubject
 
     belongs_to :cycle_plan, class_name: 'ForemanPatch::CyclePlan'
 
     has_many :windows, -> { order(start_at: :asc) }, class_name: 'ForemanPatch::Window', foreign_key: :cycle_id, inverse_of: :cycle
     has_many :tasks, through: :windows
+    has_many :hosts, through: :windows
 
     scoped_search on: :name, complete_value: true
     scoped_search on: :start_date, complete_value: false
