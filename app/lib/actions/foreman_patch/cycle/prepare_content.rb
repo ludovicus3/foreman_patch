@@ -16,19 +16,32 @@ module Actions
         def plan(cycle)
           action_subject(cycle)
 
-          versions = cycle.hosts.map do |host|
-            host.content_view.version(host.lifecycle_environment)
+          concurrence do
+            content_view_versions.each do |version|
+              next unless available_content?(version)
+
+              if version.content_view.composite?
+                sequence do
+                  components = []
+                  concurrence do
+                    version.components.reduce(components) do |list, component|
+                      if available_content?(component)
+                        action = plan_action(::Actions::Katello::ContentViewVersion::IncrementalUpdate,
+                                             component, component.environments, options(component, []))
+                        list << action.new_content_view_version
+                      end
+                      list
+                    end
+                  end
+                  plan_action(::Actions::Katello::ContentViewVersion::IncrementalUpdate,
+                              version, version.environments, options(version, components))
+                end
+              else
+                plan_action(::Actions::Katello::ContentViewVersion::IncrementalUpdate,
+                            version, version.environments, options(version, []))
+              end
+            end
           end
-
-          versions.each do |version|
-            append_missing_content(version)
-
-            append_version_environment(version)
-          end
-
-          plan_action(::Actions::Katello::ContentView::IncrementalUpdates,
-                      version_environments, composite_version_environments,
-                      content, true, [], humanized_name)
 
           plan_self
         end
@@ -37,49 +50,39 @@ module Actions
           _('Update content for patching cycle: %s') % cycle.name
         end
 
-        private
-
         def cycle
           @cycle ||= ::ForemanPatch::Cycle.find(input[:cycle][:id])
         end
 
-        def append_version_environment(version)
-          return unless version.available_packages.any? or version.available_errata.any?
+        def content_view_versions
+          return @content_view_versions if defined? @content_view_versions
 
-          version_environment = {
-            content_view_version: version,
-            environments: version.environments,
-          }
+          @content_view_versions = cycle.hosts.map do |host|
+            host.content_view.version(host.lifecycle_environment)
+          end.uniq
 
-          if version.content_view.composite?
-            composite_version_environments << version_environment
-
-            version.components.each do |component|
-              append_version_environment(component)
-            end
-          else
-            version_environments << version_environment
-          end
-        end
-        
-        def version_environments
-          @version_environments ||= []
+          @content_view_versions
         end
 
-        def composite_version_environments
-          @composite_version_environments ||= []
-        end
+        private
 
-        def content
-          @content ||= { 
-            package_ids: [],
-            errata_ids: [],
+        def options(version, components)
+          {
+            content: {
+              package_ids: version.available_packages,
+              errata_ids: version.available_errata,
+              deb_ids: ::Katello::Deb.in_repositories(version.library_repos).where.not(id: version.debs),
+            },
+            resolve_dependencies: true,
+            description: humanized_name,
+            new_components: components,
           }
         end
 
-        def append_missing_content(version)
-          content[:package_ids].concat version.available_packages
-          content[:errata_ids].concat version.available_errata
+        def available_content?(version)
+          version.available_packages.any? or 
+            version.available_errata.any? or
+            ::Katello::Deb.in_repositories(version.library_repos).where.not(id: version.debs).any?
         end
 
       end
