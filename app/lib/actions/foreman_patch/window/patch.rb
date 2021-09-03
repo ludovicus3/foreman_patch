@@ -25,14 +25,10 @@ module Actions
 
           sequence do
             window.window_groups.group_by(&:priority).each do |_, groups|
-              if groups.count > 1
-                concurrence do
-                  groups.each do |group|
-                    plan_action(Actions::ForemanPatch::WindowGroup::Patch, group)
-                  end
+              concurrence do
+                groups.each do |group|
+                  plan_action(Actions::ForemanPatch::WindowGroup::Patch, group)
                 end
-              else
-                plan_action(Actions::ForemanPatch::WindowGroup::Patch, groups.first)
               end
             end
           end
