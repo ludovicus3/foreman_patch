@@ -16,6 +16,14 @@ class Setting::Patching < ::Setting
       text_method: 'name',
     }]
 
+    time_zone_select = [{
+      name: _('Time Zones'),
+      class: 'ActiveSupport::TimeZone',
+      scope: 'all',
+      value_method: 'name',
+      text_method: 'name',
+    }]
+
     # set(name, description, default, fullname, value, { options })
     [
       self.set('host_max_wait_for_up', N_("Maximum seconds to wait for a host after patching restart."),
@@ -23,6 +31,9 @@ class Setting::Patching < ::Setting
       self.set('ticket_template', N_("Default template used for generating ticket."), 
                nil, N_('Ticket Template'), nil, 
                collection: proc { template_select }),
+      self.set('patch_schedule_time_zone', N_('Time zone used to base patch window scheduling off of.'),
+               'UTC', N_('Patch Schedule Time Zone'), nil,
+               collection: proc { time_zone_select }),
       self.set('ticket_api_host', N_('Host used for change management tickets'),
                nil, N_('Ticket API host')),
       self.set('ticket_api_proxy', N_('HTTP Proxy to access ticket API host'),
