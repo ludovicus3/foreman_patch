@@ -61,7 +61,7 @@ module ForemanPatch
     private
 
     def group_params
-      params.require(:group).permit(:name, :description, :default_window_plan_id, :max_unavailable, :default_priority)
+      params.require(:group).permit(:name, :description, :default_window_plan_id, :max_unavailable, :priority)
     end
 
   end
