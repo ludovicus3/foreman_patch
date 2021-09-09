@@ -18,10 +18,10 @@ ForemanPatch::Engine.routes.draw do
 
     resources :window_groups, only: [:show] do
       collection do
-        get 'chart'
         get 'auto_complete_search'
       end
       member do
+        get 'chart'
         post 'move'
       end
     end

@@ -5,7 +5,7 @@
     </h2>
     <div class="card-pf-body">
       <div id='status_chart'>
-        <%= react_component('JobInvocationContainer', data: { url: "/window_groups/chart?id=#{window_group.id}" }) %>
+        <%= react_component('JobInvocationContainer', data: { url: "#{chart_window_group_path(window_group)}" }) %>
       </div>
     </div>
   </div>

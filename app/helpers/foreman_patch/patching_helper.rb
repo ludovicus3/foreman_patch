@@ -5,8 +5,11 @@ module ForemanPatch
       @group_hosts_authorizer ||= Authorizer.new(User.current, collection: @hosts)
     end
 
-    def patch_invocation_status(task, parent_task)
-      return (parent_task.result == 'cancelled' ? _('cancelled') : 'N/A') if task.nil?
+    def patch_invocation_status(invocation)
+      task = invocation.task
+      window_task = invocation.window_group.window.task
+
+      return (window_task.result == 'cancelled' ? _('cancelled') : _('planned')) if task.nil?
       return task.state if task.state == 'running' || task.state == 'planned'
       return _('error') if task.result == 'warning'
 
@@ -40,7 +43,7 @@ module ForemanPatch
         {
           name: host.name,
           link: invocation_path(invocation),
-          status: patch_invocation_status(task, group.task),
+          status: patch_invocation_status(invocation),
           actions: patch_invocation_actions(task, host, group, invocation)
         } 
       end
