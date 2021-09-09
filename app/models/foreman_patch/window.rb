@@ -2,8 +2,6 @@ module ForemanPatch
   class Window < ::ApplicationRecord
     include ForemanTasks::Concerns::ActionSubject
 
-    belongs_to :window_plan, class_name: 'ForemanPatch::WindowPlan'
-
     belongs_to :cycle, class_name: 'ForemanPatch::Cycle', inverse_of: :windows
 
     belongs_to :task, class_name: 'ForemanTasks::Task'
@@ -22,13 +20,11 @@ module ForemanPatch
     scoped_search on: :start_at, complete_value: false
     scoped_search on: :end_by, complete_value: false
     scoped_search on: :cycle_id, complete_value: false
-    scoped_search relation: :cycle, on:  :name, complete_value: true, rename: 'cycle', only_explicit: true
-    scoped_search on: :window_plan_id, complete_value: false
-    scoped_search relation: :window_plan, on: :name, complete_value: true, rename: 'window_plan', only_explicit: true
-    scoped_search on: :state, complete_value: true
+    scoped_search relation: :cycle, on: :name, complete_value: true, rename: 'cycle', only_explicit: true
+    scoped_search relation: :task, on: :state, rename: 'state', 
+      complete_value: Hash[HostStatus::ExecutionStatus::STATUS_NAMES.values.map { |v| [v, v] }]
 
-    before_validation :build_from_window_plan, if: :window_plan_id?
-    after_create :load_groups_from_window_plan, if: :window_plan_id?
+    after_update :reschedule_task, if: :needs_reschedule?
 
     def ticket
       return @ticket if defined? @ticket
@@ -44,25 +40,61 @@ module ForemanPatch
       end
     end
 
+    def duration
+      end_by - start_at
+    end
+
+    def duration=(duration)
+      self.end_by = start_at + duration
+    end
+
+    def move_to(time)
+      span = duration
+      self.start_at = time
+      self.end_by = time + span
+    end
+
+    def move_by(duration)
+      self.start_at = self.start_at + time
+      self.end_by = self.end_by + time
+    end
+
     class Jail < ::Safemode::Jail
       allow :id, :name, :description, :cycle, :start_at, :end_by, :window_groups
     end
 
-    private
-
-    def build_from_window_plan
-      self.name = window_plan.name if name.nil?
-      self.description = window_plan.description if description.nil?
-
-      offset = window_plan.start_time.seconds_since_midnight.seconds
-      self.start_at = (cycle.start_date + window_plan.start_day) + offset if start_at.nil?
-      self.end_by = start_at + window_plan.duration if end_by.nil?
+    def scheduled?
+      (not task.blank?) and task.scheduled?
     end
 
-    def load_groups_from_window_plan
-      window_plan.groups.each do |group|
-        window_groups.create(group: group)
+    def schedule
+      User.as_anonymous_admin do
+        ::ForemanTasks.delay(::Actions::ForemanPatch::Window::Patch, delay_options, self) unless scheduled?
       end
+    end
+
+    def cancel(force = false)
+      method = force ? :abort : :cancel
+      task.send(method) unless task.blank?
+    end
+
+    private
+
+    def needs_reschedule?
+      scheduled? and (task.start_at == start_at and task.start_before == end_by)
+    end
+
+    def reschedule_task
+      cancel
+
+      schedule
+    end
+
+    def delay_options
+      {
+        start_at: start_at,
+        start_before: end_by,
+      }
     end
 
   end

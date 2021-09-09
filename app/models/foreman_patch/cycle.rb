@@ -16,28 +16,42 @@ module ForemanPatch
     validates :start_date, presence: true
     validates :end_date, presence: true
 
-    before_validation :plan_cycle, if: :cycle_plan_id?
-    after_create :plan_windows, if: :cycle_plan_id?
+    scope :planned, -> { where('start_date > ?', Date.current) }
+    scope :active, -> { where('end_date >= ?', Date.current) }
+    scope :running, -> { where('? BETWEEN start_date AND end_date', Date.current) }
+    scope :completed, -> { where('end_date < ?', Date.current) }
+
+    def planned?
+      start_date > Date.current
+    end
+
+    def active?
+      end_date >= Date.current
+    end
+
+    def running?
+      start_date <= Date.current and end_date >= Date.current
+    end
 
     def completed?
-      end_date.past?
+      end_date < Date.current
     end
 
     class Jail < ::Safemode::Jail
       allow :id, :name, :description, :start_date, :end_date, :windows
     end
 
-    private
-
-    def plan_cycle
-      self.name = cycle_plan.name if name.nil?
-      self.description = cycle_plan.description if description.nil?
-      self.end_date = start_date + cycle_plan.frequency - 1 if end_date.nil?
+    def schedule
+      ::ForemanTasks.delay(::Actions::ForemanPatch::Cycle::Initiate, delay_options, self)
     end
 
-    def plan_windows
-      cycle_plan.window_plans.each do |window_plan|
-        windows.create(window_plan: window_plan)
+    private
+
+    def delay_options
+      Time.use_zone(Setting[:patch_schedule_time_zone]) do
+        {
+          start_at: start_date.beginning_of_day,
+        }
       end
     end
 

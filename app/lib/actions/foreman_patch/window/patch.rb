@@ -7,9 +7,7 @@ module Actions
           window.task_id = task.id
           window.save!
 
-          task.add_missing_task_groups(window.task_group)
-          # action_subject() locks the resource which we do not want to do yet
-          input.update(window: window.to_action_input)
+          action_subject(window)
 
           super delay_options, window
         end
@@ -17,9 +15,6 @@ module Actions
         def plan(window)
           window.task_id = task.id
           window.save!
-
-          window.task_group.save! if window.task_group.try(:new_record?)
-          task.add_missing_task_groups(window.task_group) if window.task_group
 
           action_subject(window)
 

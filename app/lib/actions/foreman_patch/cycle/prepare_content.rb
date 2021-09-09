@@ -3,89 +3,112 @@ module Actions
     module Cycle
       class PrepareContent < Actions::EntryAction
 
-        def resource_locks
-          :link
+        def humanized_name
+          _('Minor Version Update')
         end
 
-        def delay(delay_options, cycle)
-          action_subject(cycle)
+        def plan(old_version, description)
+          action_subject(old_version.content_view)
 
-          super delay_options, cycle
-        end
+          new_minor = old_version.content_view.versions.where(major: old_version.major).maximum(:minor) + 1
 
-        def plan(cycle)
-          action_subject(cycle)
+          components = []
 
-          concurrence do
-            content_view_versions.each do |version|
-              next unless available_content?(version)
+          sequence do
+            if old_version.content_view.composite?
+              components = update_components(old_version.components, description)
+            end
 
-              if version.content_view.composite?
-                sequence do
-                  components = []
-                  concurrence do
-                    version.components.reduce(components) do |list, component|
-                      if available_content?(component)
-                        action = plan_action(::Actions::Katello::ContentViewVersion::IncrementalUpdate,
-                                             component, component.environments, options(component, []))
-                        list << action.new_content_view_version
-                      end
-                      list
-                    end
-                  end
-                  plan_action(::Actions::Katello::ContentViewVersion::IncrementalUpdate,
-                              version, version.environments, options(version, components))
-                end
-              else
-                plan_action(::Actions::Katello::ContentViewVersion::IncrementalUpdate,
-                            version, version.environments, options(version, []))
+            new_version = old_version.content_view.create_new_version(old_version.major, new_minor, components)
+
+            history = ::Katello::ContentViewHistory.create!(content_view_version: new_version,
+                                                            user: ::User.current.login,
+                                                            action: ::Katello::ContentViewHistory.actions[:publish],
+                                                            status: ::Katello::ContentViewHistory::IN_PROGRESS,
+                                                            task: self.task,
+                                                            notes: description)
+
+            repositories = collect_repositories(old_version, components)
+
+            repository_mapping = plan_action(Actions::Katello::ContentViewVersion::CreateRepos,
+                                             new_version, repositories).repository_mapping
+
+            concurrence do
+              repositories.each do |repository|
+                plan_action(Actions::Katello::Repository::CloneToVersion,
+                            repository, new_version, repository_mapping[repository])
               end
             end
+
+            plan_self(new_version_id: new_version.id,
+                      history_id: history.id,
+                      old_version_id: old_version.id)
+            plan_action(Actions::Katello::ContentView::Promote, new_version, old_version.environments, true)
           end
-
-          plan_self
         end
 
-        def humanized_name
-          _('Update content for patching cycle: %s') % cycle.name
+        def finalize
+          new_version.update_content_counts!
+
+          history.status = ::Katello::ContentViewHistory::SUCCESSFUL
+          history.save!
         end
 
-        def cycle
-          @cycle ||= ::ForemanPatch::Cycle.find(input[:cycle][:id])
-        end
-
-        def content_view_versions
-          return @content_view_versions if defined? @content_view_versions
-
-          @content_view_versions = cycle.hosts.map do |host|
-            host.content_view.version(host.lifecycle_environment)
-          end.uniq
-
-          @content_view_versions
+        def new_version
+          @new_version ||= ::Katello::ContentViewVersion.find(input[:new_version_id])
         end
 
         private
 
-        def options(version, components)
-          {
-            content: {
-              package_ids: version.available_packages,
-              errata_ids: version.available_errata,
-              deb_ids: ::Katello::Deb.in_repositories(version.library_repos).where.not(id: version.debs),
-            },
-            resolve_dependencies: true,
-            description: humanized_name,
-            new_components: components,
-          }
+        def old_version
+          @old_version ||= ::Katello::ContentViewVersion.find(input[:old_version_id])
+        end
+
+        def history
+          @history ||= ::Katello::ContentViewHistory.find(input[:history_id])
         end
 
         def available_content?(version)
-          version.available_packages.any? or 
+          version.available_packages.any? or
             version.available_errata.any? or
             ::Katello::Deb.in_repositories(version.library_repos).where.not(id: version.debs).any?
+        end
+
+        def collect_repositories(version, components)
+          repositories = []
+          if version.content_view.composite?
+            ids = components.flat_map { |component| component.repositories.archived }.map(&:id)
+            repositories = ::Katello::Repository.where(id: ids)
+          else
+            repositories = version.library_repos
+          end
+          repositories.map do |repo|
+            if repo.is_a? Array
+              repo
+            else
+              [repo]
+            end
+          end
+        end
+
+        def update_components(components, description)
+          new_components = []
+          concurrence do
+            components.each do |component|
+              if available_content?(component)
+                new_components << plan_action(Actions::ForemanPatch::Cycle::PrepareContent,
+                                              component, description).new_version
+              else
+                new_components << component
+              end
+            end
+          end
+          new_components
         end
 
       end
     end
   end
 end
+
+

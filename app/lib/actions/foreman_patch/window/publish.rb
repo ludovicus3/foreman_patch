@@ -8,8 +8,7 @@ module Actions
         end
 
         def plan(window)
-          action_subject(window)
-
+          set_window(window)
           plan_self
         end
 
@@ -27,6 +26,17 @@ module Actions
         end
 
         private
+
+        def set_window(window)
+          case window
+          when Dynflow::ExecutionPlan::OutputReference
+            input[:window] = window
+          when ::ForemanPatch::Window
+            action_subject(window)
+          else
+            action_subject(window)
+          end  
+        end
 
         def window
           @window ||= ::ForemanPatch::Window.find(input[:window][:id])

@@ -1,5 +1,7 @@
 module ForemanPatch
   class Group < ::ApplicationRecord
+    include ForemanTasks::Concerns::ActionSubject
+
     include Authorizable
 
     belongs_to :default_window_plan, class_name: 'ForemanPatch::WindowPlan'
