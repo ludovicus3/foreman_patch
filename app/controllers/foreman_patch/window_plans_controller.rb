@@ -2,9 +2,10 @@ module ForemanPatch
   class WindowPlansController < ApplicationController
 
     before_action :find_resource, only: [:edit, :update, :destroy]
+    before_action :find_cycle_plan, only: [:new, :create]
 
     def new
-      @window_plans = WindowPlan.new
+      @window_plan = WindowPlan.new
     end
 
     def create
@@ -38,6 +39,10 @@ module ForemanPatch
 
     def allowed_nested_id
       %w(cycle_plan_id)
+    end
+
+    def find_cycle_plan
+      @cycle_plan ||= ForemanPatch::CyclePlan.find(params[:cycle_plan_id])
     end
 
     def window_plan_params
