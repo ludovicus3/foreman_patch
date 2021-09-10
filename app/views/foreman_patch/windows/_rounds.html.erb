@@ -9,12 +9,12 @@
     </tr>
   </thead>
   <tbody>
-    <% groups.each do |group| %>
+    <% rounds.each do |round| %>
       <tr>
-        <td class="ellipsis"><%= link_to group.name, window_group_path(group) %></td>
-        <td><%= group.priority %></td>
-        <td><%= group.hosts.count %></td>
-        <td><%= group.status_label %></td>
+        <td class="ellipsis"><%= link_to round.name, window_round_path(round) %></td>
+        <td><%= round.priority %></td>
+        <td><%= round.hosts.count %></td>
+        <td><%= round.status_label %></td>
         <td>TODO</td>
       </tr>
     <% end %>

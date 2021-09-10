@@ -1,3 +1,3 @@
-collection @window_groups
+collection @rounds
 
-extends 'foreman_patch/api/v2/window_groups/base'
+extends 'foreman_patch/api/v2/rounds/base'

@@ -3,9 +3,9 @@ import PropTypes from 'prop-types';
 import { translate as __ } from 'foremanReact/common/I18n';
 import { LoadingState, Alert } from 'patternfly-react';
 import { STATUS } from 'foremanReact/constants';
-import GroupItem from './components/GroupItem';
+import RoundItem from './components/RoundItem';
 
-const WindowGroups = ({ status, items }) => {
+const Rounds = ({ status, items }) => {
   if (status === STATUS.ERROR) {
     return (
       <Alert type="error">
@@ -22,7 +22,7 @@ const WindowGroups = ({ status, items }) => {
         <table className="table table-bordered table-striped table-hover">
           <thead>
             <tr>
-              <th>{__('Group')}</th>
+              <th>{__('Round')}</th>
               <th>{__('Priority')}</th>
               <th>{__('Hosts Count')}</th>
               <th>{__('Status')}</th>
@@ -30,16 +30,16 @@ const WindowGroups = ({ status, items }) => {
             </tr>
           </thead>
           <tbody>
-            {items.map(group => (
-              <GroupItem
-                key={group.name}
-                name={group.name}
-                link={group.link}
-                priority={group.priority}
-                hostsCount={group.hostsCount}
-                hostsLink={group.hostsLink}
-                status={group.status}
-                actions={group.actions}
+            {items.map(round => (
+              <RoundItem
+                key={round.name}
+                name={round.name}
+                link={round.link}
+                priority={round.priority}
+                hostsCount={round.hostsCount}
+                hostsLink={round.hostsLink}
+                status={round.status}
+                actions={round.actions}
               />
             ))}
           </tbody>
@@ -49,9 +49,9 @@ const WindowGroups = ({ status, items }) => {
   );
 };
 
-WindowGroups.propTypes = {
+Rounds.propTypes = {
   status: PropTypes.string.isRequired,
   items: PropTypes.array.isRequired,
 };
 
-export default WindowGroups;
+export default Rounds;

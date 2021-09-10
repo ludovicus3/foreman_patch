@@ -14,7 +14,7 @@ ForemanPatch::Engine.routes.draw do
         end
 
         resources :windows, only: [:index, :show, :update, :destroy] do
-          resources :window_groups, only: [:index]
+          resources :rounds, only: [:index]
           member do
             post :schedule
           end
@@ -22,7 +22,7 @@ ForemanPatch::Engine.routes.draw do
 
         resources :groups, only: [:index, :show, :create, :update, :destroy]
 
-        resources :window_groups, only: [:index, :show, :create, :update, :destroy] do
+        resources :rounds, only: [:index, :show, :create, :update, :destroy] do
           resources :invocations, only: [:index]
         end
       end

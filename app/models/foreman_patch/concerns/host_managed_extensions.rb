@@ -5,9 +5,9 @@ module ForemanPatch
 
       included do
         has_many  :invocations, class_name: 'ForemanPatch::Invocation', foreign_key: :host_id
-        has_many  :window_groups, class_name: 'ForemanPatch::WindowGroup', through: :invocations
+        has_many  :rounds, class_name: 'ForemanPatch::Round', through: :invocations
 
-        scoped_search relation: :window_groups, on: :id, complete_value: false, rename: :patch_group_id
+        scoped_search relation: :rounds, on: :id, complete_value: false, rename: :patch_group_id
       end
 
     end

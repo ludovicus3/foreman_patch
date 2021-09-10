@@ -1,13 +1,13 @@
 module ForemanPatch
   module PatchingHelper
 
-    def group_hosts_authorizer
-      @group_hosts_authorizer ||= Authorizer.new(User.current, collection: @hosts)
+    def round_hosts_authorizer
+      @round_hosts_authorizer ||= Authorizer.new(User.current, collection: @hosts)
     end
 
     def patch_invocation_status(invocation)
       task = invocation.task
-      window_task = invocation.window_group.window.task
+      window_task = invocation.round.window.task
 
       return (window_task.result == 'cancelled' ? _('cancelled') : _('planned')) if task.nil?
       return task.state if task.state == 'running' || task.state == 'planned'
@@ -16,10 +16,10 @@ module ForemanPatch
       task.result
     end
 
-    def patch_invocation_actions(task, host, group, invocation)
+    def patch_invocation_actions(task, host, round, invocation)
       links = []
 
-      if authorized_for(main_app.hash_for_host_path(host).merge(auth_object: host, permission: :view_hosts, authorizer: group_hosts_authorizer))
+      if authorized_for(main_app.hash_for_host_path(host).merge(auth_object: host, permission: :view_hosts, authorizer: round_hosts_authorizer))
         links << { title: _('Host Detail'),
                    action: { href: main_app.host_path(host), 'data-method': 'get', id: "#{host.name}-actions-detail" } }
       end
@@ -35,21 +35,21 @@ module ForemanPatch
       links
     end
 
-    def group_invocation_hosts(group, hosts)
+    def round_invocation_hosts(round, hosts)
       hosts.map do |host|
-        invocation = group.invocations.find { |invocation| invocation.host_id == host.id }
+        invocation = round.invocations.find { |invocation| invocation.host_id == host.id }
         task = invocation.try(:task)
 
         {
           name: host.name,
           link: invocation_path(invocation),
           status: patch_invocation_status(invocation),
-          actions: patch_invocation_actions(task, host, group, invocation)
+          actions: patch_invocation_actions(task, host, round, invocation)
         } 
       end
     end
 
-    def group_task_buttons(task)
+    def round_task_buttons(task)
       buttons = []
 
       if authorized_for(permission: :view_foreman_tasks, auth_object: task, authorizer: Authorizer.new(User.current, collection: [task]))
@@ -61,12 +61,12 @@ module ForemanPatch
       # if authorized
       buttons << link_to(_('Cancel'), main_app.cancel_foreman_tasks_task_path(task),
                          class: 'btn btn-danger',
-                         title: _('Try to cancel the patching group'),
+                         title: _('Try to cancel the patching round'),
                          disabled: !task.cancellable?,
                          method: :post)
       buttons << link_to(_('Abort'), main_app.abort_foreman_tasks_task_path(task),
                          class: 'btn btn-danger',
-                         title: _('Try to abort the patching group without waiting for its result'),
+                         title: _('Try to abort the patching round without waiting for its result'),
                          disabled: !task.cancellable?,
                          method: :post)
       # end

@@ -2,10 +2,10 @@
 /* eslint-disable import/no-extraneous-dependencies */
 /* eslint-disable import/extensions */
 import componentRegistry from 'foremanReact/components/componentRegistry';
-import WindowGroups from './components/WindowGroups';
+import Rounds from './components/Rounds';
 
 const components = [
-  { name: 'WindowGroups', type: WindowGroups },
+  { name: 'Rounds', type: Rounds },
 ];
 
 components.forEach(component => componentRegistry.register(component));

@@ -1,21 +1,21 @@
 module Actions
   module ForemanPatch
-    module WindowGroup
+    module Round
       class Patch < Actions::ActionWithSubPlans
         include Dynflow::Action::WithBulkSubPlans
 
         middleware.use Actions::Middleware::WatchDelegatedProxySubTasks
         middleware.use Actions::Middleware::ProxyBatchTriggering
 
-        def plan(window_group)
-          action_subject(window_group)
+        def plan(round)
+          action_subject(round)
 
-          window_group.resolve_hosts!
+          round.resolve_hosts!
 
-          window_group.task_id = task.id
-          window_group.save!
+          round.task_id = task.id
+          round.save!
 
-          limit_concurrency_level window_group.max_unavailable unless window_group.max_unavailable.nil?
+          limit_concurrency_level round.max_unavailable unless round.max_unavailable.nil?
 
           plan_self
         end
@@ -38,7 +38,7 @@ module Actions
           users = ::User.select { |user| user.receives?(:patch_group_initiated) }.compact
 
           begin
-            MailNotification[:patch_group_initiated].deliver(users: users, group: window_group) unless users.blank?
+            MailNotification[:patch_group_initiated].deliver(users: users, group: round) unless users.blank?
           rescue => error
             Rails.logger.error(error)
           end
@@ -52,25 +52,25 @@ module Actions
         def on_finish
           users = ::User.select { |user| user.receives?(:patch_group_completed) }.compact
 
-          MailNotification[:patch_group_completed].deliver(users: users, group: window_group) unless users.blank?
+          MailNotification[:patch_group_completed].deliver(users: users, group: round) unless users.blank?
         rescue => error
           Rails.logger.error(error)
         end
 
-        def window_group
-          @window_group ||= ::ForemanPatch::WindowGroup.find(input[:window_group][:id])
+        def round
+          @round ||= ::ForemanPatch::Round.find(input[:round][:id])
         end
 
         def batch(from, size)
-          window_group.invocations.offset(from).limit(size)
+          round.invocations.offset(from).limit(size)
         end
 
         def total_count
-          window_group.invocations.count
+          round.invocations.count
         end
 
         def humanized_name
-          'Patch Group: %s' % window_group.name
+          'Patch Group: %s' % round.name
         end
 
       end

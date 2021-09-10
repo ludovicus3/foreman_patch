@@ -1,0 +1,32 @@
+<% 
+items = [{ caption: _('Cycles'), url: cycles_path },
+         { caption: @cycle.name, url: cycle_path(@cycle) },
+         { caption: @window.name, url: window_path(@window) },
+         { caption: @round.name }]
+
+breadcrumbs(resource_url: api_window_rounds_path(@window.id),
+            name_field: 'name',
+            switcher_item_url: round_path(':id'),
+            items: items)
+%>
+
+<% javascript 'charts' %>
+<% javascript *webpack_asset_paths('foreman_remote_execution', extension: 'js') %>
+
+<% if @round.task %>
+  <% title_actions button_group(group_task_buttons(@round.task))%>
+<% end %>
+
+<div class="row">
+  <%= render partial: 'results', locals: { round: @round } %>
+</div>
+<hr/>
+<% if @round.invocations.empty? %>
+  <div class="alert alert-warning">
+    <%= _("No hosts are in this patch group.") %>
+  </div>
+<% else %>
+  <div id="hosts" data-refresh_required="<%= @round.invocations.empty? ? '' : 'true' %>">
+    <%= render partial: 'hosts', locals: { round: @round, hosts: @round.hosts } %>
+  </div>
+<% end %>

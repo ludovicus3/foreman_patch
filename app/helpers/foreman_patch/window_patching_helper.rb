@@ -1,7 +1,7 @@
 module ForemanPatch
   module WindowPatchingHelper
 
-    def group_status(task, parent_task)
+    def round_status(task, parent_task)
       return 'scheduled' if parent_task.nil?
       return (parent_task.result == 'cancelled' ? _('cancelled') : 'N/A') if task.nil?
       return task.state if task.state == 'running' || task.state == 'planned'
@@ -9,15 +9,15 @@ module ForemanPatch
       task.result
     end
 
-    def window_groups(window)
-      window.window_groups.map do |group|
+    def rounds(window)
+      window.rounds.map do |round|
         {
-          name: group.name,
-          link: window_group_path(group),
-          priority: group.priority,
-          hostsCount: group.invocations.count,
-          hostsLink: main_app.hosts_path(search: "patch_group_id = #{group.id}"),
-          status: group_status(group.task, window.task),
+          name: round.name,
+          link: round_path(round),
+          priority: round.priority,
+          hostsCount: round.invocations.count,
+          hostsLink: main_app.hosts_path(search: "patch_round_id = #{round.id}"),
+          status: round_status(round.task, window.task),
           actions: []
         }
       end

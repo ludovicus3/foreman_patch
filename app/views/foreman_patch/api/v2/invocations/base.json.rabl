@@ -1,6 +1,6 @@
 object @invocation
 
-attributes :id, :window_group_id, :task_id, :host_id
+attributes :id, :round_id, :task_id
 
 node(:host_name) { |inv| inv.host.name }
 

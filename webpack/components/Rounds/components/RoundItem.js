@@ -1,10 +1,10 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { ActionButtons } from 'foremanReact/components/common/ActionButtons/ActionButtons';
-import GroupStatus from './GroupStatus';
+import RoundStatus from './RoundStatus';
 
-const GroupItem = ({ name, link, priority, hostsCount, hostsLink, status, actions }) => {
-  const groupLink = link ? (
+const RoundItem = ({ name, link, priority, hostsCount, hostsLink, status, actions }) => {
+  const roundLink = link ? (
     <a href={link}>{name}</a>
   ) : (
     <a href="#" className="disabled">
@@ -21,21 +21,21 @@ const GroupItem = ({ name, link, priority, hostsCount, hostsLink, status, action
   );
 
   return (
-    <tr id={`window-group-${name}`}>
-      <td className="group_name">{groupLink}</td>
-      <td className="group_priority">{priority}</td>
-      <td className="group_hosts_count">{hostsCountLink}</td>
-      <td className="group_status">
-        <GroupStatus status={status} />
+    <tr id={`round-${name}`}>
+      <td className="round_name">{roundLink}</td>
+      <td className="round_priority">{priority}</td>
+      <td className="round_hosts_count">{hostsCountLink}</td>
+      <td className="round_status">
+        <RoundStatus status={status} />
       </td>
-      <td className="group_actions">
+      <td className="round_actions">
         <ActionButtons buttons={[...actions]} />
       </td>
     </tr>
   );
 };
 
-GroupItem.propTypes = {
+RoundItem.propTypes = {
   name: PropTypes.string.isRequired,
   link: PropTypes.string.isRequired,
   priority: PropTypes.number.isRequired,
@@ -45,8 +45,8 @@ GroupItem.propTypes = {
   actions: PropTypes.array,
 };
 
-GroupItem.defaultProps = {
+RoundItem.defaultProps = {
   actions: [],
 };
 
-export default GroupItem;
+export default RoundItem;

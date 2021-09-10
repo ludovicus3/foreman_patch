@@ -16,7 +16,7 @@ ForemanPatch::Engine.routes.draw do
 
     resources :windows, only: [:show, :destroy]
 
-    resources :window_groups, only: [:show] do
+    resources :rounds, only: [:show] do
       collection do
         get 'auto_complete_search'
       end

@@ -1,17 +1,17 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { stopInterval } from 'foremanReact/redux/middlewares/IntervalMiddleware';
-import WindowGroups from './WindowGroups';
+import Rounds from './Rounds';
 
 import {
     selectItems,
     selectStatus,
     selectAutoRefresh,
-} from './WindowGroupsSelectors';
-import { getData } from './WindowGroupsActions';
-import { WINDOW_GROUPS } from './WindowGroupsConsts';
+} from './RoundsSelectors';
+import { getData } from './RoundsActions';
+import { ROUNDS } from './RoundsConsts';
 
-const WrappedWindowGroups = () => {
+const WrappedRounds = () => {
   const dispatch = useDispatch();
   const autoRefresh = useSelector(selectAutoRefresh);
   const items = useSelector(selectItems);
@@ -21,17 +21,17 @@ const WrappedWindowGroups = () => {
     dispatch(getData());
 
     return () => {
-      dispatch(stopInterval(WINDOW_GROUPS));
+      dispatch(stopInterval(ROUNDS));
     };
   }, [dispatch]);
 
   useEffect(() => {
     if (autoRefresh === 'false') {
-      dispatch(stopInterval(WINDOW_GROUPS));
+      dispatch(stopInterval(ROUNDS));
     }
   }, [autoRefresh, dispatch]);
 
-  return <WindowGroups status={status} items={items} />;
+  return <Rounds status={status} items={items} />;
 };
 
-export default WrappedWindowGroups;
+export default WrappedRounds;

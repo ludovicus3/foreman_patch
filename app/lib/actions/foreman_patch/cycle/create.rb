@@ -1,12 +1,10 @@
 module Actions
   module ForemanPatch
     module Cycle
-      class Create < Actions::EntryAction
+      class Create < Actions::Base
 
-        def plan(cycle_plan)
-          action_subject(cycle_plan)
-
-          plan_self
+        def plan(params)
+          plan_self params
 
           cycle_plan.window_plans.each do |window_plan|
             concurrence do
@@ -41,11 +39,11 @@ module Actions
 
         def params
           @params ||= {
-            cycle_plan_id: cycle_plan.id,
-            name: cycle_plan.name,
-            description: cycle_plan.description,
-            start_date: cycle_plan.start_date,
-            end_date: cycle_plan.next_cycle_start - 1.day,
+            cycle_plan_id: input[:cycle_plan][:id],
+            name: input[:name],
+            description: input[:description],
+            start_date: input[:start_date],
+            end_date: input[:end_date],
           }
         end
 

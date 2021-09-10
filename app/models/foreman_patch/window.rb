@@ -7,9 +7,9 @@ module ForemanPatch
     belongs_to :task, class_name: 'ForemanTasks::Task'
     has_many :sub_tasks, through: :task
 
-    has_many :window_groups, -> { order(priority: :asc) }, class_name: 'ForemanPatch::WindowGroup', inverse_of: :window
-    has_many :groups, class_name: 'ForemanPatch::Group', through: :window_groups
-    has_many :hosts, through: :window_groups
+    has_many :rounds, -> { order(priority: :asc) }, class_name: 'ForemanPatch::Round', inverse_of: :window
+    has_many :groups, class_name: 'ForemanPatch::Group', through: :rounds
+    has_many :hosts, through: :rounds
 
     validates :cycle, presence: true
     validates :name, presence: true
@@ -60,7 +60,7 @@ module ForemanPatch
     end
 
     class Jail < ::Safemode::Jail
-      allow :id, :name, :description, :cycle, :start_at, :end_by, :window_groups
+      allow :id, :name, :description, :cycle, :start_at, :end_by, :rounds
     end
 
     def scheduled?

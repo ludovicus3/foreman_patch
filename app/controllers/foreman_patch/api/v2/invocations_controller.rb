@@ -9,15 +9,15 @@ module ForemanPatch
           api_base_url '/foreman_patch/api'
         end
 
-        before_action :find_window_group, only: [:index]
+        before_action :find_round, only: [:index]
 
-        api :GET, '/window_groups/:window_group_id/invocations',
+        api :GET, '/rounds/:round_id/invocations',
           N_('List patch invocations for a patch group')
-        param :window_group_id, :identifier, required: true
+        param :round_id, :identifier, required: true
         param_group :search_and_pagination, ::Api::V2::BaseController
         add_scoped_search_description_for(ForemanPatch::Invocation)
         def index
-          @invocations = @window_group.invocations
+          @invocations = @round.invocations
             .includes(:host)
             .where(host: ::Host.authorized(:view_hosts, ::Host))
             .search_for(*search_options)
@@ -30,8 +30,8 @@ module ForemanPatch
 
         private
 
-        def find_window_group
-          @window_group = ForemanPatch::WindowGroup.find(params[:window_group_id])
+        def find_round
+          @round = ForemanPatch::Round.find(params[:round_id])
         end
 
       end

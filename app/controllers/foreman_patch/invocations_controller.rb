@@ -7,7 +7,7 @@ module ForemanPatch
       @invocation = ForemanPatch::Invocation.find(params[:id])
       @host = @invocation.host
 
-      @group = @invocation.window_group
+      @group = @invocation.round
       @window = @group.window
       @cycle = @window.cycle
 

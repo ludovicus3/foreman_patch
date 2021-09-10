@@ -19,10 +19,10 @@ module Actions
           action_subject(window)
 
           sequence do
-            window.window_groups.group_by(&:priority).each do |_, groups|
+            window.rounds.group_by(&:priority).each do |_, groups|
               concurrence do
                 groups.each do |group|
-                  plan_action(Actions::ForemanPatch::WindowGroup::Patch, group)
+                  plan_action(Actions::ForemanPatch::Round::Patch, group)
                 end
               end
             end

@@ -2,13 +2,13 @@ module ForemanPatch
   class Invocation < ::ApplicationRecord
     include ForemanTasks::Concerns::ActionSubject
 
-    belongs_to :window_group, class_name: 'ForemanPatch::WindowGroup', inverse_of: :invocations
+    belongs_to :round, class_name: 'ForemanPatch::Round', inverse_of: :invocations
 
     belongs_to :host, class_name: 'Host::Managed'
 
     belongs_to :task, class_name: 'ForemanTasks::Task'
 
-    scope :with_window_group, ->(window_group) { where(window_group_id: window_group_id) }
+    scope :with_round, ->(round) { where(round_id: round_id) }
 
     scoped_search relation: :host, on: :name, rename: 'host.name', complete_value: true
 

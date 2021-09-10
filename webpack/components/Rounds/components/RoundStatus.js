@@ -3,7 +3,7 @@ import { Icon } from 'patternfly-react';
 import PropTypes from 'prop-types';
 import { translate as __ } from 'foremanReact/common/I18n';
 
-const GroupStatus = ({ status }) => {
+const RoundStatus = ({ status }) => {
   switch (status) {
     case 'warning':
     case 'cancelled':
@@ -48,8 +48,8 @@ const GroupStatus = ({ status }) => {
   }
 };
 
-GroupStatus.propTypes = {
+RoundStatus.propTypes = {
   status: PropTypes.string.isRequired,
 };
 
-export default GroupStatus;
+export default RoundStatus;

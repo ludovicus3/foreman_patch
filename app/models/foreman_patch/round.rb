@@ -1,5 +1,5 @@
 module ForemanPatch
-  class WindowGroup < ::ApplicationRecord
+  class Round < ::ApplicationRecord
     include ForemanTasks::Concerns::ActionSubject
 
     belongs_to :window, class_name: 'ForemanPatch::Window'
@@ -9,7 +9,7 @@ module ForemanPatch
 
     validates :window, presence: true
 
-    has_many :invocations, class_name: 'ForemanPatch::Invocation', foreign_key: :window_group_id, inverse_of: :window_group
+    has_many :invocations, class_name: 'ForemanPatch::Invocation', foreign_key: :round_id, inverse_of: :round
     has_many :hosts, through: :invocations
 
     scoped_search on: :name, complete_value: true

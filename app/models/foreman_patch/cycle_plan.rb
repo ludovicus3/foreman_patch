@@ -43,18 +43,22 @@ module ForemanPatch
       next_date
     end
 
-    def schedule_iterations
+    def iterate
       return if stopped?
 
       count = active_count - cycles.active.count
 
       if count > 0
-        ::ForemanTasks.async_task(::Actions::ForemanPatch::CyclePlan::Iterate, self)
+        ::ForemanTasks.async_task(::Actions::ForemanPatch::Cycle::Plan, self)
       else
         unless tasks.where(state: :scheduled).any?
-          ::ForemanTasks.delay(::Actions::ForemanPatch::CyclePlan::Iterate, delay_options, self)
+          ::ForemanTasks.delay(::Actions::ForemanPatch::Cycle::Plan, delay_options, self)
         end
       end
+    end
+
+    def action_input_key
+      'plan'
     end
 
     private
