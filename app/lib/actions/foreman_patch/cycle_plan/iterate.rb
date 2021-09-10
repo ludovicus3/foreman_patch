@@ -22,6 +22,11 @@ module Actions
           plan_self
         end
 
+        def run
+          cycle_plan.start_date = cycle_plan.next_cycle_start
+          cycle_plan.save!
+        end
+
         def finalize
           cycle_plan.schedule_iterations
         end

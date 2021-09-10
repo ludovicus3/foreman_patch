@@ -19,9 +19,6 @@ module Actions
           cycle = ::ForemanPatch::Cycle.create!(params)
 
           output[:cycle] = cycle.to_action_input
-
-          cycle_plan.start_date = cycle_plan.next_cycle_start
-          cycle_plan.save!
         end
 
         def finalize
