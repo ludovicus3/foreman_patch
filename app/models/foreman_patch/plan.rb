@@ -1,15 +1,15 @@
 module ForemanPatch
-  class CyclePlan < ::ApplicationRecord
+  class Plan < ::ApplicationRecord
     include ForemanTasks::Concerns::ActionSubject
 
     UNITS = ['days', 'weeks', 'months', 'years'].freeze
     CORRECTIONS = ['weekday', 'last_day', 'last_weekday', 'avoid_weekend'].freeze
 
-    has_many :window_plans, class_name: 'ForemanPatch::WindowPlan', foreign_key: :cycle_plan_id, dependent: :nullify, inverse_of: :cycle_plan
+    has_many :window_plans, class_name: 'ForemanPatch::WindowPlan', foreign_key: :plan_id, dependent: :nullify, inverse_of: :plan
 
-    has_many :cycles, -> { order(start_date: :desc) }, class_name: 'ForemanPatch::Cycle', foreign_key: :cycle_plan_id, dependent: :nullify
+    has_many :cycles, -> { order(start_date: :desc) }, class_name: 'ForemanPatch::Cycle', foreign_key: :plan_id, dependent: :nullify
 
-    belongs_to :task_group, class_name: 'ForemanPatch::CyclePlanTaskGroup', inverse_of: :cycle_plan
+    belongs_to :task_group, class_name: 'ForemanPatch::PlanTaskGroup', inverse_of: :plan
     has_many :tasks, through: :task_group, class_name: 'ForemanTasks::Task'
 
     validates :name, presence: true, uniqueness: true

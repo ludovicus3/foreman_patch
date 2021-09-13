@@ -23,7 +23,7 @@ Foreman::Plugin.register :foreman_patch do
     engine: ForemanPatch::Engine,
     parent: :content_menu
 
-  menu :top_menu, :cycle_plans, caption: N_('Plans'),
+  menu :top_menu, :plans, caption: N_('Plans'),
     engine: ForemanPatch::Engine,
     parent: :content_menu
 

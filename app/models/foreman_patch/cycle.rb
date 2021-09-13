@@ -2,7 +2,7 @@ module ForemanPatch
   class Cycle < ::ApplicationRecord
     include ForemanTasks::Concerns::ActionSubject
 
-    belongs_to :cycle_plan, class_name: 'ForemanPatch::CyclePlan'
+    belongs_to :plan, class_name: 'ForemanPatch::Plan'
 
     has_many :windows, -> { order(start_at: :asc) }, class_name: 'ForemanPatch::Window', foreign_key: :cycle_id, inverse_of: :cycle
     has_many :tasks, through: :windows

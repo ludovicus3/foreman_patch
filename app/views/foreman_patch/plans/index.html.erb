@@ -1,0 +1,30 @@
+<% title _("Plans") %>
+
+<% title_actions new_link(_("Create Plan")) %>
+
+<table class="<%= table_css_classes 'table-fixed' %>">
+  <thead>
+    <tr>
+      <th class="col-md-2"><%= sort :name, as: s_("Cycle Plan|Name") %></th>
+      <th class="col-md-3"><%= sort :description, as: _("Description") %></th>
+      <th class="col-md-1"><%= sort :start_date, as: _("Start Date") %></th>
+      <th class="col-md-1"><%= _("Interval") %></th>
+      <th class="col-md-1"><%= _("Active Cycles") %></th>
+      <th><%= _("Actions") %></th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @plans.each do |plan| %>
+      <tr>
+        <td class="ellipsis"><%= link_to plan.name, plan_path(plan) %></td>
+        <td class="ellipsis"><%= plan.description %></td>
+        <td><%= plan.start_date %></td>
+        <td><%= n_("Every one %{singular}", "Every %{count} %{plural}", plan.interval) % {count: plan.interval, singular: plan.units.singularize, plural: plan.units } %></td>
+        <td><%= plan.cycles.count %></td>
+        <td>TODO</td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+<%= will_paginate_with_info @plans %>
+

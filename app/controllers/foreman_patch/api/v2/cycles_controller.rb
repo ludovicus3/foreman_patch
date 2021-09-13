@@ -12,8 +12,8 @@ module ForemanPatch
         before_action :find_cycle, only: [:show, :update, :destroy]
 
         api :GET, '/cycles', N_('List cycles')
-        api :GET, '/cycle_plans/:cycle_plan_id/cycles', N_('List cycles created from cycle plan')
-        param :cycle_plan_id, Integer, desc: N_('ID of the cycle plan')
+        api :GET, '/plans/:plan_id/cycles', N_('List cycles created from cycle plan')
+        param :plan_id, Integer, desc: N_('ID of the cycle plan')
         param_group :search_and_pagination, ::Api::V2::BaseController
         add_scoped_search_description_for(ForemanPatch::Cycle)
         def index
@@ -33,9 +33,9 @@ module ForemanPatch
           end
         end
 
-        api :POST, '/cycle_plans/:cycle_plan_id/cycle', N_('Create a new patch cycle')
+        api :POST, '/plans/:plan_id/cycle', N_('Create a new patch cycle')
         api :POST, '/cycles', N_('Create a new patch cycle')
-        param :cycle_plan_id, Integer, desc: N_('Id of the cycle plan')
+        param :plan_id, Integer, desc: N_('Id of the cycle plan')
         param_group :cycle, as: :create
         def create
           @cycle = Cycle.new(cycle_params)
@@ -48,7 +48,7 @@ module ForemanPatch
           @cycle.update!(cycle_params)
         end
 
-        api :DELETE, '/cycle_plans/:id', N_('Destroy a cycle plan')
+        api :DELETE, '/plans/:id', N_('Destroy a cycle plan')
         param :id, Integer, desc: N_('Id of the cycle plan')
         def destroy
           @cycle.destroy!
@@ -57,7 +57,7 @@ module ForemanPatch
         private
 
         def allowed_nested_id
-          %w(cycle_plan_id)
+          %w(plan_id)
         end
 
         def find_cycle
@@ -65,8 +65,8 @@ module ForemanPatch
         end
 
         def cycle_params
-          params[:cycle][:cycle_plan_id] = params[:cycle_plan_id] unless params[:cycle_plan_id].nil?
-          params.require(:cycle).permit(:name, :description, :start_date, :cycle_plan_id)
+          params[:cycle][:plan_id] = params[:plan_id] unless params[:plan_id].nil?
+          params.require(:cycle).permit(:name, :description, :start_date, :plan_id)
         end
 
       end

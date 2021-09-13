@@ -12,8 +12,8 @@ module ForemanPatch
         before_action :find_window_plan, only: [:show, :update, :destoy]
 
         api :GET, '/window_plans', N_('List window plans')
-        api :GET, '/cycle_plans/:cycle_plan_id/window_plans', N_('List window plans per cycle plan')
-        param :cycle_plan_id, Integer, desc: N_('ID of the cycle plan')
+        api :GET, '/plans/:plan_id/window_plans', N_('List window plans per cycle plan')
+        param :plan_id, Integer, desc: N_('ID of the cycle plan')
         param_group :search_and_pagination, ::Api::V2::BaseController
         add_scoped_search_description_for(ForemanPatch::WindowPlan)
         def index
@@ -34,8 +34,8 @@ module ForemanPatch
           end
         end
 
-        api :POST, '/cycle_plans/:cycle_plan_id/window_plans', 'Create a new window plan'
-        param :cycle_plan_id, Integer, desc: N_('Id of cycle_plan')
+        api :POST, '/plans/:plan_id/window_plans', 'Create a new window plan'
+        param :plan_id, Integer, desc: N_('Id of plan')
         param_group :window_plan, as: :create
         def create
           @window_plan = WindowPlan.new(window_plan_params)
@@ -58,7 +58,7 @@ module ForemanPatch
         private
 
         def allowed_nested_id
-          %w(cycle_plan_id)
+          %w(plan_id)
         end
 
         def find_window_plan
@@ -66,8 +66,8 @@ module ForemanPatch
         end
 
         def window_plan_params
-          params[:window_plan][:cycle_plan_id] = params[:cycle_plan_id] unless params[:cycle_plan_id].nil?
-          params.require(:window_plan).permit(:name, :description, :start_day, :start_time, :cycle_plan_id)
+          params[:window_plan][:plan_id] = params[:plan_id] unless params[:plan_id].nil?
+          params.require(:window_plan).permit(:name, :description, :start_day, :start_time, :plan_id)
         end
 
       end

@@ -2,7 +2,7 @@ module ForemanPatch
   class WindowPlansController < ApplicationController
 
     before_action :find_resource, only: [:edit, :update, :destroy]
-    before_action :find_cycle_plan, only: [:new, :create]
+    before_action :find_plan, only: [:new, :create]
 
     def new
       @window_plan = WindowPlan.new
@@ -38,16 +38,16 @@ module ForemanPatch
     private
 
     def allowed_nested_id
-      %w(cycle_plan_id)
+      %w(plan_id)
     end
 
-    def find_cycle_plan
-      @cycle_plan ||= ForemanPatch::CyclePlan.find(params[:cycle_plan_id])
+    def find_plan
+      @plan ||= ForemanPatch::Plan.find(params[:plan_id])
     end
 
     def window_plan_params
-      params[:window_plan][:cycle_plan_id] = params[:cycle_plan_id] unless params[:cycle_plan_id].nil?
-      params.require(:window_plan).permit(:name, :description, :state_day, :start_time, :cycle_plan_id)
+      params[:window_plan][:plan_id] = params[:plan_id] unless params[:plan_id].nil?
+      params.require(:window_plan).permit(:name, :description, :state_day, :start_time, :plan_id)
     end
 
     def success_hash

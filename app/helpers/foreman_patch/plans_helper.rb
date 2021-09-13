@@ -1,10 +1,10 @@
 module ForemanPatch
-  module CyclePlansHelper
+  module PlansHelper
 
-    def plan_windows(cycle_plan, day)
-      day = (day - cycle_plan.start_date).to_i
+    def plan_windows(plan, day)
+      day = (day - plan.start_date).to_i
 
-      cycle_plan.window_plans.select do |window|
+      plan.window_plans.select do |window|
         window.start_day == day
       end
     end

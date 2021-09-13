@@ -1,3 +1,3 @@
-object @cycle_plan if @cycle_plan
+object @plan if @plan
 
 attributes :id, :name, :description, :start_date, :interval, :units, :active_count

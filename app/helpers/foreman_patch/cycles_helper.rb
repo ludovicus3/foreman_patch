@@ -11,7 +11,7 @@ module ForemanPatch
 
     def cycle_length(cycle)
       if ForemanPatch::Cycle === cycle
-        cycle = cycle.cycle_plan
+        cycle = cycle.plan
       end
 
       cycle.interval.send(cycle.units).value / ActiveSupport::Duration::SECONDS_PER_DAY

@@ -1,20 +1,20 @@
 module ForemanPatch
-  class CyclePlansController < ApplicationController
+  class PlansController < ApplicationController
 
     helper ForemanPatch::CalendarHelper
 
     before_action :find_resource, only: [:show, :edit, :update, :destroy]
 
     def index
-      @cycle_plans = resource_base_search_and_page
+      @plans = resource_base_search_and_page
     end
 
     def new
-      @cycle_plan = CyclePlan.new
+      @plan = Plan.new
     end
 
     def create
-      @cycle_plan = CyclePlan.new(cycle_plan_params)
+      @plan = Plan.new(plan_params)
     end
 
     def show
@@ -24,7 +24,7 @@ module ForemanPatch
     end
 
     def update
-      if @cycle_plan.update(cycle_plan_params)
+      if @plan.update(plan_params)
         process_success success_hash
       else
         process_error
@@ -32,7 +32,7 @@ module ForemanPatch
     end
 
     def destroy
-      if @cycle_plan.destroy
+      if @plan.destroy
         process_success success_hash
       else
         process_error
@@ -40,13 +40,13 @@ module ForemanPatch
     end
 
     def resource_class
-      ForemanPatch::CyclePlan
+      ForemanPatch::Plan
     end
 
     private
 
-    def cycle_plan_params
-      params.require(:cycle_plan).permit(:name, :description, :state_date, :interval, :units, :active_count)
+    def plan_params
+      params.require(:plan).permit(:name, :description, :state_date, :interval, :units, :active_count)
     end
 
     def success_hash

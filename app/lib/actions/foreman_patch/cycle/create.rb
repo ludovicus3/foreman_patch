@@ -6,7 +6,7 @@ module Actions
         def plan(params)
           plan_self params
 
-          cycle_plan.window_plans.each do |window_plan|
+          plan.window_plans.each do |window_plan|
             concurrence do
               plan_action(::Actions::ForemanPatch::Window::Create, window_plan, output[:cycle])
             end
@@ -39,7 +39,7 @@ module Actions
 
         def params
           @params ||= {
-            cycle_plan_id: input[:cycle_plan][:id],
+            plan_id: input[:plan][:id],
             name: input[:name],
             description: input[:description],
             start_date: input[:start_date],
@@ -47,8 +47,8 @@ module Actions
           }
         end
 
-        def cycle_plan
-          @cycle_plan ||= ::ForemanPatch::CyclePlan.find(input[:cycle_plan][:id])
+        def plan
+          @plan ||= ::ForemanPatch::Plan.find(input[:plan][:id])
         end
 
       end

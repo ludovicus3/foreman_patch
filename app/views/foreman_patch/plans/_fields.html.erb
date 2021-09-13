@@ -2,5 +2,5 @@
 <%= text_f f, :description %>
 <%= date_local_f f, :start_date, label: _('Start Date') %>
 <%= number_f f, :interval %>
-<%= selectable_f f, :units, ForemanPatch::CyclePlan::UNITS, {} %>
+<%= selectable_f f, :units, ForemanPatch::Plan::UNITS, {} %>
 <%= number_f f, :active_count %>

@@ -43,7 +43,7 @@ module Actions
         private
 
         def plan
-          @plan ||= ::ForemanPatch::CyclePlan.find(input[:plan][:id])
+          @plan ||= ::ForemanPatch::Plan.find(input[:plan][:id])
         end
 
         def params(plan)
@@ -58,7 +58,7 @@ module Actions
 
         def add_missing_task_group(plan)
           if plan.task_group.nil?
-            plan.task_group = ::ForemanPatch::CyclePlanTaskGroup.create!
+            plan.task_group = ::ForemanPatch::PlanTaskGroup.create!
             plan.save!
           end
           task.add_missing_task_groups(plan.task_group)

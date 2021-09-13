@@ -1,24 +1,24 @@
 <% stylesheet 'foreman_patch/foreman_patch' %>
 
 <%
-items = [{ caption: _('Plans'), url: cycle_plans_path }]
+items = [{ caption: _('Plans'), url: plans_path }]
 
-breadcrumbs(resource_url: api_cycle_plans_path,
+breadcrumbs(resource_url: api_plans_path,
             name_field: 'name',
-            switcher_item_url: cycle_plan_path(':id'),
+            switcher_item_url: plan_path(':id'),
             items: items)
 %>
 
-<% title_actions(link_to(_('Create Window'), new_cycle_plan_window_plan_path(cycle_plan_id: @cycle_plan.id),
+<% title_actions(link_to(_('Create Window'), new_plan_window_plan_path(plan_id: @plan.id),
                          class: 'btn btn-default',
                          title: _('Create a new window for this plan')),
-                 link_to(_('Edit'), edit_cycle_plan_path(@cycle_plan),
+                 link_to(_('Edit'), edit_plan_path(@plan),
                          class: 'btn btn-default',
                          title: _('Edit propries of this plan')))
 %>
 
-<%= calendar(@cycle_plan.start_date...(@cycle_plan.start_date + @cycle_plan.frequency)) do |day| %>
-  <% plan_windows(@cycle_plan, day).each do |window| %>
+<%= calendar(@plan.start_date...(@plan.start_date + @plan.frequency)) do |day| %>
+  <% plan_windows(@plan, day).each do |window| %>
     <div class="event" id="windowPlan<%= window.id %>" data-window-plan-id="<%= window.id %>">
       <div class="ellipsis"><%= "#{window.start_time.strftime('%l:%M %p')} #{window.name}" %></div>
       <div class="ra">
