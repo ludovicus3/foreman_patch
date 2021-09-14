@@ -1,5 +1,6 @@
 module ForemanPatch
   class WindowPlansController < ApplicationController
+    helper ForemanPatch::PlansHelper
 
     before_action :find_resource, only: [:edit, :update, :destroy]
     before_action :find_plan, only: [:new, :create]
@@ -13,6 +14,7 @@ module ForemanPatch
     end
 
     def edit
+      @plan = @window_plan.plan
     end
 
     def update

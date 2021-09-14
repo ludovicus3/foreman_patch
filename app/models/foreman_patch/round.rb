@@ -9,7 +9,7 @@ module ForemanPatch
 
     validates :window, presence: true
 
-    has_many :invocations, class_name: 'ForemanPatch::Invocation', foreign_key: :round_id, inverse_of: :round
+    has_many :invocations, class_name: 'ForemanPatch::Invocation', foreign_key: :round_id, inverse_of: :round, dependent: :destroy
     has_many :hosts, through: :invocations
 
     scoped_search on: :name, complete_value: true

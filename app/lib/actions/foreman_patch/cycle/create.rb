@@ -4,13 +4,7 @@ module Actions
       class Create < Actions::Base
 
         def plan(params)
-          plan_self params
-
-          plan.window_plans.each do |window_plan|
-            concurrence do
-              plan_action(::Actions::ForemanPatch::Window::Create, window_plan, output[:cycle])
-            end
-          end
+          plan_self params 
         end
 
         def run
@@ -38,17 +32,13 @@ module Actions
         private
 
         def params
-          @params ||= {
-            plan_id: input[:plan][:id],
+          {
+            plan_id: input[:plan_id] || input[:plan][:id],
             name: input[:name],
             description: input[:description],
             start_date: input[:start_date],
             end_date: input[:end_date],
           }
-        end
-
-        def plan
-          @plan ||= ::ForemanPatch::Plan.find(input[:plan][:id])
         end
 
       end

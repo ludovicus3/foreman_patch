@@ -8,7 +8,7 @@ module Actions
         end
 
         def plan(window_plan, cycle)
-          action_subject(window_plan, cycle: cycle)
+          action_subject(window_plan, cycle)
 
           sequence do
             action = plan_action(::Actions::ForemanPatch::Window::Create, params(window_plan, cycle))
@@ -23,15 +23,19 @@ module Actions
           end
         end
 
+        def humanized_name
+          _('Plan window: %s') % input[:window_plan][:name]
+        end
+
         private
 
         def params(window_plan, cycle)
           {
-            cycle: cycle,
+            cycle: cycle.to_action_input,
             name: window_plan.name,
             description: window_plan.description,
-            start_at: window_plan.start_at(cycle),
-            end_by: window_plan.end_by(cycle),
+            start_at: window_plan.start_at(cycle).to_s,
+            end_by: window_plan.end_by(cycle).to_s,
           }
         end
 

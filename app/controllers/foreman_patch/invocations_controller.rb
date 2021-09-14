@@ -7,8 +7,8 @@ module ForemanPatch
       @invocation = ForemanPatch::Invocation.find(params[:id])
       @host = @invocation.host
 
-      @group = @invocation.round
-      @window = @group.window
+      @round = @invocation.round
+      @window = @round.window
       @cycle = @window.cycle
 
       @auto_refresh = @invocation.task.pending?

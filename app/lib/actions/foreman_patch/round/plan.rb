@@ -11,7 +11,7 @@ module Actions
           action_subject(group, window: window)
 
           action = plan_action(::Actions::ForemanPatch::Round::Create, params(group, window))
-          plan_action(::Actions::ForemanPatch::Round::ResolveHosts, action.output[:round], hosts)
+          plan_action(::Actions::ForemanPatch::Round::ResolveHosts, action.output[:round], hosts(group))
         end
 
         private
@@ -26,7 +26,7 @@ module Actions
           }
         end
 
-        def hosts
+        def hosts(group)
           group.hosts.map do |host|
             host.to_action_input
           end

@@ -1,0 +1,11 @@
+<%= form_for @window_plan, url: plan_path(@plan) do |f| %>
+  <%= base_errors_for @window_plan %>
+
+  <%= text_f f, :name %>
+  <%= textarea_f f, :description %>
+  <%= number_f f, :start_day, min: 0, max: plan_last_window_day(@plan) %>
+  <%= time_f f, :start_time %>
+  <%= time_f f, :end_time %>
+
+  <%= submit_or_cancel f, false, {cancel_path: plan_path(@plan)} %>
+<% end %>

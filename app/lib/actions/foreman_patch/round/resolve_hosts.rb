@@ -10,7 +10,7 @@ module Actions
         def run
           output[:invocations] = []
           input[:hosts].each do |host|
-            output[:invocations] << round.invocations.find_or_create_by!(host_id: host[:id])
+            output[:invocations] << round.invocations.find_or_create_by!(host_id: host[:id]).to_action_input
           end
         end
 

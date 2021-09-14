@@ -17,5 +17,10 @@ module ForemanPatch
 
       actions
     end
+
+    def plan_last_window_day(plan)
+      (plan.frequency.to_i / ActiveSupport::Duration::SECONDS_PER_DAY) - 1
+    end
+
   end
 end

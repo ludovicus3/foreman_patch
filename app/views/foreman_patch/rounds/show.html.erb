@@ -14,7 +14,7 @@ breadcrumbs(resource_url: api_window_rounds_path(@window.id),
 <% javascript *webpack_asset_paths('foreman_remote_execution', extension: 'js') %>
 
 <% if @round.task %>
-  <% title_actions button_group(group_task_buttons(@round.task))%>
+  <% title_actions button_group(round_task_buttons(@round.task))%>
 <% end %>
 
 <div class="row">

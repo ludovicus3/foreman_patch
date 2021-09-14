@@ -6,7 +6,7 @@ module ForemanPatch
 
     belongs_to :default_window_plan, class_name: 'ForemanPatch::WindowPlan'
 
-    has_many :group_facets, class_name: 'ForemanPatch::Host::GroupFacet', foreign_key: :group_id, inverse_of: :group
+    has_many :group_facets, class_name: 'ForemanPatch::Host::GroupFacet', foreign_key: :group_id, inverse_of: :group, dependent: :nullify
     has_many :hosts, through: :group_facets
 
     validates :name, presence: true, uniqueness: true

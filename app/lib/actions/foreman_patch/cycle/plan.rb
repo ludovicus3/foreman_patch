@@ -1,7 +1,7 @@
 module Actions
   module ForemanPatch
     module Cycle
-      class Plan < Actions::EntryAction
+      class Plan < Actions::ActionWithSubPlans
 
         def resource_locks
           :link
@@ -19,40 +19,46 @@ module Actions
           action_subject(plan)
 
           creation = plan_action(::Actions::ForemanPatch::Cycle::Create, params(plan))
-          concurrence do
-            plan.window_plans.each do |window_plan|
-              plan_action(::Actions::ForemanPatch::Window::Plan, window_plan, creation.output[:cycle])
-            end
-          end
-          plan_self
+
+          plan_self cycle: creation.output[:cycle]
         end
 
-        def run
-          plan.start_date = plan.next_cycle_start
-          plan.save!
+        def create_sub_plans
+          cycle_plan.window_plans.map do |window_plan|
+            trigger(::Actions::ForemanPatch::Window::Plan, window_plan, cycle)
+          end
+        end
+
+        def on_finish
+          cycle_plan.start_date = cycle_plan.next_cycle_start
+          cycle_plan.save!
         end
 
         def finalize
-          plan.iterate
+          cycle_plan.iterate
         end
 
         def humanized_name
-          _('Plan cycle: %s') % plan.name
+          _('Plan cycle: %s') % input[:plan][:name]
         end
 
         private
 
-        def plan
-          @plan ||= ::ForemanPatch::Plan.find(input[:plan][:id])
+        def cycle_plan
+          @cycle_plan ||= ::ForemanPatch::Plan.find(input[:plan][:id])
+        end
+
+        def cycle
+          @cycle ||= ::ForemanPatch::Cycle.find(input[:cycle][:id])
         end
 
         def params(plan)
           {
-            plan: plan.to_action_input,
+            plan_id: plan.id,
             name: plan.name,
             description: plan.description,
-            start_date: plan.start_date,
-            end_date: plan.next_cycle_start - 1.day,
+            start_date: plan.start_date.to_s,
+            end_date: (plan.next_cycle_start - 1.day).to_s,
           }
         end
 

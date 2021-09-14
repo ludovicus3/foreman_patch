@@ -10,8 +10,6 @@ module Actions
         def plan(round)
           action_subject(round)
 
-          round.resolve_hosts!
-
           round.task_id = task.id
           round.save!
 

@@ -19,6 +19,10 @@ module ForemanPatch
 
     scoped_search relation: :plan, on: :name, complete_value: true
 
+    def end_time
+      start_time + duration
+    end
+
     def start_at(cycle)
       start_date = cycle.start_date + start_day.days
 
