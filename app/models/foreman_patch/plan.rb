@@ -57,10 +57,6 @@ module ForemanPatch
       end
     end
 
-    def action_input_key
-      'plan'
-    end
-
     private
 
     def weekday(next_date)
