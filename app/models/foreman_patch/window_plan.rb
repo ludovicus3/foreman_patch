@@ -2,6 +2,8 @@ module ForemanPatch
   class WindowPlan < ::ApplicationRecord
     include ForemanTasks::Concerns::ActionSubject
 
+    attr_accessor :start_at, :end_by
+
     self.skip_time_zone_conversion_for_attributes = [:start_time]
 
     belongs_to :plan, class_name: 'ForemanPatch::Plan', inverse_of: :window_plans
@@ -19,13 +21,8 @@ module ForemanPatch
 
     scoped_search relation: :plan, on: :name, complete_value: true
 
-    def end_time
-      start_time + duration
-    end
-
-    def start_at(cycle)
-      start_date = cycle.start_date + start_day.days
-
+    def start_at
+      start_date = plan.start_date + start_day.days
       Time.find_zone(Setting[:patch_schedule_time_zone]).local(
         start_date.year,
         start_date.month,
@@ -35,8 +32,8 @@ module ForemanPatch
         start_time.sec)
     end
 
-    def end_by(cycle)
-      start_at(cycle) + duration
+    def end_by
+      start_at + duration
     end
 
   end

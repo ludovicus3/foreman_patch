@@ -3,9 +3,8 @@
 
   <%= text_f f, :name %>
   <%= textarea_f f, :description %>
-  <%= number_f f, :start_day, min: 0, max: plan_last_window_day(@plan) %>
-  <%= time_f f, :start_time %>
-  <%= time_f f, :end_time %>
+  <%= datetime_local_f f, :start_at, { weekStartsOn: 0, hiddenValue: false, required: true } %>
+  <%= datetime_local_f f, :end_by, { weekStartsOn: 0, hiddenValue: false, required: true } %>
 
   <%= submit_or_cancel f, false, {cancel_path: plan_path(@plan)} %>
 <% end %>

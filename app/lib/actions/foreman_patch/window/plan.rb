@@ -34,8 +34,8 @@ module Actions
             cycle: cycle.to_action_input,
             name: window_plan.name,
             description: window_plan.description,
-            start_at: window_plan.start_at(cycle).to_s,
-            end_by: window_plan.end_by(cycle).to_s,
+            start_at: window_plan.start_at.to_s,
+            end_by: window_plan.end_by.to_s,
           }
         end
 

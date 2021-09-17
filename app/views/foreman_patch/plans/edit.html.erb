@@ -2,9 +2,5 @@
 
 <% title _("Edit %s") % @plan.name %>
 
-<%= form_for @plan do |f| %>
-  <%= base_errors_for @plan %>
-  <%= render 'fields', f: f %>
+<%= render partial: 'form' %>
 
-  <%= submit_or_cancel f, false, {cancel_path: plans_path} %>
-<% end %>

@@ -53,7 +53,6 @@ module ForemanPatch
       classes
     end
 
-
     def day_css_classes(day, enabled = true)
       today = Date.current
 
@@ -70,6 +69,10 @@ module ForemanPatch
       end
 
       classes
+    end
+
+    def calendar_object()
+      first = startDate.beginningOfWeek(:sunday)
     end
 
   end

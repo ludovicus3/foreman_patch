@@ -1,9 +1,0 @@
-<% if @window_plan.present? %>
-  <%= fields_for :plan, Plan.new do |plan| %>
-    <%= plan.fields_for :window_plans, @window_plan, child_index: @key do |window_plans| %>
-      $("#windowModal #plan_window_plans_attributes_<%= @key %>_type").closest('fieldset').html(
-        '<%=j render partial: @window_plan, locals: {f: window_plans} %>'
-      );
-    <% end %>
-  <% end %>
-<% end %>
