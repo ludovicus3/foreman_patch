@@ -1,3 +1,5 @@
+<%= webpacked_plugins_js_for :foreman_patch %>
+
 <% title @plan.name %>
 
 <% stylesheet 'foreman_patch/foreman_patch' %>
@@ -10,14 +12,10 @@
                          title: _('Edit propries of this plan')))
 %>
 
-<%= calendar(@plan.start_date...(@plan.next_cycle_start)) do |day| %>
-  <% plan_windows(@plan, day).each do |window| %>
-    <div class="event" id="windowPlan<%= window.id %>" data-window-plan-id="<%= window.id %>">
-      <div class="ellipsis"><%= "#{window.start_time.strftime('%l:%M %p')} #{window.name}" %></div>
-      <div class="ra">
-        <%= action_buttons(plan_window_actions(window)) %>
-      </div>
-    </div>
-  <% end %>
-<% end %>
-
+<%= react_component('Calendar', { 
+  range: { 
+    start: @plan.start_date,
+    end: @plan.next_cycle_start - 1.day 
+  },
+  events: @plan.window_plans.map { |window| { date: window.start_at, event: window.name } },
+}) %>

@@ -23,6 +23,10 @@ module ForemanPatch
 
     before_destroy :stop
 
+    def end_date
+      next_cycle_start - 1.day
+    end
+
     def frequency
       interval.send(units)
     end
