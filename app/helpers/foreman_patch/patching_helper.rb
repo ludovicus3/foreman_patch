@@ -9,6 +9,7 @@ module ForemanPatch
       task = invocation.task
       window_task = invocation.round.window.task
 
+      return 'planned' if window_task.nil?
       return (window_task.result == 'cancelled' ? _('cancelled') : _('planned')) if task.nil?
       return task.state if task.state == 'running' || task.state == 'planned'
       return _('error') if task.result == 'warning'
