@@ -1,18 +1,10 @@
 import { times } from 'lodash';
 
-export const today = () => {
-  const result = new Date();
-  result.setUTCHours(0, 0, 0, 0);
-  return result;
-};
+export const isPastDate = (a, b = new Date()) => 
+  a.setUTCHours(0, 0, 0, 0) < b.setUTCHours(0, 0, 0, 0);
 
-export const isPast = (date) => {
-  return date < today();
-};
-
-export const isFuture = (date) => {
-  return date > today();
-};
+export const isFutureDate = (a, b = new Date()) =>
+  a.setUTCHours(0, 0, 0, 0) > b.setUTCHours(0, 0, 0, 0);
 
 export const isEqualDate = (a, b) =>
   a.getFullYear() === b.getFullYear() &&

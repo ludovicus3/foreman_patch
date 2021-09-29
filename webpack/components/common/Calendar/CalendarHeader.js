@@ -4,83 +4,82 @@ import { Icon, Button } from 'patternfly-react';
 import { addDays, addMonths } from './CalendarHelpers';
 import { DAY, WEEK, MONTH } from './CalendarConstants';
 
-const CalendarHeader = (props) => {
-  const { range, date, view, setDate, locale } = props;
+class CalendarHeader extends React.Component {
+  jumpToPreviousView = () => {
+    const { date, view, setDate } = this.props;
 
-  const updateDate = (change) => {
     switch (view) {
       case DAY:
-        setDate(addDays(date, change));
+        setDate(addDays(date, -1));
         break;
       case WEEK:
-        setDate(addDays(date, change * 7));
+        setDate(addDays(date, -7));
         break;
       case MONTH:
       default:
-        setDate(addMonths(date, change));
+        setDate(addMonths(date, -1));
+    }
+  }
+
+  jumpToNextView = () => {
+    const { date, view, setDate } = this.props;
+
+    switch (view) {
+      case DAY:
+        setDate(addDays(date, 1));
         break;
-    }
-  };
-
-  const hasPreviousView = () => {
-    switch (view) {
-      case DAY:
-        return date <= range.end;
       case WEEK:
+        setDate(addDays(date, 7));
+        break;
       case MONTH:
       default:
-        return date.getMonth() <= range.end.getMonth();
+        setDate(addMonths(date, 1));
     }
-  };
+  }
 
-  const hasNextView = () => {
-    switch (view) {
-      case DAY:
-        return date >= range.end;
-      case WEEK:
-      case MONTH:
-      default:
-        return date.getMonth() >= range.end.getMonth();
-    }
-  };
+  get title() {
+    const { locale, date } = this.props;
 
-  const month = Intl.DateTimeFormat(locale, { month: 'long' }).format(date);
-  const year = date.getFullYear();
+    const month = Intl.DateTimeFormat(locale, { month: 'long' }).format(date);
+    const year = date.getFullYear();
 
-  return (
-    <div className="header">
-      <Button variant="secondary" onClick={() => updateDate(-1)} isDisabled={hasPreviousView() ? false : true}>
-        <Icon type="fa" name="angle-left" />
-      </Button>
-      <div className="col-md-5">
-        {month} {year}
+    return (<h4>{month} {year}</h4>);
+  }
+
+  render() {
+    return (
+      <div className="header">
+        <Button variant="secondary" onClick={this.jumpToPreviousView} >
+          <Icon type="fa" name="angle-left" />
+        </Button>
+        <div className="col-md-5">
+          {this.title}
+        </div>
+        <Button variant="secondary" onClick={this.jumpToNextView} >
+          <Icon type="fa" name="angle-right" />
+        </Button>
       </div>
-      <Button variant="secondary" onClick={() => updateDate(1)} isDisabled={hasNextView() ? false : true}>
-        <Icon type="fa" name="angle-right" />
-      </Button>
-    </div>
-  );
-};
+    );
+  }
+}
 
 CalendarHeader.propTypes = {
-  range: PropTypes.shape({
-    start: PropTypes.instanceOf(Date),
-    end: PropTypes.instanceOf(Date),
-  }),
+  first: PropTypes.instanceOf(Date),
+  last: PropTypes.instanceOf(Date),
   date: PropTypes.instanceOf(Date),
   view: PropTypes.oneOf([DAY, WEEK, MONTH]),
   setDate: PropTypes.func,
+  setView: PropTypes.func,
   locale: PropTypes.string,
 };
 
 CalendarHeader.defaultProps = {
-  range: {
-    start: null,
-    end: null,
-  },
+  first: null,
+  last: null,
   date: new Date(),
   view: MONTH,
   setDate: null,
+  setView: null,
   locale: 'en-US',
 };
 
