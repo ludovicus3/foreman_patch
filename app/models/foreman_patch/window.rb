@@ -55,8 +55,8 @@ module ForemanPatch
     end
 
     def move_by(duration)
-      self.start_at = self.start_at + time
-      self.end_by = self.end_by + time
+      self.start_at = self.start_at + duration
+      self.end_by = self.end_by + duration
     end
 
     class Jail < ::Safemode::Jail
