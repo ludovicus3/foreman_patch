@@ -56,6 +56,8 @@ module ForemanPatch
     end
 
     def proxy
+      return nil if Setting[:ticket_api_proxy].blank?
+
       proxy = HttpProxy.friendly.find(Setting[:ticket_api_proxy])
 
       proxy&.url
