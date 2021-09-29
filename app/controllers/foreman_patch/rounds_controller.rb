@@ -12,7 +12,7 @@ module ForemanPatch
 
       respond_to do |format|
         format.json do
-          group_hosts_resources
+          round_hosts_resources
         end
 
         format.html
@@ -57,7 +57,7 @@ module ForemanPatch
 
     private
 
-    def group_hosts_resources
+    def round_hosts_resources
       @resource_base = @round.hosts.authorized(:view_hosts, Host)
 
       unless params[:search].nil?
