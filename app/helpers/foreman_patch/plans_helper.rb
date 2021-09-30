@@ -22,5 +22,31 @@ module ForemanPatch
       (plan.frequency.to_i / ActiveSupport::Duration::SECONDS_PER_DAY) - 1
     end
 
+    def plan_to_args(plan)
+      {
+        id: plan.id,
+        name: plan.name,
+        description: plan.description,
+        start: plan.start_date.iso8601,
+        end: plan.end_date.iso8601,
+        interval: plan.interval,
+        units: plan.units,
+        correction: plan.correction,
+        activeCount: plan.active_count,
+        windows: plan.window_plans.map { |w| window_to_args(w) },
+      }
+    end
+
+    def window_to_args(window)
+      {
+        id: window.id,
+        link: edit_window_plan_path(window),
+        name: window.name,
+        description: window.description,
+        start: window.start_at.iso8601,
+        end: window.end_by.iso8601,
+      }
+    end
+
   end
 end

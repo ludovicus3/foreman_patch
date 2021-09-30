@@ -12,10 +12,4 @@
                          title: _('Edit propries of this plan')))
 %>
 
-<%= react_component('Calendar', { 
-  range: { 
-    start: @plan.start_date,
-    end: @plan.next_cycle_start - 1.day 
-  },
-  events: @plan.window_plans.map { |window| { date: window.start_at, event: window.name } },
-}) %>
+<%= react_component('Plan', plan_to_args(@plan)) %>

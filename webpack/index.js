@@ -3,11 +3,11 @@
 /* eslint-disable import/extensions */
 import componentRegistry from 'foremanReact/components/componentRegistry';
 import Rounds from './components/Rounds';
-import Calendar from './components/common/Calendar/Calendar';
+import Plan from './components/Plan';
 
 const components = [
   { name: 'Rounds', type: Rounds },
-  { name: 'Calendar', type: Calendar },
+  { name: 'Plan', type: Plan },
 ];
 
 components.forEach(component => componentRegistry.register(component));
