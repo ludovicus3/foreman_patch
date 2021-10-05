@@ -39,7 +39,7 @@ module Actions
         end
 
         def humanized_name
-          if input and input[:window_name]
+          if input and input[:window][:name]
             _('Run Patch Window: %{window}' % {window: input[:window][:name]})
           else
             _('Run Patch Window')
