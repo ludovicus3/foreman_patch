@@ -73,4 +73,14 @@ module ForemanPatch
   def self.use_relative_model_naming
     true
   end
+
+  def self.register_rex_features
+    RemoteExecutionFeature.register(
+      :power_action,
+      N_('Power Action'),
+      description: N_('Power Action'),
+      provided_inputs: 'action',
+      host_action_button: false
+    )
+  end
 end
