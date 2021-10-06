@@ -60,7 +60,11 @@ module Actions
         end
 
         def batch(from, size)
-          round.invocations.offset(from).limit(size)
+          round.invocations
+            .includes(:override)
+            .where(foreman_patch_overrides: { id: nil })
+            .offset(from)
+            .limit(size)
         end
 
         def total_count
