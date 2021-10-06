@@ -1,3 +1,5 @@
+<%= webpacked_plugins_js_for :foreman_patch %>
+
 <% 
 items = [{ caption: _('Cycles'), url: cycles_path },
          { caption: @cycle.name, url: cycle_path(@cycle) },
@@ -10,8 +12,9 @@ breadcrumbs(resource_url: api_window_rounds_path(@window.id),
             items: items)
 %>
 
-<% javascript 'charts' %>
 <% javascript *webpack_asset_paths('foreman_remote_execution', extension: 'js') %>
+
+<% javascript 'charts' %>
 
 <% if @round.task %>
   <% title_actions button_group(round_task_buttons(@round.task))%>

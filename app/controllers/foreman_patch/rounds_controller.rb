@@ -65,7 +65,7 @@ module ForemanPatch
           .where(foreman_patch_invocations: { round_id: @round.id })
       end
       @hosts = resource_base_search_and_page
-      @total_hosts = resource_base_with_search.size
+      @total = resource_base_with_search.size
     end
 
   end

@@ -1,5 +1,5 @@
 {
   "autoRefresh": "<%= @auto_refresh %>",
-  "hosts": <%= round_invocation_hosts(@round, @hosts).to_json.html_safe %>,
-  "total_hosts": <%= @total_hosts %>
+  "invocations": <%= round_invocation_hosts(@round).to_json.html_safe %>,
+  "total_invocations": <%= @total %>
 }

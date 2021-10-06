@@ -6,18 +6,30 @@ module ForemanPatch
     end
 
     def patch_invocation_status(invocation)
-      task = invocation.task
-      window_task = invocation.round.window.task
-
-      return 'planned' if window_task.nil?
-      return (window_task.result == 'cancelled' ? _('cancelled') : _('planned')) if task.nil?
-      return task.state if task.state == 'running' || task.state == 'planned'
-      return _('error') if task.result == 'warning'
-
-      task.result
+      case invocation.status
+      when ForemanPatch::Invocation::RUNNING
+        _('running')
+      when ForemanPatch::Invocation::SUCCESS
+        _('success')
+      when ForemanPatch::Invocation::CANCELLED
+        _('cancelled')
+      when ForemanPatch::Invocation::MOVED
+        _('moved')
+      when ForemanPatch::Invocation::RETRIED
+        _('retried')
+      when ForemanPatch::Invocation::WARNING
+        _('warning')
+      when ForemanPatch::Invocation::ERROR
+        _('error')
+      else
+        _('pending')
+      end
     end
 
-    def patch_invocation_actions(task, host, round, invocation)
+    def patch_invocation_actions(round, invocation)
+      host = invocation.host
+      task = invocation.task
+
       links = []
 
       if authorized_for(main_app.hash_for_host_path(host).merge(auth_object: host, permission: :view_hosts, authorizer: round_hosts_authorizer))
@@ -36,16 +48,13 @@ module ForemanPatch
       links
     end
 
-    def round_invocation_hosts(round, hosts)
-      hosts.map do |host|
-        invocation = round.invocations.find { |invocation| invocation.host_id == host.id }
-        task = invocation.try(:task)
-
+    def round_invocation_hosts(round)
+      round.invocations.map do |invocation|
         {
-          name: host.name,
+          name: invocation.host.name,
           link: invocation_path(invocation),
           status: patch_invocation_status(invocation),
-          actions: patch_invocation_actions(task, host, round, invocation)
+          actions: patch_invocation_actions(round, invocation)
         } 
       end
     end

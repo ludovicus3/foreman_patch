@@ -37,18 +37,28 @@ module ForemanPatch
     end
 
     def progress_report
-      map = TemplateInvocation::TaskResultMap
-      all_keys = (map.results | map.statuses | [:progress, :total])
-      if queued? || (task && task.started_at.nil?) || invocations.empty?
-        all_keys.reduce({}) do |acc, key|
-          acc.merge(key => 0)
+      map = invocations.reduce({
+        pending: 0,
+        success: 0,
+        failed: 0,
+        cancelled: 0,
+      }) do |hash, invocation|
+        next hash unless invocation.override.nil? # don't count overrides in pie
+
+        case invocation.status
+        when ForemanPatch::Invocation::WARNING, ForemanPatch::Invocation::ERROR
+          hash[:failed] += 1
+        when ForemanPatch::Invocation::SUCCESS
+          hash[:success] += 1
+        when ForemanPatch::Invocation::CANCELLED
+          hash[:cancelled] += 1
+        else
+          hash[:pending] += 1
         end
-      else
-        counts = task.sub_tasks_counts
-        done = counts.values_at(*map.results).reduce(:+)
-        percent = progress(counts[:total], done)
-        counts.merge(progress: percent, failed: counts.values_at(*map.status_to_task_result(:failed)).reduce(:+))
+
+        hash
       end
+      map
     end
 
     def finished?
