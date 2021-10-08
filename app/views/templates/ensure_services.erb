@@ -6,12 +6,14 @@ description_format: 'Ensure Services'
 feature: ensure_services
 provider_type: SSH
 %>
-
 <% if @host.operatingsystem.family == "Redhat" && @host.operatingsystem.major.to_i > 6 %>
-systemctl is-system-running
+systemctl is-system-running --wait --quiet
 if [ $? -ne 0 ]; then
   systemctl list-units --failed
   exit 1
+else
+  echo "System is running"
+  exit 0
 fi
 <% else %>
 <% end %>
