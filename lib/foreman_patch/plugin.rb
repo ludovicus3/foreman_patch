@@ -29,6 +29,7 @@ Foreman::Plugin.register :foreman_patch do
 
   describe_host do
     multiple_actions_provider :patch_host_multiple_actions
+    overview_fields_provider :patch_host_overview_fields
   end
 
   RemoteExecutionFeature.register(:power_action, N_("Power Action"), description: N_("Power Action"), provided_inputs: ['action'])

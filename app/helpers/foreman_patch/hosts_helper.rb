@@ -23,5 +23,30 @@ module ForemanPatch
       group_options.html_safe
     end
 
+    def patch_host_overview_fields(host)
+      fields = []
+      if host.group_facet.present?
+        name = host.group_facet.group || 'None'
+        search = (host.group_facet.group.present? ? "patch_group = #{host.group_facet.group}" : 'not has patch_group')
+
+        fields << {
+          field: [
+            _('Patch Group'),
+            link_to(name, hosts_path(search: search)),
+          ],
+          priority: 1001,
+        }
+
+        fields << {
+          field: [
+            _('Last Patch Date'),
+            host.group_facet.last_patched_at,
+          ],
+          priority: 1002,
+        }
+      end
+      fields
+    end
+
   end
 end
