@@ -5,27 +5,6 @@ module ForemanPatch
       @round_hosts_authorizer ||= Authorizer.new(User.current, collection: @hosts)
     end
 
-    def patch_invocation_status(invocation)
-      case invocation.status
-      when ForemanPatch::Invocation::RUNNING
-        _('running')
-      when ForemanPatch::Invocation::SUCCESS
-        _('success')
-      when ForemanPatch::Invocation::CANCELLED
-        _('cancelled')
-      when ForemanPatch::Invocation::MOVED
-        _('moved')
-      when ForemanPatch::Invocation::RETRIED
-        _('retried')
-      when ForemanPatch::Invocation::WARNING
-        _('warning')
-      when ForemanPatch::Invocation::ERROR
-        _('error')
-      else
-        _('pending')
-      end
-    end
-
     def patch_invocation_actions(round, invocation)
       host = invocation.host
       task = invocation.task
@@ -45,6 +24,28 @@ module ForemanPatch
         }
       end
 
+      unless task.present?
+        links << { title: _('Cancel'),
+                   action: { href: invocation_path(invocation),
+                             'data-method': 'delete',
+                             id: "#{host.name}-actions-cancel" }
+        }
+      end
+
+      if task.present? and task.pending?
+        links << { title: _('Cancel'), 
+                   action: { href: main_app.cancel_foreman_tasks_task_path(task),
+                             'data-method': 'post',
+                             id: "#{host.name}-actions-cancel" }
+        }
+
+        links << { title: _('Abort'),
+                   action: { href: main_app.abort_foreman_tasks_task_path(task),
+                             'data-method': 'post',
+                             id: "#{host.name}-actions-abort" }
+        }
+      end
+
       links
     end
 
@@ -53,7 +54,8 @@ module ForemanPatch
         {
           name: invocation.host.name,
           link: invocation_path(invocation),
-          status: patch_invocation_status(invocation),
+          state: invocation.state,
+          result: invocation.result,
           actions: patch_invocation_actions(round, invocation)
         } 
       end

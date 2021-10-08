@@ -43,14 +43,12 @@ module ForemanPatch
         failed: 0,
         cancelled: 0,
       }) do |hash, invocation|
-        next hash unless invocation.override.nil? # don't count overrides in pie
-
-        case invocation.status
-        when ForemanPatch::Invocation::WARNING, ForemanPatch::Invocation::ERROR
+        case invocation.result
+        when 'error', 'warning'
           hash[:failed] += 1
-        when ForemanPatch::Invocation::SUCCESS
+        when 'success'
           hash[:success] += 1
-        when ForemanPatch::Invocation::CANCELLED
+        when 'cancelled'
           hash[:cancelled] += 1
         else
           hash[:pending] += 1

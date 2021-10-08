@@ -26,7 +26,8 @@ ForemanPatch::Engine.routes.draw do
       end
     end
 
-    resources :invocations, only: [:show]
+    resources :invocations, only: [:show, :destroy] do
+    end
 
     resources :plans, only: [:index, :new, :create, :show, :edit, :update, :destroy] do
       resources :window_plans, only: [:new, :create]

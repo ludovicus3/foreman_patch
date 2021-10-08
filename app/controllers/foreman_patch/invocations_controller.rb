@@ -1,6 +1,8 @@
 module ForemanPatch
   class InvocationsController < ApplicationController
 
+    before_action :find_resource
+
     helper ForemanPatch::PatchingHelper
 
     def show
@@ -25,6 +27,23 @@ module ForemanPatch
       end
 
       @line_counter = params[:line_counter].to_i
+    end
+
+    def destroy
+      if @invocation.destroy!
+      else
+        process_error
+      end
+    end
+
+    def resource_class
+      ForemanPatch::Invocation
+    end
+
+    private
+
+    def create_override
+      ForemanPatch::Override.create!(source: @invocation, user: User.current, reason: params[:reason])
     end
 
   end

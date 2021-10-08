@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { ActionButtons } from 'foremanReact/components/common/ActionButtons/ActionButtons';
 import InvocationStatus from './InvocationStatus';
 
-const InvocationItem = ({ name, link, status, actions }) => {
+const InvocationItem = ({ name, link, state, result, actions }) => {
   const invocationLink = link ? (
     <a href={link}>{name}</a>
   ) : (
@@ -16,7 +16,7 @@ const InvocationItem = ({ name, link, status, actions }) => {
     <tr id={`invocation-${name}`}>
       <td className="invocation_name">{invocationLink}</td>
       <td className="invocation_status">
-        <InvocationStatus status={status} />
+        <InvocationStatus state={state} result={result} />
       </td>
       <td className="invocation_actions">
         <ActionButtons buttons={[...actions]} />
@@ -28,7 +28,8 @@ const InvocationItem = ({ name, link, status, actions }) => {
 InvocationItem.propTypes = {
   name: PropTypes.string.isRequired,
   link: PropTypes.string.isRequired,
-  status: PropTypes.string.isRequired,
+  state: PropTypes.string.isRequired,
+  result: PropTypes.string.isRequired,
   actions: PropTypes.array,
 };
 
