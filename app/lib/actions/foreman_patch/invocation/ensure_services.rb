@@ -32,15 +32,8 @@ module Actions
           end
         end
 
-        def finalize
-          if exit_status == 0
-            host.group_facet.last_patched_at = Time.current
-            host.group_facet.save!
-          end
-        end
-
         def rescue_strategy
-          ::Dynflow::Action::Rescue::Fail
+          ::Dynflow::Action::Rescue::Skip
         end
 
         def host
