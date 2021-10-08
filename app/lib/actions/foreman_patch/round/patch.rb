@@ -4,9 +4,6 @@ module Actions
       class Patch < Actions::ActionWithSubPlans
         include Dynflow::Action::WithBulkSubPlans
 
-        middleware.use Actions::Middleware::WatchDelegatedProxySubTasks
-        middleware.use Actions::Middleware::ProxyBatchTriggering
-
         def plan(round)
           action_subject(round)
 
@@ -59,16 +56,16 @@ module Actions
           @round ||= ::ForemanPatch::Round.find(input[:round][:id])
         end
 
+        def invocations
+          round.invocations.order(:id)
+        end
+
         def batch(from, size)
-          round.invocations
-            .includes(:override)
-            .where(foreman_patch_overrides: { id: nil })
-            .offset(from)
-            .limit(size)
+          invocations.offset(from).limit(size)
         end
 
         def total_count
-          round.invocations.count
+          output[:total_count] || invocations.count
         end
 
         def humanized_name
