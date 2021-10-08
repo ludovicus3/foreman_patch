@@ -28,13 +28,14 @@ const Invocations = ({ status, items }) => {
             </tr>
           </thead>
           <tbody>
-            {items.map(round => (
+            {items.map(item => (
               <InvocationItem
-                key={round.name}
-                name={round.name}
-                link={round.link}
-                status={round.status}
-                actions={round.actions}
+                key={item.name}
+                name={item.name}
+                link={item.link}
+                state={item.state}
+                result={item.result}
+                actions={item.actions}
               />
             ))}
           </tbody>
