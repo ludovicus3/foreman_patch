@@ -7,13 +7,22 @@ feature: ensure_services
 provider_type: SSH
 %>
 <% if @host.operatingsystem.family == "Redhat" && @host.operatingsystem.major.to_i > 6 %>
-systemctl is-system-running --wait --quiet
-if [ $? -ne 0 ]; then
-  systemctl list-units --failed
-  exit 1
-else
-  echo "System is running"
-  exit 0
-fi
+state=$(systemctl is-system-running)
+while [ $? -ne 0 ]; do
+  case $state in
+    initializing | starting)
+      sleep 5
+      state=$(systemctl is-system-running)
+      ;;
+    maintenance | stopping | offline)
+      echo $state
+      exit 1
+      ;;
+    *)
+      systemctl list-units --failed
+      exit 1
+      ;;
+  esac
+done
 <% else %>
 <% end %>
