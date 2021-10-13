@@ -26,6 +26,8 @@ ForemanPatch::Engine.routes.draw do
           resources :invocations, only: [:index]
         end
 
+        resources :invocations, only: [:show]
+
       end
     end
   end

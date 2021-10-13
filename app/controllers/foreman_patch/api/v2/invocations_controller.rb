@@ -2,7 +2,7 @@ module ForemanPatch
   module Api
     module V2
       class InvocationsController < ApiController
-
+        
         resource_description do
           resource_id 'patch_invocations'
           api_version 'v2'
@@ -22,6 +22,12 @@ module ForemanPatch
             .where(host: ::Host.authorized(:view_hosts, ::Host))
             .search_for(*search_options)
             .paginate(paginate_options)
+        end
+
+        api :GET, '/invocations/:id', N_('Get details of an invocation')
+        param :id, :identifier, required: true
+        def show
+          @invocation = ForemanPatch::Invocation.find(params[:id])
         end
 
         def resource_class
