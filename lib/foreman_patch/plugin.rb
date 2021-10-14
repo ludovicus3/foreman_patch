@@ -7,6 +7,7 @@ Foreman::Plugin.register :foreman_patch do
     api_view list: 'foreman_patch/api/v2/group_facet/base_with_root', single: 'foreman_patch/api/v2/group_facet/show'
     api_docs :group_facet_attributes, ::ForemanPatch::Api::V2::HostGroupsController
     extend_model ForemanPatch::Concerns::GroupFacetHostExtensions
+    set_dependent_action :destroy
   end
 
   # Add permissions
