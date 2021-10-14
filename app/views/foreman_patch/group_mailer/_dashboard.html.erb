@@ -15,6 +15,12 @@
       </td>
       <td class="dashboard">
         <%= (n_('<b style="color: #6bb5df;">%{hosts_sum}</b>
+                 <p>Warning</p>',
+                '<b style="color: #6bb5df;">%{hosts_sum}</b>
+                 <p>Warnings</b>', warnings_sum) % {hosts_sum: warnings_sum}).html_safe %>
+      </td>
+      <td class="dashboard">
+        <%= (n_('<b style="color: #6bb5df;">%{hosts_sum}</b>
                  <p>Failure</p>',
                 '<b style="color: #6bb5df;">%{hosts_sum}</b>
                  <p>Failures</p>', failures_sum) % {hosts_sum: failures_sum}).html_safe %>

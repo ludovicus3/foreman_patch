@@ -18,8 +18,8 @@ module ForemanPatch
       @group = options[:group].name
       @total = options[:group].invocations.count
       @successes = options[:group].invocations.select(&:success?).map { |invocation| invocation.host.name }
+      @warnings = options[:group].invocations.select(&:warning?).map { |invocation| invocation.host.name }
       @failures = options[:group].invocations.select(&:failed?).map { |invocation| invocation.host.name }
-       
 
       set_locale_for(user) do
         mail(to: user.mail, subject: (_("%s Patching Completed") % @group))
