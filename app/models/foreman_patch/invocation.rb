@@ -28,11 +28,11 @@ module ForemanPatch
     end
 
     def warning?
-      state == 'stopped' and (result == 'warning' or failed_services?)
+      state == 'stopped' and result == 'warning'
     end
 
     def failed?
-      state == 'stopped' and result == 'error' and not failed_services?
+      state == 'stopped' and result == 'error'
     end
 
     def success?
@@ -44,14 +44,6 @@ module ForemanPatch
         id: id,
         name: host.name
       }
-    end
-
-    def failed_services?
-      return false unless result == 'warning' or result == 'error'
-
-      phase = phases.find { |phase| phase.label == 'Actions::ForemanPatch::Invocation::EnsureServices' }
-
-      phase.exit_status == 1
     end
 
     class Jail < ::Safemode::Jail
