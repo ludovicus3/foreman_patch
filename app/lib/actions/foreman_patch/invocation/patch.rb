@@ -14,7 +14,6 @@ module Actions
             plan_action(Actions::ForemanPatch::Invocation::Restart, host)
             plan_action(Actions::ForemanPatch::Invocation::EnsureServices, host)
           end
-          plan_self
         end
 
         def humanized_name
@@ -22,6 +21,15 @@ module Actions
         end
 
         def rescue_strategy
+          planned_actions.each do |planned_action|
+            if planned_action.steps.compact.any? { |step| step.state == :error }
+              return rescue_strategy_for_planned_action(planned_action)
+            end
+          end
+          rescue_strategy_for_self
+        end
+
+        def rescue_strategy_for_self
           ::Dynflow::Action::Rescue::Fail
         end
 

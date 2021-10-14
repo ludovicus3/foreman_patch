@@ -29,11 +29,7 @@ module Actions
             end
 
             fail _('Package update failed')
-          end
-        end
-
-        def finalize
-          if exit_status == 0
+          else
             host.group_facet.last_patched_at = Time.current
             host.group_facet.save!
           end
