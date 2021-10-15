@@ -28,6 +28,8 @@ Foreman::Plugin.register :foreman_patch do
     engine: ForemanPatch::Engine,
     parent: :content_menu
 
+  parameter_filter ::Host::Managed, :group_facet_attributes => [:group_id]
+
   describe_host do
     multiple_actions_provider :patch_host_multiple_actions
     overview_fields_provider :patch_host_overview_fields
