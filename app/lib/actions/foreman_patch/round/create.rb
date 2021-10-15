@@ -17,6 +17,7 @@ module Actions
 
         def params
           {
+            group_id: input[:group][:id],
             name: input[:name],
             description: input[:description],
             priority: input[:priority],

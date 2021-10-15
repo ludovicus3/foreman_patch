@@ -1,7 +1,7 @@
 module Actions
   module ForemanPatch
     module Cycle
-      class Plan < Actions::ActionWithSubPlans
+      class Plan < Actions::EntryAction
 
         def resource_locks
           :link
@@ -20,16 +20,16 @@ module Actions
 
           creation = plan_action(::Actions::ForemanPatch::Cycle::Create, params(plan))
 
+          concurrence do
+            plan.window_plans.each do |window_plan|
+              plan_action(::Actions::ForemanPatch::Window::Plan, window_plan, creation.output[:cycle])
+            end
+          end
+
           plan_self cycle: creation.output[:cycle]
         end
 
-        def create_sub_plans
-          cycle_plan.window_plans.map do |window_plan|
-            trigger(::Actions::ForemanPatch::Window::Plan, window_plan, cycle)
-          end
-        end
-
-        def on_finish
+        def run
           cycle_plan.start_date = cycle_plan.next_cycle_start
           cycle_plan.save!
         end

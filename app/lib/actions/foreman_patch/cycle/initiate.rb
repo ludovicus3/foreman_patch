@@ -16,15 +16,29 @@ module Actions
         def plan(cycle)
           action_subject(cycle)
 
-          content_view_versions = cycle.hosts.map do |host|
-            host.content_view.version(host.lifecycle_environment)
-          end.uniq
+          sequence do
+            sequence do
+              cycle.windows.each do |window|
+                concurrence do
+                  window.rounds.each do |round|
+                    plan_action(::Actions::ForemanPatch::Round::ResolveHosts, round)
+                  end
+                end
 
-          concurrence do
-            content_view_versions.each do |version|
-              next unless available_content?(version)
+                plan_action(::Actions::ForemanPatch::Window::Publish, window)
+              end
+            end
 
-              plan_action(::Actions::ForemanPatch::Cycle::PrepareContent, version, _('Updating content for patch cycle: %s') % cycle.name)
+            content_view_versions = cycle.hosts.map do |host|
+              host.content_view.version(host.lifecycle_environment)
+            end.uniq
+
+            concurrence do
+              content_view_versions.each do |version|
+                next unless available_content?(version)
+
+                plan_action(::Actions::ForemanPatch::Cycle::PrepareContent, version, _('Updating content for patch cycle: %s') % cycle.name)
+              end
             end
           end
 
