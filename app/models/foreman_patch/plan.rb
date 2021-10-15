@@ -5,7 +5,7 @@ module ForemanPatch
     UNITS = ['days', 'weeks', 'months', 'years'].freeze
     CORRECTIONS = ['weekday', 'last_day', 'last_weekday', 'avoid_weekend'].freeze
 
-    has_many :window_plans, class_name: 'ForemanPatch::WindowPlan', foreign_key: :plan_id, dependent: :nullify, inverse_of: :plan
+    has_many :window_plans, class_name: 'ForemanPatch::WindowPlan', foreign_key: :plan_id, dependent: :delete_all, inverse_of: :plan
 
     has_many :cycles, -> { order(start_date: :desc) }, class_name: 'ForemanPatch::Cycle', foreign_key: :plan_id, dependent: :nullify
 

@@ -9,6 +9,8 @@ module ForemanPatch
     has_many :group_facets, class_name: 'ForemanPatch::Host::GroupFacet', foreign_key: :group_id, inverse_of: :group, dependent: :nullify
     has_many :hosts, through: :group_facets
 
+    has_many :rounds, class_name: 'ForemanPatch::Round', foreign_key: :group_id, dependent: :nullify
+
     validates :name, presence: true, uniqueness: true
 
     scoped_search on: :id, complete_value: false
