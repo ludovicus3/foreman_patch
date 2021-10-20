@@ -26,7 +26,7 @@ module Actions
 
           sleep(60)
         
-          schedule_timeout(Setting[:host_max_wait_for_up]) unless Setting[:host_max_wait_for_up]
+          schedule_timeout(Setting[:host_max_wait_for_up]) if Setting[:host_max_wait_for_up]
           
           { up: false }
         end
