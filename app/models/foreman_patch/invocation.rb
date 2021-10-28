@@ -9,7 +9,11 @@ module ForemanPatch
 
     belongs_to :task, class_name: 'ForemanTasks::Task'
 
-    scope :with_round, ->(round) { where(round_id: round.id) }
+    scope :pending, -> { left_joins(:task).where(foreman_tasks_tasks: { result: [nil, 'pending'] }) }
+    scope :failed, -> { left_joins(:task).where(foreman_tasks_tasks: { result: 'failed' }) }
+    scope :warning, -> { left_joins(:task).where(foreman_tasks_tasks: { result: 'warning' }) }
+    scope :successful, -> { left_joins(:task).where(foreman_tasks_tasks: { result: 'success' }) }
+    scope :cancelled, -> { left_joins(:task).where(foreman_tasks_tasks: { result: 'cancelled' }) }
 
     scoped_search relation: :host, on: :name, complete_value: true
 

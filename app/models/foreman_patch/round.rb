@@ -38,26 +38,31 @@ module ForemanPatch
     end
 
     def progress_report
-      map = invocations.reduce({
+      invocations.reduce({
         pending: 0,
+        running: 0,
         success: 0,
+        warning: 0,
         failed: 0,
         cancelled: 0,
-      }) do |hash, invocation|
+      }) do |report, invocation|
         case invocation.result
-        when 'error', 'warning'
-          hash[:failed] += 1
+        when 'error'
+          report[:failed] += 1
+        when 'warning'
+          report[:warning] += 1
         when 'success'
-          hash[:success] += 1
+          report[:success] += 1
         when 'cancelled'
-          hash[:cancelled] += 1
+          report[:cancelled] += 1
+        when 'running'
+          report[:running] += 1
         else
-          hash[:pending] += 1
+          report[:pending] += 1
         end
 
-        hash
+        report
       end
-      map
     end
 
     def finished?
