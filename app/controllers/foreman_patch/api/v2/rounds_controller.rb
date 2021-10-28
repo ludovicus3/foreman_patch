@@ -10,7 +10,7 @@ module ForemanPatch
         end
 
         before_action :find_window, only: [:index]
-        before_action :find_resource, only: [:update, :show, :destroy]
+        before_action :find_round, only: [:update, :show, :destroy]
 
         api :GET, '/rounds', N_('List rounds')
         api :GET, '/windows/:window_id/rounds'. N_('List window groups within a given window')
@@ -66,6 +66,10 @@ module ForemanPatch
         end
 
         private
+
+        def find_round
+          @round ||= ForemanPatch::Round.find(params[:id])
+        end
 
         def find_window
           @window ||= ForemanPatch::Window.find(params[:window_id])
