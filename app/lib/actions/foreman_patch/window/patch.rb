@@ -3,6 +3,10 @@ module Actions
     module Window
       class Patch < Actions::EntryAction
 
+        def resource_locks
+          :link
+        end
+
         def delay(delay_options, window)
           window.task_id = task.id
           window.save!
