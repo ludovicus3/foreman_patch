@@ -34,5 +34,12 @@ ForemanPatch::Engine.routes.draw do
     end
 
     resources :window_plans, only: [:edit, :update, :destroy]
+
+    resources :ticket_fields, except: [:show] do
+      resources :lookup_values, only: [:index, :create, :update, :destroy]
+      collection do
+        get 'auto_complete_search'
+      end
+    end
   end
 end

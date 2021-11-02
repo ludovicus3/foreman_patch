@@ -28,6 +28,10 @@ Foreman::Plugin.register :foreman_patch do
     engine: ForemanPatch::Engine,
     parent: :content_menu
 
+  menu :top_menu, :ticket_fields, caption: N_('Ticket Fields'),
+    engine: ForemanPatch::Engine,
+    parent: :content_menu
+
   parameter_filter ::Host::Managed, :group_facet_attributes => [:group_id]
 
   describe_host do

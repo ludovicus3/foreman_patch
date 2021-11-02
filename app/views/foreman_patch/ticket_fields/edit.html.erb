@@ -1,0 +1,6 @@
+<%= breadcrumbs(items: [ { caption: _('Ticket Fields'), url: url_for(ticket_fields_path) }, { caption: _('Edit %s' % @ticket_field.key) }], switchable: false) %>
+<% title _('Edit Ticket Field') %>
+<%= form_for(@ticket_field) do |f| %>
+  <%= render 'fields', f: f %>
+  <%= submit_or_cancel f %>
+<% end %>
