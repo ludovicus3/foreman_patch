@@ -10,12 +10,12 @@ module ForemanPatch
 
     def path
       path = self[:path]
-      path.presence || array2path(['action', 'window', 'cycle'])
+      path.presence || array2path(['name', 'cycle'])
     end
 
     def path=(value)
       return unless value
-      using_default = value.tr("\r", "") == array2path(['action', 'window', 'cycle'])
+      using_default = value.tr("\r", "") == array2path(['name', 'cycle'])
       self[:path] = using_default ? nil : value
     end
 

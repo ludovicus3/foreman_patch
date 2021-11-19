@@ -1,7 +1,7 @@
 module ForemanPatch
   class Ticket
 
-    attr_reader :window
+    attr_reader :window, :response
 
     def self.save(window)
       ticket = Ticket.new(window)
@@ -15,6 +15,7 @@ module ForemanPatch
 
     def initialize(window)
       @window = window
+      @response = {}
     end
 
     def save
@@ -25,8 +26,7 @@ module ForemanPatch
       end
       process_response(response) 
     rescue => error
-      Rails.logger.error(error)
-      {}
+      process_error(error)
     end
 
     def load
@@ -34,19 +34,14 @@ module ForemanPatch
 
       process_response(request(:get).execute)
     rescue => error
-      Rails.logger.error(error)
-      {}
-    end
-
-    private
-
-    def template
-      @template ||= ReportTemplate.find(Setting[:ticket_template])
+      process_error(error)
     end
 
     def payload
-      template.render(variables: { window: window })
+      @payload ||= TicketPayload.new(window)
     end
+
+    private
 
     def url(method)
       path = Setting["ticket_api_#{method}_path"]
@@ -84,7 +79,12 @@ module ForemanPatch
     def process_response(response)
       hash = JSON.parse(response)
 
-      hash['result']
+      @response = hash['result']
+    end
+
+    def process_error(error)
+      Rails.logger.error(error)
+      @response = {}
     end
 
   end
