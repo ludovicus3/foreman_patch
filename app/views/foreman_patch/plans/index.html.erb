@@ -1,6 +1,6 @@
 <% title _("Plans") %>
 
-<% title_actions new_link(_("Create Plan")) %>
+<% title_actions link_to(_("Create Plan"), hash_for_new_plan_path, class: 'btn btn-default') %>
 
 <table class="<%= table_css_classes 'table-fixed' %>">
   <thead>

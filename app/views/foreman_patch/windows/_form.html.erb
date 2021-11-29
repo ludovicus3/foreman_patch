@@ -1,4 +1,4 @@
-<%= form_for @window, url: (@window.new_record? ? cycle_window_path(cycle_id: @cycle) : window_path(id: @window)) do |f| %>
+<%= form_for @window, url: (@window.new_record? ? cycle_windows_path(cycle_id: @cycle) : window_path(id: @window)) do |f| %>
   <%= base_errors_for @window %>
   <ul class="nav nav-tabs" data-tabs="tabs">
     <li class="active"><a href="#primary" data-toggle="tab"><%= _('Window') %></a></li>

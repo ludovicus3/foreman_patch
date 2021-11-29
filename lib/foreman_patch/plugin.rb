@@ -15,20 +15,23 @@ Foreman::Plugin.register :foreman_patch do
   end
 
   divider :top_menu, caption: N_('Patching'), parent: :content_menu
-
-  menu :top_menu, :groups, caption: N_('Groups'),
+  menu :top_menu, :groups,
+    caption: N_('Groups'),
     engine: ForemanPatch::Engine,
     parent: :content_menu
 
-  menu :top_menu, :cycles, caption: N_('Cycles'),
+  menu :top_menu, :cycles,
+    caption: N_('Cycles'),
     engine: ForemanPatch::Engine,
     parent: :content_menu
 
-  menu :top_menu, :plans, caption: N_('Plans'),
+  menu :top_menu, :plans,
+    caption: N_('Plans'),
     engine: ForemanPatch::Engine,
     parent: :content_menu
 
-  menu :top_menu, :ticket_fields, caption: N_('Ticket Fields'),
+  menu :top_menu, :ticket_fields,
+    caption: N_('Ticket Fields'),
     engine: ForemanPatch::Engine,
     parent: :content_menu
 
