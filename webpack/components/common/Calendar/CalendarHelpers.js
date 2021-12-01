@@ -24,8 +24,13 @@ export const addMonths = (date, months) => {
 };
 
 export const getMonthStart = (date) => {
-  date.setDate(1);
-  return date;
+  date = new Date(date);
+  return new Date(date.getFullYear(), date.getMonth(), 1);
+};
+
+export const getMonthEnd = (date) => {
+  date = new Date(date);
+  return new Date(date.getFullYear(), date.getMonth() + 1, 0);
 };
 
 export const getWeekStart = (date) => addDays(date, (7 - date.getDay()) % 7);
