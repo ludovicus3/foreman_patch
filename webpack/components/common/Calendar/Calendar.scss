@@ -1,0 +1,54 @@
+.calendar {
+
+  .day {
+    padding: 2px;
+    height: 120px;
+  }
+
+  .wday-0 {}
+  .wday-1 {}
+  .wday-2 {}
+  .wday-3 {}
+  .wday-4 {}
+  .wday-5 {}
+  .wday-6 {}
+
+  .today {
+    background: #ffffc0;
+  }
+
+  .past {
+    background: #f9f9f9;
+  }
+
+  .future {}
+
+  .start-date {}
+
+  .disabled {
+    background: #e8e8e8;
+  }
+  .enabled {}
+  td.enabled:hover {
+    background: #def3ff;
+  }
+
+  h6 {
+    margin: 2px 3px;
+  }
+
+  div.day {
+    margin: 0;
+    height: inherit;
+    width: inherit;
+    display: block;
+  }
+
+  div.event {
+    margin: 2px, 10px;
+    border: 1px solid;
+    border-color: #d1d1d1;
+    padding: 2px 3px;
+    background: #ffffff;
+  }
+}

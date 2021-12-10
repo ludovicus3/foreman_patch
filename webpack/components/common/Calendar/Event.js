@@ -4,35 +4,32 @@ import { useDrag, useDrop } from 'react-dnd';
 import { CALENDAR_EVENT } from './CalendarConstants';
 
 const Event = (props) => {
-  const { move, label } = props;
-  
+  const { title } = props;
+
   const [, drag] = useDrag({
     type: CALENDAR_EVENT,
     item: {
-      ...props,
       type: CALENDAR_EVENT,
-    },
-    end: (item, monitor) => {
-      const dropResult = monitor.getDropResult();
-
-      if (dropResult) {
-        const { newDate } = dropResult;
-
-        move(item, newDate);
-      }
+      ...props,
     },
   });
 
   return (
     <div ref={drag} className='event'>
-      {label}
+      {title}
     </div>
   );
 };
 
 Event.propTypes = {
-  move: PropTypes.func.required,
-  label: PropTypes.object.required,
+  start: PropTypes.instanceOf(Date).isRequired,
+  end: PropTypes.instanceOf(Date).isRequired,
+  title: PropTypes.node.isRequired,
+  onMoved: PropTypes.func,
+};
+
+Event.defaultProps = {
+  onMoved: null,
 };
 
 export default Event;

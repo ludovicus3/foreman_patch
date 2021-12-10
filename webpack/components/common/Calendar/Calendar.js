@@ -2,98 +2,52 @@ import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { DndProvider } from 'react-dnd';
 import HTML5Backend from 'react-dnd-html5-backend';
-import DayView from './DayView';
-import WeekView from './WeekView';
-import MonthView from './MonthView';
-import CalendarHeader from './CalendarHeader';
-import { DAY, WEEK, MONTH } from './CalendarConstants';
+import './Calendar.scss';
 
-class Calendar extends React.Component {
-  constructor(props) {
-    super(props);
+import { views, getView } from './View';
 
-    this.props.first = this.initializeDate(this.props.first);
-    this.props.last = this.initializeDate(this.props.last);
-    this.props.date = this.initializeDate(this.props.date, new Date());
+const Calendar = (props) => {
+  const {start, end, weekStartsOn, locale} = props;
 
-    if (this.props.first > this.props.date || this.props.last < this.props.date) {
-      this.props.date = new Date(this.props.first);
+  const initialDate = () => {
+    const { date } = props;
+    if (date < start || date > end) {
+      return (date < start) ? new Date(start) : new Date(end);
+    } else {
+      return date;
     }
+  };
 
-    this.state = {
-      date: this.props.date,
-      view: this.props.view,
-      events: this.props.events,
-    };
-  }
+  const [date, setDate] = useState(initialDate());
+  const [view, setView] = useState(props.view);
+  const [events, setEvents] = useState(props.events);
 
-  initializeDate(date, fallback = null) {
-    return !!Date.parse(date) ? new Date(date) : fallback;
-  }
+  let View = getView(view);
 
-  setDate = (date) => {
-    this.setState({
-      date: this.initializeDate(date, this.state.date),
-    });
-  }
-
-  setView = (view) => {
-    this.setState({
-      view: view,
-    });
-  }
-
-  renderView() {
-    const props = {
-      ...this.props,
-      ...this.state,
-    };
-
-    const { view } = this.state;
-
-    switch (view) {
-      case DAY:
-        return (<DayView {...props} />);
-      case WEEK:
-        return (<WeekView {...props} />);
-      case MONTH:
-      default:
-        return (<MonthView {...props} />);
-    }
-  }
-
-  render() {
-    const props = {
-      ...this.props,
-      ...this.state,
-    };
-
-    return (
-      <div className="calendar">
-        <CalendarHeader {...props} setDate={this.setDate} setView={this.setView} />
-        <DndProvider backend={HTML5Backend}>
-          {this.renderView()}
-        </DndProvider>
-      </div>
-    );
-  }
-}
+  return (
+    <div className="calendar">
+      <DndProvider backend={HTML5Backend}>
+        <View start={start} end={end} date={date} setDate={setDate} setView={view} events={events} locale={locale} weekStartsOn={weekStartsOn}/>
+      </DndProvider>
+    </div>
+  );
+};
 
 Calendar.propTypes = {
-  first: PropTypes.oneOfType([PropTypes.instanceOf(Date), PropTypes.string]),
-  last: PropTypes.oneOfType([PropTypes.instanceOf(Date), PropTypes.string]),
-  date: PropTypes.oneOfType([PropTypes.instanceOf(Date), PropTypes.string]),
-  view: PropTypes.oneOf([DAY, WEEK, MONTH]),
-  events: PropTypes.arrayOf(PropTypes.object),
+  start: PropTypes.instanceOf(Date),
+  end: PropTypes.instanceOf(Date),
+  date: PropTypes.instanceOf(Date),
+  view: PropTypes.oneOf(Object.values(views)),
+  events: PropTypes.array,
   locale: PropTypes.string,
   weekStartsOn: PropTypes.number,
 };
 
 Calendar.defaultProps = {
-  first: null,
-  last: null,
+  start: null,
+  end: null,
   date: new Date(),
-  view: MONTH,
+  view: views.MONTH,
   events: [],
   locale: 'en-US',
   weekStartsOn: 1,

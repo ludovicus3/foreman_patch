@@ -4,43 +4,40 @@ import { useDrop } from 'react-dnd';
 import classNames from 'classnames';
 import { 
   isEqualDate,
-  isPastDate,
-  isFutureDate,
-} from './CalendarHelpers';
-import Event from './Event';
-import { CALENDAR_EVENT } from './CalendarConstants';
+  startOfDay,
+  endOfDay,
+} from '../CalendarHelpers';
+import Event from '../Event';
+import { CALENDAR_EVENT } from '../CalendarConstants';
 
 const Day = (props) => {
   const { date, enabled } = props;
 
   const events = props.events.filter(event => isEqualDate(date, event.start));
 
-  const adjustDate = (oldDate, newDate) => {
-    const result = new Date(oldDate);
-    oldDate.setFullYear(newDate.getFullYear());
-    oldDate.setMonth(newDate.getMonth());
-    oldDate.setDate(newDate.getDate());
-    return result;
-  };
-
-  const [{isOver, canDrop}, drop] = useDrop({
+  const [, drop] = useDrop({
     accept: CALENDAR_EVENT,
-    drop: (item) => ({ newDate: adjustDate(item.start, date) }),
-    collect: (monitor) => ({
-      isOver: monitor.isOver(),
-      canDrop: monitor.canDrop(),
-    }),
-    canDrop: () => {
-      return enabled;
+    drop: (item, monitor) => {
+      const { onMoved } = item;
+
+      let delta = Math.ceil((date - item.start) / (1000 * 60 * 60 * 24));
+
+      item.start.setDate(item.start.getDate() + delta);
+      item.end.setDate(item.end.getDate() + delta);
+
+      if (onMoved) {
+        onMoved(item);
+      }
     },
+    canDrop: (item, monitor) => (enabled),
   });
 
   const classes = {
     disabled: !enabled,
     enabled: enabled,
     today: isEqualDate(date, new Date()),
-    past: isPastDate(date),
-    future: isFutureDate(date),
+    past: date < startOfDay(),
+    future: date > endOfDay(),
   }
 
   return (
