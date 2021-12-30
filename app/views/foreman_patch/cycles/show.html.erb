@@ -1,16 +1,16 @@
-<% title @cycle.name %>
+<% content_for(:javascripts) do %>
+  <%= webpacked_plugins_js_for :foreman_patch %>
+<% end %>
+<% content_for(:stylesheets) do %>
+  <%= webpacked_plugins_css_for :foreman_patch %>
+<% end %>
 
-<% stylesheet 'foreman_patch/foreman_patch' %>
+<% title @cycle.name %>
 
 <% title_actions link_to(_('Create Window'), hash_for_new_cycle_window_path(cycle_id: @cycle.id), 
                          class: 'btn btn-default',
                          disabled: @cycle.end_date.past?,
                          title: _('Create a new window for this cycle'))
 %>
-<%= calendar(@cycle.start_date..@cycle.end_date) do |day| %>
-  <% cycle_windows(@cycle, day).each do |window| %>
-    <div class="event ellipsis">
-      <%= link_to("#{window.start_at.strftime('%l:%M %p')} #{window.name}", window_path(window)) %>
-    </div>
-  <% end %>
-<% end %>
+
+<%= react_component('Cycle', id: @cycle.id) %>
