@@ -8,7 +8,7 @@ import {
   isEqualDate,
 } from '../CalendarHelpers';
 
-const Month = ({start, end, date, setDate, setView, events, locale, weekStartsOn}) => {
+const Month = ({start, end, date, setDate, setView, events, onEventMoved, locale, weekStartsOn}) => {
   const weeks = getWeeksOfMonth(date, weekStartsOn); 
   const daysOfTheWeek = getWeekArray(weekStartsOn, locale);
 
@@ -34,7 +34,7 @@ const Month = ({start, end, date, setDate, setView, events, locale, weekStartsOn
             {weeks.map(week => (
               <tr className="week">
                 {week.map(day => (
-                  <Day key={day} date={day} enabled={isDayEnabled(day)} events={events}/>
+                  <Day key={day} date={day} enabled={isDayEnabled(day)} events={events} onEventMoved={onEventMoved} />
                 ))}
               </tr>
             ))}

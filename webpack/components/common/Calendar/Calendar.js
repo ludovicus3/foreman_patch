@@ -7,7 +7,7 @@ import './Calendar.scss';
 import { views, getView } from './View';
 
 const Calendar = (props) => {
-  const {start, end, weekStartsOn, locale} = props;
+  const {start, end, weekStartsOn, locale, onEventMoved} = props;
 
   const initialDate = () => {
     const { date } = props;
@@ -22,12 +22,35 @@ const Calendar = (props) => {
   const [view, setView] = useState(props.view);
   const [events, setEvents] = useState(props.events);
 
+  const movedCallback = (updatedEvent) => {
+    onEventMoved(updatedEvent);
+
+    const result = events.map(event => {
+      if (event.id === updatedEvent.id) {
+        return {...event, ...updatedEvent};
+      }
+      return event;
+    });
+
+    setEvents(result);
+  };
+
   let View = getView(view);
 
   return (
     <div className="calendar">
       <DndProvider backend={HTML5Backend}>
-        <View start={start} end={end} date={date} setDate={setDate} setView={view} events={events} locale={locale} weekStartsOn={weekStartsOn}/>
+        <View
+          start={start}
+          end={end}
+          date={date}
+          setDate={setDate}
+          setView={view}
+          events={events}
+          onEventMoved={movedCallback}
+          locale={locale}
+          weekStartsOn={weekStartsOn}
+        />
       </DndProvider>
     </div>
   );
@@ -38,7 +61,13 @@ Calendar.propTypes = {
   end: PropTypes.instanceOf(Date),
   date: PropTypes.instanceOf(Date),
   view: PropTypes.oneOf(Object.values(views)),
-  events: PropTypes.array,
+  events: PropTypes.arrayOf(PropTypes.shape({
+    id: PropTypes.number.isRequired,
+    start: PropTypes.instanceOf(Date).isRequired,
+    end: PropTypes.instanceOf(Date).isRequired,
+    title: PropTypes.node.isRequired,
+  })),
+  onEventMoved: PropTypes.func,
   locale: PropTypes.string,
   weekStartsOn: PropTypes.number,
 };
@@ -49,6 +78,7 @@ Calendar.defaultProps = {
   date: new Date(),
   view: views.MONTH,
   events: [],
+  onEventMoved: (event) => {},
   locale: 'en-US',
   weekStartsOn: 1,
 };
