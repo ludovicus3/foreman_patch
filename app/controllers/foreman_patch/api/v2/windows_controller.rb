@@ -10,7 +10,7 @@ module ForemanPatch
         end
 
         before_action :find_cycle, only: [:index]
-        before_action :find_resource, only: [:show, :update, :destroy]
+        before_action :find_window, only: [:show, :update, :destroy]
 
         api :GET, '/windows', N_('List windows')
         api :GET, '/cycles/:cycle_id/windows', N_('List windows from cycle')
@@ -86,6 +86,10 @@ module ForemanPatch
 
         def find_cycle
           @cycle ||= ForemanPatch::Cycle.find(params[:cycle_id])
+        end
+
+        def find_window
+          @window ||= ForemanPatch::Window.find(params[:id])
         end
 
         def window_params
