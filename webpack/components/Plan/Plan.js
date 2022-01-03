@@ -1,56 +1,90 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { LoadingState, Alert } from 'patternfly-react';
+import { translate as __ } from 'foremanReact/common/I18n';
+import { STATUS } from 'foremanReact/constants';
+
 import Window from './Window';
-import Calendar from '../common/Calendar/Calendar';
-import Event from '../common/Calendar/Calendar';
+import Calendar from '../common/Calendar';
 
 const Plan = ({
   id,
   name,
   description,
-  start,
-  end,
+  start_date,
+  end_date,
   interval,
   units,
   correction,
   activeCount,
-  windows,
+  window_plans,
+  moveWindow,
+  status,
 }) => {
-  const moveWindow = (window, date) => {
-    const duration = window.end - window.start
-    window.start = new Date(date);
-    window.end = new Date(window.start.getTime() + duration);
-    console.log(window);
+  if (status === STATUS.ERROR) {
+    return (
+      <Alert type="error">
+        {__(
+          'There is an error while loading the cycle, try refreshing the page.'
+        )}
+      </Alert>
+    );
+  }
+
+  const start = new Date(start_date + 'T00:00:00.000');
+  const end = new Date(end_date + 'T23:59:59.999');
+
+  const onEventMoved = (event) => {
+    const window = {
+      id: event.id,
+      start_day: Math.floor((event.start.getTime() - start.getTime()) / (24 * 60 * 60 * 1000)),
+      duration: (event.end.getTime() - event.start.getTime()) / 1000,
+      start_time: event.start,
+    };
+
+    moveWindow(window);
   };
 
-  const events = windows.map((window) => ({
-    ...window,
-    start: new Date(window.start),
-    end: new Date(window.end),
-    move: moveWindow,
-    label: (<Window {...window} />),
-  }));
-  
-  return <Calendar first={start} last={end} events={events} />;
+
+  const events = window_plans.map(window => {
+    const start = new Date(window.start_time);
+    const end = new Date(start.getTime() + window.duration * 1000);
+
+    return {
+      id: window.id,
+      start: start,
+      end: end,
+      title: <Window {...window} />
+    };
+  });
+
+  return (
+    <LoadingState loading={status === STATUS.PENDING} >
+      <Calendar start={start} end={end} events={events} onEventMoved={onEventMoved} />
+    </LoadingState>
+  );
 };
 
 Plan.propTypes = {
   id: PropTypes.number.isRequired,
   name: PropTypes.string.isRequired,
   description: PropTypes.string,
-  start: PropTypes.oneOfType([PropTypes.instanceOf(Date), PropTypes.string]).isRequired,
-  end: PropTypes.oneOfType([PropTypes.instanceOf(Date), PropTypes.string]).isRequired,
+  start_date: PropTypes.string.isRequired,
+  end_date: PropTypes.string.isRequired,
   interval: PropTypes.number.isRequired,
-  units: PropTypes.oneOf(['days', 'weeks', 'months']),
+  units: PropTypes.oneOf(['days', 'weeks', 'months']).isRequired,
   correction: PropTypes.string,
   activeCount: PropTypes.number.isRequired,
-  windows: PropTypes.array, 
+  window_plans: PropTypes.array,
+  moveWindow: PropTypes.func,
+  status: PropTypes.string.isRequired,
 };
 
 Plan.defaultProps = {
   description: null,
   correction: null,
-  windows: [],
+  window_plans: [],
+  moveWindow: (window) => {},
 };
 
 export default Plan;

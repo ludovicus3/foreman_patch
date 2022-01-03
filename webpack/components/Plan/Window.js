@@ -1,46 +1,33 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-class Window extends React.Component {
-  get date() {
-    return this.props.start;
-  }
+const Window = ({id, name, description, start_day, start_time, locale, hour12}) => {
+  const time = Intl.DateTimeFormat(locale, {
+    hour: 'numeric', minute: 'numeric', hour12: hour12
+  }).format(new Date(start_time));
 
-  set date(value) {
-    this.props.start = value;
- }
-
-  move(newDate) {
-    this.date = newDate;
-  }
-
-  render() {
-    const { id, link, name, description, start, end } = this.props;
-
-    const time = Intl.DateTimeFormat('en-US', {
-      hour: 'numeric', minute: 'numeric', hour12: true
-    }).format(new Date(start));
-
-    return (
-      <div className="ellipsis">
-        <a href={link}>{time} {name}</a>
-      </div>
-    );
-  }
+  return (
+    <div className="ellipsis">
+      <a href={`/foreman_patch/window_plans/${id}`}>{time} {name}</a>
+    </div>
+  );
 };
 
 Window.propTypes = {
   id: PropTypes.number.isRequired,
-  link: PropTypes.string.isRequired,
   name: PropTypes.string.isRequired,
   description: PropTypes.string,
-  start: PropTypes.oneOfType([PropTypes.instanceOf(Date), PropTypes.string]).isRequired,
-  end: PropTypes.oneOfType([PropTypes.instanceOf(Date), PropTypes.string]),
+  start_day: PropTypes.number.isRequired,
+  start_time: PropTypes.instanceOf(Date).isRequired,
+  duration: PropTypes.number.isRequired,
+  locale: PropTypes.string,
+  hour12: PropTypes.bool,
 };
 
 Window.defaultProps = {
   description: null,
-  end: null
+  locale: 'en-US',
+  hour12: true,
 };
 
 export default Window;

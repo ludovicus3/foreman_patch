@@ -31,6 +31,7 @@ module ForemanPatch
             param :description, String, desc: N_('Description of the window plan')
             param :start_day, Integer, desc: N_('Day of execution of the window plan relative to cycle start'), required: true
             param :start_time, String, desc: N_('Number of windows to have active/planned'), required: true
+            param :duration, Integer, desc: N_('Duration of the patch window in seconds'), required: true
           end
         end
 
@@ -67,7 +68,7 @@ module ForemanPatch
 
         def window_plan_params
           params[:window_plan][:plan_id] = params[:plan_id] unless params[:plan_id].nil?
-          params.require(:window_plan).permit(:name, :description, :start_day, :start_time, :plan_id)
+          params.require(:window_plan).permit(:name, :description, :start_day, :start_time, :duration, :plan_id)
         end
 
       end
