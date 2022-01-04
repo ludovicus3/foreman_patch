@@ -21,15 +21,29 @@ module ForemanPatch
 
     scoped_search relation: :plan, on: :name, complete_value: true
 
+    def start_time
+      value = read_attribute(:start_time)
+      if value.acts_like?(:time)
+        args = [value.year, value.month, value.day, value.hour, value.min, value.sec]
+        time = Time.find_zone(Setting[:patch_schedule_time_zone]).local(*args)
+      else
+        time = Time.find_zone(Setting[:patch_schedule_time_zone]).parse(value)
+      end
+      time.to_time
+    end
+
+    def start_time=(value)
+      if value.acts_like?(:time)
+        time = value.in_time_zone(Setting[:patch_schedule_time_zone]).time
+      else
+        time = Time.find_zone(Setting[:patch_schedule_time_zone]).parse(value).time
+      end
+      write_attribute(:start_time, time)
+    end
+
     def start_at
       start_date = plan.start_date + start_day.days
-      Time.find_zone(Setting[:patch_schedule_time_zone]).local(
-        start_date.year,
-        start_date.month,
-        start_date.day,
-        start_time.hour,
-        start_time.min,
-        start_time.sec)
+      start_time.change(year: start_date.year, month: start_date.month, day: start_date.day)
     end
 
     def end_by
