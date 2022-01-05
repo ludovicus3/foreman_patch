@@ -24,7 +24,8 @@ module ForemanPatch
     scoped_search relation: :task, on: :state, rename: 'state', 
       complete_value: Hash[HostStatus::ExecutionStatus::STATUS_NAMES.values.map { |v| [v, v] }]
 
-    after_update :reschedule_task, if: :needs_reschedule?
+    after_update :reschedule, if: :needs_reschedule?
+    after_update :republish, if: :needs_republish?
 
     def ticket
       return @ticket if defined? @ticket
@@ -78,16 +79,33 @@ module ForemanPatch
       task.send(method) unless task.blank?
     end
 
+    def published?
+      not ticket_id.blank?
+    end
+
     private
 
     def needs_reschedule?
-      scheduled? and (task.start_at == start_at and task.start_before == end_by)
+      scheduled? and (saved_changes.keys & ['start_at', 'end_by']).any?
     end
 
-    def reschedule_task
-      cancel
+    def reschedule
+      User.as_anonymous_admin do
+        task.cancel
+        task.destroy
 
-      schedule
+        ::ForemanTasks.delay(::Actions::ForemanPatch::Window::Patch, delay_options, self)
+      end
+    end
+
+    def needs_republish?
+      published? and (saved_changes.keys - ['ticket_id']).any?
+    end
+
+    def republish
+      User.as_anonymous_admin do
+        ::ForemanTasks.async_task(::Actions::ForemanPatch::Window::Publish, self)
+      end
     end
 
     def delay_options
