@@ -4,9 +4,8 @@ module Actions
       class ResolveHosts < Actions::EntryAction
 
         def plan(round)
-          round = round.to_action_input if ::ForemanPatch::Round === round
-
-          plan_self(round: round)
+          input.update serialize_args(round: round)
+          plan_self
         end
 
         def run

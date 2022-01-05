@@ -3,12 +3,8 @@ module Actions
     module Window
       class Plan < Actions::EntryAction
 
-        def resource_locks
-          :link
-        end
-
         def plan(window_plan, cycle)
-          action_subject(window_plan, cycle: cycle)
+          input.update serialize_args(window_plan: window_plan, cycle: cycle)
 
           sequence do
             action = plan_action(::Actions::ForemanPatch::Window::Create, params(window_plan, cycle))

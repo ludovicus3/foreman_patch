@@ -3,29 +3,19 @@ module Actions
     module Cycle
       class Initiate < Actions::EntryAction
 
-        def resource_locks
-          :link
-        end
-
         def delay(delay_options, cycle)
-          action_subject(cycle)
+          input.update serialize_args(cycle: cycle)
 
           super delay_options, cycle
         end
 
         def plan(cycle)
-          action_subject(cycle)
+          input.update serialize_args(cycle: cycle)
 
           sequence do
-            sequence do
+            concurrence do
               cycle.windows.each do |window|
-                concurrence do
-                  window.rounds.each do |round|
-                    plan_action(::Actions::ForemanPatch::Round::ResolveHosts, round)
-                  end
-                end
-
-                plan_action(::Actions::ForemanPatch::Window::Publish, window)
+                plan_action(Actions::ForemanPatch::Window::ResolveHosts, window)
               end
             end
 

@@ -3,30 +3,28 @@ module Actions
     module Cycle
       class Plan < Actions::EntryAction
 
-        def resource_locks
-          :link
-        end
-
         def delay(delay_options, plan)
+          input.update serialize_args(plan: plan)
           add_missing_task_group(plan)
-          action_subject(plan)
 
           super delay_options, plan
         end
 
         def plan(plan)
+          input.update serialize_args(plan: plan)
           add_missing_task_group(plan)
-          action_subject(plan)
 
-          creation = plan_action(::Actions::ForemanPatch::Cycle::Create, params(plan))
+          sequence do
+            creation = plan_action(::Actions::ForemanPatch::Cycle::Create, params(plan))
 
-          concurrence do
-            plan.window_plans.each do |window_plan|
-              plan_action(::Actions::ForemanPatch::Window::Plan, window_plan, creation.output[:cycle])
+            concurrence do
+              plan.window_plans.each do |window_plan|
+                plan_action(::Actions::ForemanPatch::Window::Plan, window_plan, creation.output[:cycle])
+              end
             end
-          end
 
-          plan_self cycle: creation.output[:cycle]
+            plan_self
+          end
         end
 
         def run

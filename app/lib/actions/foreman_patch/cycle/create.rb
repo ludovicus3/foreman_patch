@@ -1,16 +1,17 @@
 module Actions
   module ForemanPatch
     module Cycle
-      class Create < Actions::Base
+      class Create < Actions::EntryAction
 
         def plan(params)
-          plan_self params 
+          input.update serialize_args(params)
+          plan_self
         end
 
         def run
           cycle = ::ForemanPatch::Cycle.create!(params)
 
-          output[:cycle] = cycle.to_action_input
+          output.update(cycle: cycle.to_action_input)
         end
 
         def finalize

@@ -10,7 +10,7 @@ module Actions
         def run
           window = cycle.windows.create!(params)
 
-          output[:window] = window.to_action_input
+          output.update(window: window.to_action_input)
         end
 
         private
