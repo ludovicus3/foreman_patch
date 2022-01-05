@@ -1,3 +1,4 @@
 source 'https://rubygems.org'
 
-gemspec
+gemspec name: 'foreman_patch'
+
