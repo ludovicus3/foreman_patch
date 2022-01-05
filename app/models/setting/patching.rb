@@ -8,14 +8,6 @@ class Setting::Patching < ::Setting
       text_method: 'name_and_url',
     }]
 
-    template_select = [{
-      name: _('Ticket Templates'),
-      class: 'ReportTemplate',
-      scope: 'all',
-      value_method: 'id',
-      text_method: 'name',
-    }]
-
     time_zone_select = [{
       name: _('Time Zones'),
       class: 'ActiveSupport::TimeZone',
@@ -28,9 +20,6 @@ class Setting::Patching < ::Setting
     [
       self.set('host_max_wait_for_up', N_("Maximum seconds to wait for a host after patching restart."),
                600, N_("Max wait for host up")),
-      self.set('ticket_template', N_("Default template used for generating ticket."), 
-               nil, N_('Ticket Template'), nil, 
-               collection: proc { template_select }),
       self.set('patch_schedule_time_zone', N_('Time zone used to base patch window scheduling off of.'),
                'UTC', N_('Patch Schedule Time Zone'), nil,
                collection: proc { time_zone_select }),
@@ -43,12 +32,8 @@ class Setting::Patching < ::Setting
                nil, N_('Ticket API user')),
       self.set('ticket_api_password', N_('Password for ticket API user'),
                nil, N_('Ticket API password'), nil, { encrypted: true }),
-      self.set('ticket_api_get_path', N_('Ticket API path for GET operations'),
-               '/api/now/table/change_request/:id', N_('Ticket API GET path')),
-      self.set('ticket_api_post_path', N_('Ticket API path for POST operations'),
-               '/api/now/table/change_request', N_('Ticket API POST path')),
-      self.set('ticket_api_put_path', N_('Ticket API path for PUT operations'),
-               '/api/now/table/change_request/:id', N_('Ticket API PUT path')),
+      self.set('ticket_api_path', N_('Ticket API path for REST/CRUD operations'),
+               '/api/now/table/change_request', N_('Ticket API path')),
       self.set('ticket_web_ui_path', N_('Path for opening a ticket in the web UI'),
                '/change_request.do?sys_id=:id', N_('Ticket Web UI path')),
       self.set('ticket_label_field', N_('Name of the field used for the ticket label'),
@@ -63,7 +48,7 @@ class Setting::Patching < ::Setting
   end
 
   def self.load_defaults
-    BLANK_ATTRS.concat %w(ticket_template ticket_api_host ticket_api_proxy ticket_api_user ticket_api_password)
+    BLANK_ATTRS.concat %w(ticket_api_host ticket_api_proxy ticket_api_user ticket_api_password)
     super
   end
 end
