@@ -5,7 +5,15 @@
   <%= webpacked_plugins_css_for :foreman_patch %>
 <% end %>
 
-<% title @plan.name %>
+<% breadcrumbs(resource_url: api_plans_path,
+               name_field: 'name',
+               switcher_item_url: plan_path(':id'),
+               items: [
+                 { caption: _('Patching Plans'), url: plans_path },
+                 { caption: @plan.name }
+               ]
+              )
+%>
 
 <% title_actions(link_to(_('Create Window'), new_plan_window_plan_path(plan_id: @plan.id),
                          class: 'btn btn-default',
