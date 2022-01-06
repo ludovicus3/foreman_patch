@@ -49,7 +49,7 @@ module ForemanPatch
 
     def window_plan_params
       params[:window_plan][:plan_id] = params[:plan_id] unless params[:plan_id].nil?
-      params.require(:window_plan).permit(:name, :description, :state_day, :start_time, :plan_id)
+      params.require(:window_plan).permit(:name, :description, :state_day, :start_time, :duration, :plan_id)
     end
 
     def success_hash
