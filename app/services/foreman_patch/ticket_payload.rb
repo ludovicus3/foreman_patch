@@ -15,15 +15,23 @@ module ForemanPatch
 
     end
 
+    def keys
+      TicketField.all.pluck(:key)
+    end
+
     def [](key)
       @raw[key]
     end
 
-    def to_json
-      @raw.compact.to_json
+    def to_json(*args)
+      @raw.compact.to_json(*args)
     end
 
     private
+
+    def field(key)
+      TicketField.find_by(key: key)
+    end
 
     def calculate_value(key)
       value = nil

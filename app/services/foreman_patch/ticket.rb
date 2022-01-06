@@ -43,9 +43,9 @@ module ForemanPatch
 
     private
 
-    def url(method)
-      path = Setting["ticket_api_#{method}_path"]
-      path.gsub!(':id', window.ticket_id) unless window.ticket_id.blank?
+    def url
+      path = Setting[:ticket_api_path]
+      path += "/#{window.ticket_id}" unless window.ticket_id.blank?
 
       Setting[:ticket_api_host] + path
     end
@@ -61,7 +61,7 @@ module ForemanPatch
     def request(method)
       args = {
         method: method,
-        url: url(method),
+        url: url,
         headers: {
           accept: :json,
           content_type: :json,
