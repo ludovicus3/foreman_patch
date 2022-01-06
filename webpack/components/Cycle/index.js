@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { useSelector, useDispatch } from 'react-redux';
 
@@ -11,7 +11,6 @@ import {
   getCycle,
   moveWindow,
 } from './CycleActions';
-import { CYCLE } from './CycleConstants';
 
 const WrappedCycle = ({ id }) => {
   const dispatch = useDispatch();
