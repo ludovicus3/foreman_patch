@@ -8,7 +8,7 @@ const Window = ({id, name, description, start_day, start_time, locale, hour12}) 
 
   return (
     <div className="ellipsis">
-      <a href={`/foreman_patch/window_plans/${id}`}>{time} {name}</a>
+      <a href={`/foreman_patch/window_plans/${id}/edit`}>{time} {name}</a>
     </div>
   );
 };
