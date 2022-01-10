@@ -1,7 +1,7 @@
 module ForemanPatch
   module Api
     module V2
-      class WindowsController < ApiController
+      class WindowsController < BaseController
 
         resource_description do
           resource_id 'patch_windows'
@@ -10,13 +10,13 @@ module ForemanPatch
         end
 
         before_action :find_cycle, only: [:index]
-        before_action :find_window, only: [:show, :update, :destroy]
+        before_action :find_resource, only: [:show, :update, :destroy]
 
         api :GET, '/windows', N_('List windows')
         api :GET, '/cycles/:cycle_id/windows', N_('List windows from cycle')
         param :cycle_id, Integer, desc: N_('ID of the cycle')
         param_group :search_and_pagination, ::Api::V2::BaseController
-        add_scoped_search_description_for(ForemanPatch::Window)
+        add_scoped_search_description_for(Window)
         def index
           if @cycle
             @windows = @cycle.windows.search_for(*search_options).paginate(paginate_options)
@@ -45,20 +45,20 @@ module ForemanPatch
         param_group :window, as: :create
         def create
           @window = Window.new(window_params)
-          @window.save!
+          process_response @window.save
         end
 
         api :PUT, '/windows/:id', N_('Update a window')
         param :id, Integer, desc: N_('ID of the window')
         param_group :window
         def update
-          @window.update!(window_params)
+          process_response @window.update(window_params)
         end
 
         api :DELETE, '/windows/:id', N_('Destroy a window')
         param :id, Integer, desc: N_('ID of the window')
         def destroy
-          @window.destroy!
+          process_response @window.destroy
         end
 
         api :POST, '/windows/:id/schedule', N_('Schedule a window')
@@ -86,10 +86,6 @@ module ForemanPatch
 
         def find_cycle
           @cycle ||= ForemanPatch::Cycle.find(params[:cycle_id])
-        end
-
-        def find_window
-          @window ||= ForemanPatch::Window.find(params[:id])
         end
 
         def window_params

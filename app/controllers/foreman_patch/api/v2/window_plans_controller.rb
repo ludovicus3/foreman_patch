@@ -1,7 +1,7 @@
 module ForemanPatch
   module Api
     module V2
-      class WindowPlansController < ApiController
+      class WindowPlansController < BaseController
 
         resource_description do
           resource_id 'patch_window_plans'
@@ -9,13 +9,15 @@ module ForemanPatch
           api_base_url '/foreman_patch/api'
         end
 
-        before_action :find_window_plan, only: [:show, :update, :destoy]
+#        before_action :find_window_plan, only: [:show, :update, :destoy]
+        before_action :find_optional_nested_object
+        before_action :find_resource, only: [:show, :update, :destroy]
 
         api :GET, '/window_plans', N_('List window plans')
         api :GET, '/plans/:plan_id/window_plans', N_('List window plans per cycle plan')
         param :plan_id, Integer, desc: N_('ID of the cycle plan')
         param_group :search_and_pagination, ::Api::V2::BaseController
-        add_scoped_search_description_for(ForemanPatch::WindowPlan)
+        add_scoped_search_description_for(WindowPlan)
         def index
           @window_plans = resource_scope_for_index
         end
@@ -40,30 +42,30 @@ module ForemanPatch
         param_group :window_plan, as: :create
         def create
           @window_plan = WindowPlan.new(window_plan_params)
-          @window_plan.save!
+          process_response @window_plan.save
         end
 
         api :PUT, '/window_plans/:id', N_('Update a window plan')
         param :id, Integer, desc: N_('Id of window plan')
         param_group :window_plan
         def update
-          @window_plan.update!(window_plan_params)
+          process_response @window_plan.update(window_plan_params)
         end
 
         api :DELETE, '/window_plans/:id', N_('Destroy a window plan')
         param :id, Integer, desc: N_('Id of the window plan')
         def destroy
-          @window_plan.destroy!
+          process_response @window_plan.destroy
+        end
+
+        def resource_class
+          ForemanPatch::WindowPlan
         end
 
         private
 
         def allowed_nested_id
-          %w(plan_id)
-        end
-
-        def find_window_plan
-          @window_plan ||= WindowPlan.find(params[:id])
+          [:plan_id]
         end
 
         def window_plan_params

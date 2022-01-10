@@ -1,7 +1,7 @@
 module ForemanPatch
   module Api
     module V2
-      class RoundsController < ApiController
+      class RoundsController < BaseController
 
         resource_description do
           resource_id 'patch_rounds'
@@ -10,13 +10,13 @@ module ForemanPatch
         end
 
         before_action :find_window, only: [:index]
-        before_action :find_round, only: [:update, :show, :destroy]
+        before_action :find_resource, only: [:update, :show, :update, :destroy]
 
         api :GET, '/rounds', N_('List rounds')
         api :GET, '/windows/:window_id/rounds'. N_('List window groups within a given window')
         param :window_id, :identifier
         param_group :search_and_pagination, ::Api::V2::BaseController
-        add_scoped_search_description_for(ForemanPatch::Round)
+        add_scoped_search_description_for(Round)
         def index
           if @window
             @rounds = @window.rounds.search_for(*search_options).paginate(paginate_options)
@@ -45,20 +45,20 @@ module ForemanPatch
         param_group :round, as: :create
         def create
           @round = Round.new(round_params)
-          @round.save!
+          process_response @round.save
         end
 
         api :PUT, '/rounds/:id', N_('Update a patch round')
         param :id, Integer, desc: N_('ID of the round'), required: true
         param_group :round
         def update
-          @round.update!(round_params)
+          process_response @round.update(round_params)
         end
 
         api :DELETE, '/rounds/:id', N_('Destroy a patch round')
         param :id, Integer, desc: N_('ID of the round'), required: true
         def destroy
-          @round.destroy!
+          process_response @round.destroy
         end
 
         def resource_class
@@ -66,10 +66,6 @@ module ForemanPatch
         end
 
         private
-
-        def find_round
-          @round ||= ForemanPatch::Round.find(params[:id])
-        end
 
         def find_window
           @window ||= ForemanPatch::Window.find(params[:window_id])
