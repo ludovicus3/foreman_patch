@@ -9,17 +9,14 @@ module ForemanPatch
           api_base_url '/foreman_patch/api'
         end
 
-#        before_action :find_window_plan, only: [:show, :update, :destoy]
-        before_action :find_optional_nested_object
         before_action :find_resource, only: [:show, :update, :destroy]
 
-        api :GET, '/window_plans', N_('List window plans')
         api :GET, '/plans/:plan_id/window_plans', N_('List window plans per cycle plan')
         param :plan_id, Integer, desc: N_('ID of the cycle plan')
         param_group :search_and_pagination, ::Api::V2::BaseController
         add_scoped_search_description_for(WindowPlan)
         def index
-          @window_plans = resource_scope_for_index
+          @window_plans = resource_scope_for_index(params.permit(:plan_id))
         end
 
         api :GET, '/window_plans/:id', 'Show window plan details'
@@ -63,10 +60,6 @@ module ForemanPatch
         end
 
         private
-
-        def allowed_nested_id
-          [:plan_id]
-        end
 
         def window_plan_params
           params[:window_plan][:plan_id] = params[:plan_id] unless params[:plan_id].nil?
