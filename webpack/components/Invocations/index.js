@@ -12,6 +12,7 @@ import { useForemanSettings } from 'foremanReact/Root/Context/ForemanContext';
 import {
   selectItems,
   selectTotal,
+  selectAutoRefresh,
   selectStatus,
   selectIntervalExists,
 } from './InvocationsSelectors';
@@ -19,12 +20,13 @@ import { getUrl } from './InvocationsHelpers';
 import { INVOCATIONS } from './InvocationsConstants';
 import InvocationsPage from './InvocationsPage';
 
-const WrappedInvocations = ({ round, autoRefresh }) => {
+const WrappedInvocations = ({ round }) => {
   const dispatch = useDispatch();
   const { perPage, perPageOptions } = useForemanSettings();
 
   const items = useSelector(selectItems);
   const total = useSelector(selectTotal);
+  const autoRefresh = useSelector(selectAutoRefresh);
   const status = useSelector(selectStatus);
   const [searchQuery, setSearchQuery] = useState('');
   const [pagination, setPagination] = useState({
@@ -62,7 +64,7 @@ const WrappedInvocations = ({ round, autoRefresh }) => {
     handleError: () => {
       dispatch(stopInterval(INVOCATIONS));
     },
-  }), 1000);
+  }), 5000);
 
   useEffect(() => {
     dispatch(getData(url));
@@ -91,11 +93,6 @@ const WrappedInvocations = ({ round, autoRefresh }) => {
 
 WrappedInvocations.propTypes = {
   round: PropTypes.number.isRequired,
-  autoRefresh: PropTypes.bool,
-};
-
-WrappedInvocations.defaultProps = {
-  autoRefresh: false,
 };
 
 export default WrappedInvocations;

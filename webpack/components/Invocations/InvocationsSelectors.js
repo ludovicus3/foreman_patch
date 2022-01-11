@@ -11,6 +11,9 @@ export const selectItems = state =>
 export const selectTotal = state =>
   selectAPIResponse(state, INVOCATIONS).total || 0;
 
+export const selectAutoRefresh = state =>
+  selectItems(state).some(item => (item.result === 'pending')) || true;
+
 export const selectStatus = state => selectAPIStatus(state, INVOCATIONS);
 
 export const selectIntervalExists = state =>
