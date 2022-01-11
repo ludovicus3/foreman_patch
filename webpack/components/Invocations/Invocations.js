@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { translate as __ } from 'foremanReact/common/I18n';
 import { LoadingState, Alert } from 'patternfly-react';
 import { STATUS } from 'foremanReact/constants';
+
 import InvocationItem from './components/InvocationItem';
 
 const Invocations = ({ status, items }) => {
@@ -16,6 +17,14 @@ const Invocations = ({ status, items }) => {
     );
   }
 
+  const rows = items.length ? (
+    items.map(item => (<InvocationItem {...item} />))
+  ) : (
+    <tr>
+      <td colSpan="3">{__('No hosts found.')}</td>
+    </tr>
+  );
+
   return (
     <LoadingState loading={!items.length && status === STATUS.PENDING}>
       <div>
@@ -27,18 +36,7 @@ const Invocations = ({ status, items }) => {
               <th>{__('Actions')}</th>
             </tr>
           </thead>
-          <tbody>
-            {items.map(item => (
-              <InvocationItem
-                key={item.name}
-                name={item.name}
-                link={item.link}
-                state={item.state}
-                result={item.result}
-                actions={item.actions}
-              />
-            ))}
-          </tbody>
+          <tbody>{rows}</tbody>
         </table>
       </div>
     </LoadingState>
@@ -46,8 +44,12 @@ const Invocations = ({ status, items }) => {
 };
 
 Invocations.propTypes = {
-  status: PropTypes.string.isRequired,
+  status: PropTypes.string,
   items: PropTypes.array.isRequired,
+};
+
+Invocations.defaultProps = {
+  status: null,
 };
 
 export default Invocations;

@@ -2,13 +2,17 @@ import {
     selectAPIStatus,
     selectAPIResponse,
 } from 'foremanReact/redux/API/APISelectors';
-import { INVOCATIONS } from './InvocationsConsts';
+import { selectDoesIntervalExist } from 'foremanReact/redux/middlewares/IntervalMiddleware/IntervalSelectors';
+
+import { INVOCATIONS } from './InvocationsConstants';
 
 export const selectItems = state =>
-  selectAPIResponse(state, INVOCATIONS).invocations || [];
-
-export const selectAutoRefresh = state =>
-  selectAPIResponse(state, INVOCATIONS).autoRefresh;
+  selectAPIResponse(state, INVOCATIONS).results || [];
+export const selectTotal = state =>
+  selectAPIResponse(state, INVOCATIONS).total || 0;
 
 export const selectStatus = state => selectAPIStatus(state, INVOCATIONS);
+
+export const selectIntervalExists = state =>
+  selectDoesIntervalExist(state, INVOCATIONS);
 

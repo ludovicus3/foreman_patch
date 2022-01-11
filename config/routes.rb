@@ -27,6 +27,9 @@ ForemanPatch::Engine.routes.draw do
     end
 
     resources :invocations, only: [:show, :destroy] do
+      collection do
+        get 'auto_complete_search'
+      end
     end
 
     resources :plans, only: [:index, :new, :create, :show, :edit, :update, :destroy] do
