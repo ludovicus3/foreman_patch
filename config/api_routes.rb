@@ -13,7 +13,7 @@ ForemanPatch::Engine.routes.draw do
           resources :windows, only: [:index, :create]
         end
 
-        resources :windows, only: [:index, :show, :update, :destroy] do
+        resources :windows, only: [:show, :update, :destroy] do
           resources :rounds, only: [:index]
           member do
             post :schedule
@@ -22,7 +22,7 @@ ForemanPatch::Engine.routes.draw do
 
         resources :groups, only: [:index, :show, :create, :update, :destroy]
 
-        resources :rounds, only: [:index, :show, :create, :update, :destroy] do
+        resources :rounds, only: [:show, :create, :update, :destroy] do
           resources :invocations, only: [:index]
         end
 
