@@ -24,6 +24,9 @@ ForemanPatch::Engine.routes.draw do
 
         resources :rounds, only: [:show, :create, :update, :destroy] do
           resources :invocations, only: [:index]
+          member do
+            get :status
+          end
         end
 
         resources :invocations, only: [:show]
