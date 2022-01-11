@@ -9,7 +9,7 @@ module ForemanPatch
           api_base_url '/foreman_patch/api'
         end
 
-        before_action :find_resource, only: [:update, :show, :update, :destroy]
+        before_action :find_resource, only: [:update, :show, :status, :update, :destroy]
 
         api :GET, '/rounds', N_('List rounds')
         api :GET, '/windows/:window_id/rounds'. N_('List window groups within a given window')
@@ -23,6 +23,11 @@ module ForemanPatch
         api :GET, '/rounds/:id', 'Show round details'
         param :id, :identifier, desc: 'Id of the round', required: true
         def show
+        end
+
+        api :GET, '/rounds/:id/status', N_('Get status of patch round')
+        param :id, :identifier, desc: N_('Id of the patch round'), required: true
+        def status
         end
 
         def_param_group :round do

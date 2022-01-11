@@ -10,8 +10,8 @@ child :group do
   extends 'foreman_patch/api/v2/groups/base'
 end
 
-node :statuses do
-  @round.progress_report
+child invocations: :invocations do
+  extends 'foreman_patch/api/v2/invocations/base'
 end
 
 attributes :created_at, :updated_at
