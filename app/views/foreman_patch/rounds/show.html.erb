@@ -12,24 +12,40 @@ breadcrumbs(resource_url: api_window_rounds_path(@window.id),
             items: items)
 %>
 
-<% javascript *webpack_asset_paths('foreman_remote_execution', extension: 'js') %>
-
-<% javascript 'charts' %>
-
 <% if @round.task %>
   <% title_actions button_group(round_task_buttons(@round.task))%>
 <% end %>
 
 <div class="row">
-  <%= render partial: 'results', locals: { round: @round } %>
+  <div class="col-xs-6 col-sm-6 col-md-6">
+    <div class="card-pf card-pf-accented">
+      <div class="card-pf-title">
+        <h2 style="height: 18px;" class="card-pf-title"><%= _('Details') %></h2>
+      </div>
+      <div class="card-pf-body">
+        <p>
+          <%= _('Name:') %>
+          <strong><%= @round.name %></strong>
+        </p>
+        <p>
+          <%= _('Description:') %>
+          <strong><%= @round.description %></strong>
+        </p>
+      </div>
+    </div>
+  </div>
+  <div class="col-xs-12 col-sm-6 col-md-6">
+    <div class="card-pf card-pf-accented">
+      <div class="card-pf-title">
+        <h2 style="height: 18px;" class="card-pf-title"><%= _('Results') %></h2>
+      </div>
+      <div class="card-pf-body">
+        <%= react_component('RoundProgress', round: @round.id) %>
+      </div>
+    </div>
+  </div>
 </div>
 <hr/>
-<% if @round.invocations.empty? %>
-  <div class="alert alert-warning">
-    <%= _("No hosts are in this patch group.") %>
-  </div>
-<% else %>
-  <div id="hosts" data-refresh_required="<%= @round.invocations.empty? ? '' : 'true' %>">
-    <%= render partial: 'hosts', locals: { round: @round, hosts: @round.hosts } %>
-  </div>
-<% end %>
+<div id="hosts">
+  <%= react_component('Invocations', round: @round.id) %>
+</div>
