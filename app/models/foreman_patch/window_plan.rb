@@ -13,6 +13,7 @@ module ForemanPatch
     validates :name, presence: true, uniqueness: { scope: :plan_id }
     validates :start_day, presence: true
     validates :start_time, presence: true
+    validates :duration, presence: true
 
     scoped_search on: :name, complete_value: true
     scoped_search on: :plan_id, complete_value: true
@@ -21,8 +22,12 @@ module ForemanPatch
 
     scoped_search relation: :plan, on: :name, complete_value: true
 
+    after_initialize :init
+
     def start_time
       value = read_attribute(:start_time)
+      return nil if value.blank?
+
       if value.acts_like?(:time)
         args = [value.year, value.month, value.day, value.hour, value.min, value.sec]
         time = Time.find_zone(Setting[:patch_schedule_time_zone]).local(*args)
@@ -48,6 +53,14 @@ module ForemanPatch
 
     def end_by
       start_at + duration
+    end
+
+    private
+
+    def init
+      self.start_day ||= 0
+      self.start_time ||= Time.find_zone(Setting[:patch_schedule_time_zone]).parse('00:00:00')
+      self.duration ||= 1.hour.to_i
     end
 
   end
