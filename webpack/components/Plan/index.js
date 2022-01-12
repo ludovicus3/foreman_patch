@@ -11,7 +11,6 @@ import {
   getPlan,
   moveWindow,
 } from './PlanActions';
-import { PLAN } from './PlanConstants';
 
 const WrappedPlan = ({ id }) => {
   const dispatch = useDispatch();
