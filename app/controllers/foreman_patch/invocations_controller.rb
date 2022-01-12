@@ -1,5 +1,6 @@
 module ForemanPatch
   class InvocationsController < ApplicationController
+    include Foreman::Controller::AutoCompleteSearch
 
     before_action :find_resource
 
