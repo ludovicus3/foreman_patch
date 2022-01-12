@@ -76,7 +76,7 @@ const WrappedInvocations = ({ round }) => {
     return () => {
       dispatch(stopInterval(INVOCATIONS));
     };
-  }, [dispatch, url]);
+  }, [dispatch, url, autoRefresh]);
 
   return (
     <InvocationsPage
