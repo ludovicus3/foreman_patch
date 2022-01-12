@@ -1,10 +1,11 @@
-<%= form_for @window_plan, url: plan_path(@plan) do |f| %>
+<%= form_for @window_plan, url: plan_window_plans_path(plan_id: @plan.id) do |f| %>
   <%= base_errors_for @window_plan %>
 
   <%= text_f f, :name %>
   <%= textarea_f f, :description %>
-  <%= datetime_local_f f, :start_at, { weekStartsOn: 0, hiddenValue: false, required: true } %>
-  <%= datetime_local_f f, :end_by, { weekStartsOn: 0, hiddenValue: false, required: true } %>
+  <%= number_f f, :start_day, in: 0..plan_length(@plan) %>
+  <%= time_local_f f, :start_time %>
+  <%= number_f f, :duration %>
 
   <%= submit_or_cancel f, false, {cancel_path: plan_path(@plan)} %>
 <% end %>

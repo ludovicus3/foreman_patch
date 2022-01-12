@@ -53,7 +53,7 @@ module ForemanPatch
     end
 
     def success_hash
-      { success_redirect: params[:redirect].presence }
+      { success_redirect: params[:redirect].presence || plan_path(@plan) }
     end
 
   end
