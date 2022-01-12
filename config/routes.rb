@@ -20,10 +20,6 @@ ForemanPatch::Engine.routes.draw do
       collection do
         get 'auto_complete_search'
       end
-      member do
-        get 'chart'
-        post 'move'
-      end
     end
 
     resources :invocations, only: [:show, :destroy] do

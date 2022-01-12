@@ -2,11 +2,11 @@
 
 <% 
 items = [{ caption: _('Cycles'), url: cycles_path },
-         { caption: @cycle.name, url: cycle_path(@cycle) },
-         { caption: @window.name, url: window_path(@window) },
+         { caption: @round.cycle.name, url: cycle_path(@round.cycle) },
+         { caption: @round.window.name, url: window_path(@round.window) },
          { caption: @round.name }]
 
-breadcrumbs(resource_url: api_window_rounds_path(@window.id),
+breadcrumbs(resource_url: api_window_rounds_path(@round.window.id),
             name_field: 'name',
             switcher_item_url: round_path(':id'),
             items: items)
@@ -35,7 +35,7 @@ breadcrumbs(resource_url: api_window_rounds_path(@window.id),
     </div>
   </div>
   <div class="col-xs-12 col-sm-6 col-md-6">
-    <div class="card-pf card-pf-accented">
+    <div class="card-pf card-pf-accented card-pf-aggregate-status">
       <div class="card-pf-title">
         <h2 style="height: 18px;" class="card-pf-title"><%= _('Results') %></h2>
       </div>

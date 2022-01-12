@@ -3,6 +3,7 @@ module ForemanPatch
     include ForemanTasks::Concerns::ActionSubject
 
     belongs_to :window, class_name: 'ForemanPatch::Window'
+    has_one :cycle, class_name: 'ForemanPatch::Cycle', through: :window
     belongs_to :group, class_name: 'ForemanPatch::Group'
 
     belongs_to :task, class_name: 'ForemanTasks::Task'
