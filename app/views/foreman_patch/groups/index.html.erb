@@ -6,6 +6,7 @@
   <thead>
     <tr>
       <th><%= sort :name, as: _('Name') %></th>
+      <th><%= sort :label, as: _('Label') %></th>
       <th><%= sort :default_window, as: _('Default Window') %></th>
       <th><%= _('Hosts') %></th>
       <th><%= _('Actions') %></th>
@@ -16,6 +17,9 @@
       <tr>
         <td>
           <%= link_to group.name, hash_for_edit_group_path(id: group.id) %>
+        </td>
+        <td>
+          <%= group.label %>
         </td>
         <td>
           <%= group.default_window_plan.name %>

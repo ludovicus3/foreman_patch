@@ -55,7 +55,7 @@ module ForemanPatch
     end
 
     def csv_columns
-      [:name, :default_window_plan, :hosts_count]
+      [:name, :label, :default_window_plan, :hosts_count]
     end
 
     private
