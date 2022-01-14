@@ -1,4 +1,7 @@
-<%= webpacked_plugins_js_for :foreman_patch %>
+<% javascript *webpack_asset_paths('foreman_patch', extension: 'js') %>
+<% content_for(:stylesheets) do %>
+  <%= webpacked_plugins_css_for :foreman_patch %>
+<% end %>
 
 <% 
 items = [{ caption: _('Cycles'), url: cycles_path },

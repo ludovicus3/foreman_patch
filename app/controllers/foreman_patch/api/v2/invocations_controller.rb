@@ -17,11 +17,7 @@ module ForemanPatch
         param_group :search_and_pagination, ::Api::V2::BaseController
         add_scoped_search_description_for(Invocation)
         def index
-          @invocations = @round.invocations
-            .includes(:host)
-            .where(host: ::Host.authorized(:view_hosts, ::Host))
-            .search_for(*search_options)
-            .paginate(paginate_options)
+          @invocations = resource_scope_for_index
         end
 
         api :GET, '/invocations/:id', N_('Get details of an invocation')
@@ -47,6 +43,14 @@ module ForemanPatch
 
         def resource_class
           ForemanPatch::Invocation
+        end
+
+        def resource_scope(options = {})
+          if action_name == 'index'
+            @round.invocations.includes(:host).where(host: ::Host.authorized(:view_hosts, ::Host))
+          else
+            super(options)
+          end
         end
 
         private
