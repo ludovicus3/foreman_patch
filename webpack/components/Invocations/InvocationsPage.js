@@ -7,6 +7,7 @@ import Pagination from 'foremanReact/components/Pagination/PaginationWrapper';
 import { getControllerSearchProps } from 'foremanReact/constants';
 
 import Invocations from './Invocations';
+import './InvocationsPage.scss';
 
 const InvocationsPage = ({
   status,
