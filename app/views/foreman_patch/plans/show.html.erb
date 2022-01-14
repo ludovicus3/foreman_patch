@@ -11,8 +11,7 @@
                items: [
                  { caption: _('Patching Plans'), url: plans_path },
                  { caption: @plan.name }
-               ]
-              )
+               ])
 %>
 
 <% title_actions(link_to(_('Create Window'), new_plan_window_plan_path(plan_id: @plan.id),

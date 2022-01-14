@@ -7,6 +7,16 @@
 
 <% title @cycle.name %>
 
+<%
+items = [{ caption: _('Patch Cycles'), url: cycles_path },
+         { caption: @cycle.name }]
+
+breadcrumbs(resource_url: api_cycles_path, 
+            name_field: 'name',
+            switcher_item_url: cycle_path(':id'),
+            items: items)
+%>
+
 <% title_actions link_to(_('Create Window'), hash_for_new_cycle_window_path(cycle_id: @cycle.id), 
                          class: 'btn btn-default',
                          disabled: @cycle.end_date.past?,
