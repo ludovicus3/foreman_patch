@@ -28,9 +28,7 @@ module ForemanPatch
     after_update :republish, if: :needs_republish?
 
     def ticket
-      return @ticket if defined? @ticket
-
-      @ticket = ForemanPatch::Ticket.load(self) unless ticket_id.blank?
+      @ticket ||= Ticket.new(self)
     end
 
     def state
@@ -99,7 +97,7 @@ module ForemanPatch
     end
 
     def needs_republish?
-      published? and (saved_changes.keys - ['ticket_id']).any?
+      published? and (saved_changes.keys - ['ticket_id', 'updated_at']).any?
     end
 
     def republish

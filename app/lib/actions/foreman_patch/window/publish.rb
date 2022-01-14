@@ -16,8 +16,6 @@ module Actions
           ticket.save
 
           output.update(response: ticket.response)
-
-          window.update!(ticket_id: ticket.response.fetch(Setting[:ticket_id_field], window.ticket_id))
         end
 
         def window
