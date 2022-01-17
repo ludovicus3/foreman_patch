@@ -46,7 +46,7 @@ module ForemanPatch
     private
 
     def plan_params
-      params.require(:plan).permit(:name, :description, :state_date, :interval, :units, :active_count)
+      params.require(:plan).permit(:name, :description, :cycle_name, :state_date, :interval, :units, :active_count)
     end
 
     def success_hash

@@ -2,6 +2,7 @@
   <%= base_errors_for @plan %>
   <%= text_f f, :name %>
   <%= textarea_f f, :description %>
+  <%= text_f f, :cycle_name %>
   <%= date_local_f f, :start_date, { weekStartsOn: 0, hiddenValue: false } %>
   <%= number_f f, :interval %>
   <%= selectable_f f, :units, ForemanPatch::Plan::UNITS, {} %>

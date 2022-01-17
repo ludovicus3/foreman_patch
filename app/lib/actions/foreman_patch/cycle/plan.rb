@@ -53,8 +53,7 @@ module Actions
         def params(plan)
           {
             plan_id: plan.id,
-            name: plan.name,
-            description: plan.description,
+            name: ::ForemanPatch::CycleNameGenerator.generate(plan),
             start_date: plan.start_date.to_s,
             end_date: (plan.next_cycle_start - 1.day).to_s,
           }

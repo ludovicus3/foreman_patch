@@ -27,6 +27,7 @@ module ForemanPatch
           param :plan, Hash, required: true, action_aware: true do
             param :name, String, desc: N_('Name of the cycle plan'), required: true
             param :description, String, desc: N_('Description of the cycle plan')
+            param :cycle_name, String, desc: N_('Erb script used to generate each cycle\'s name')
             param :start_date, String, desc: N_('Date of the first execution of cycle plan'), required: true
             param :interval, Integer, desc: N_('Number of units between cycles'), required: true
             param :units, Plan::UNITS, desc: N_('Unit of count between cycles'), required: true
@@ -68,7 +69,7 @@ module ForemanPatch
         private
 
         def plan_params
-          params.require(:plan).permit(:name, :description, :start_date, :interval, :units, :correction, :active_count)
+          params.require(:plan).permit(:name, :description, :cycle_name, :start_date, :interval, :units, :correction, :active_count)
         end
 
       end

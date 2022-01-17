@@ -61,6 +61,10 @@ module ForemanPatch
       end
     end
 
+    class Jail < Safemode::Jail
+      allow :start_date, :end_date, :frequency, :name, :interval, :units
+    end
+
     private
 
     def weekday(next_date)

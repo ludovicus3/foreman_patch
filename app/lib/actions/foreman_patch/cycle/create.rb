@@ -36,7 +36,6 @@ module Actions
           {
             plan_id: input[:plan_id] || input[:plan][:id],
             name: input[:name],
-            description: input[:description],
             start_date: input[:start_date],
             end_date: input[:end_date],
           }
