@@ -11,6 +11,8 @@ module ForemanPatch
     scoped_search on: :name, complete_value: true
     scoped_search on: :start_date, complete_value: false
     scoped_search on: :end_date, complete_value: false
+    scoped_search on: :plan_id, complete_value: false
+    scoped_search relation: :plan, on: :name, complete_value: true, rename: :plan
 
     validates :name, presence: true
     validates :start_date, presence: true
