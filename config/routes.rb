@@ -30,6 +30,9 @@ ForemanPatch::Engine.routes.draw do
 
     resources :plans, only: [:index, :new, :create, :show, :edit, :update, :destroy] do
       resources :window_plans, only: [:new, :create]
+      member do
+        post :iterate
+      end
     end
 
     resources :window_plans, only: [:edit, :update, :destroy]

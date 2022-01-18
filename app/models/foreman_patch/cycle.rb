@@ -44,10 +44,18 @@ module ForemanPatch
     end
 
     def schedule
-      ::ForemanTasks.delay(::Actions::ForemanPatch::Cycle::Initiate, delay_options, self)
+      if delay?
+        ::ForemanTasks.delay(::Actions::ForemanPatch::Cycle::Initiate, delay_options, self)
+      else
+        ::ForemanTasks.async_task(::Actions::ForemanPatch::Cycle::Initiate, self)
+      end
     end
 
     private
+
+    def delay?
+      Time.current < start_date.beginning_of_day 
+    end
 
     def delay_options
       Time.use_zone(Setting[:patch_schedule_time_zone]) do

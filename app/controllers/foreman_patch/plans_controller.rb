@@ -3,7 +3,7 @@ module ForemanPatch
 
     helper ForemanPatch::CalendarHelper
 
-    before_action :find_resource, only: [:show, :edit, :update, :destroy]
+    before_action :find_resource, only: [:show, :edit, :iterate, :update, :destroy]
 
     def index
       @plans = resource_base_search_and_page
@@ -21,6 +21,10 @@ module ForemanPatch
     end
 
     def edit
+    end
+
+    def iterate
+      @plan.iterate
     end
 
     def update
@@ -46,7 +50,7 @@ module ForemanPatch
     private
 
     def plan_params
-      params.require(:plan).permit(:name, :description, :cycle_name, :state_date, :interval, :units, :active_count)
+      params.require(:plan).permit(:name, :description, :cycle_name, :start_date, :interval, :units, :active_count)
     end
 
     def success_hash

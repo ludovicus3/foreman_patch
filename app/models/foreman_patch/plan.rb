@@ -48,16 +48,12 @@ module ForemanPatch
     end
 
     def iterate
-      return if stopped?
+      return if tasks.where(state: :scheduled).any?
 
-      count = active_count - cycles.active.count
-
-      if count > 0
+      if active_count > cycles.active.count or active_count == 0
         ::ForemanTasks.async_task(::Actions::ForemanPatch::Cycle::Plan, self)
       else
-        unless tasks.where(state: :scheduled).any?
-          ::ForemanTasks.delay(::Actions::ForemanPatch::Cycle::Plan, delay_options, self)
-        end
+        ::ForemanTasks.delay(::Actions::ForemanPatch::Cycle::Plan, delay_options, self)
       end
     end
 
@@ -98,7 +94,7 @@ module ForemanPatch
     def delay_options
       Time.use_zone(Setting[:patch_schedule_time_zone]) do
         {
-          start_at: cycles.active.last.end_date.beginning_of_day + 1.day
+          start_at: start_date.beginning_of_day
         }
       end
     end

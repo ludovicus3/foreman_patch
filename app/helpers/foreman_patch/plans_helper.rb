@@ -1,6 +1,25 @@
 module ForemanPatch
   module PlansHelper
 
+    def plan_actions(plan)
+      links = []
+
+      links << link_to(_('Create Window'), new_plan_window_plan_path(plan_id: @plan.id),
+                       class: 'btn btn-default',
+                       title: _('Create a new window for this plan'))
+
+      links << link_to(_('Edit'), edit_plan_path(@plan),
+                       class: 'btn btn-default',
+                       title: _('Edit this plan'))
+
+      links << link_to(_('Run'), iterate_plan_path(@plan),
+                       class: 'btn btn-primary',
+                       title: _('Manually Iterate Plan'),
+                       method: :post)
+
+      links
+    end
+
     def plan_windows(plan, day)
       day = (day - plan.start_date).to_i
 

@@ -33,7 +33,7 @@ module Actions
         end
 
         def finalize
-          cycle_plan.iterate
+          cycle_plan.iterate if cycle_plan.active_count > 0
         end
 
         def humanized_name

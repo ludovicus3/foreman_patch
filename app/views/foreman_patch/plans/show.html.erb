@@ -14,12 +14,6 @@
                ])
 %>
 
-<% title_actions(link_to(_('Create Window'), new_plan_window_plan_path(plan_id: @plan.id),
-                         class: 'btn btn-default',
-                         title: _('Create a new window for this plan')),
-                 link_to(_('Edit'), edit_plan_path(@plan),
-                         class: 'btn btn-default',
-                         title: _('Edit propries of this plan')))
-%>
+<% title_actions(plan_actions(@plan)) %>
 
 <%= react_component('Plan', id: @plan.id) %>
