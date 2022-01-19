@@ -1,4 +1,5 @@
 import React from 'react';
+import { Grid } from 'patternfly-react';
 
 import Day from './Day';
 import Header from './Header';
@@ -17,30 +18,28 @@ const Month = ({start, end, date, setDate, setView, events, onEventMoved, locale
   };
 
   return (
-    <div className="month">
+    <div>
       <Header start={start} end={end} date={date} setDate={setDate} setView={setView} locale={locale} weekStartsOn={weekStartsOn}/>
-      <div className="month-body">
-        <table className="table table-bordered table-fixed">
-          <thead>
-            <tr>
-              {daysOfTheWeek.map((day, index) => (
-                <th key={index} className="dow">
-                  {day}
-                </th>
+      <table className="calendar-view table table-bordered table-fixed">
+        <thead>
+          <tr>
+            {daysOfTheWeek.map((day, index) => (
+              <th key={index} className="dow">
+                {day}
+              </th>
+            ))}
+          </tr>
+        </thead>
+        <tbody>
+          {weeks.map(week => (
+            <tr className="week">
+              {week.map(day => (
+                <Day key={day} date={day} enabled={isDayEnabled(day)} events={events} onEventMoved={onEventMoved} />
               ))}
             </tr>
-          </thead>
-          <tbody>
-            {weeks.map(week => (
-              <tr className="week">
-                {week.map(day => (
-                  <Day key={day} date={day} enabled={isDayEnabled(day)} events={events} onEventMoved={onEventMoved} />
-                ))}
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
+          ))}
+        </tbody>
+      </table>
     </div>
   );
 };
