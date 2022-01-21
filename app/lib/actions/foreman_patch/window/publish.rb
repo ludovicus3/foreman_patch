@@ -9,7 +9,7 @@ module Actions
         end
 
         def run
-          ticket = ::ForemanPatch::Ticket.new(window)
+          ticket = window.ticket
 
           input.update(payload: ticket.payload.raw.compact)
 

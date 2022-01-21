@@ -28,7 +28,7 @@ module ForemanPatch
     after_update :republish, if: :needs_republish?
 
     def ticket
-      @ticket ||= Ticket.new(self)
+      @ticket ||= Ticket.get(self)
     end
 
     def state
