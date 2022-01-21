@@ -22,4 +22,5 @@ Gem::Specification.new do |s|
   s.add_dependency 'foreman_remote_execution', '~> 4.2'
   s.add_dependency 'dynflow', '~> 1.4'
 
+  s.add_development_dependency 'rubocop', '~> 0.80.0'
 end
