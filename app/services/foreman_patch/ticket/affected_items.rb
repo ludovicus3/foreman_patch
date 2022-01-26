@@ -16,7 +16,7 @@ module ForemanPatch
       def set(hosts)
         cmdb_items = get_configuration_items(hosts)
 
-        add_affected_items(select_cmdb_items(cmdb_items))
+        add_affected_items(select_cmdb_items(cmdb_items, true))
 
         remove_affected_items(select_affected_items(cmdb_items, true))
 
@@ -24,7 +24,7 @@ module ForemanPatch
       end
 
       def add(hosts)
-        add_affected_items(select_cmdb_items(get_configuration_items(hosts)))
+        add_affected_items(select_cmdb_items(get_configuration_items(hosts), true))
 
         @items = get_affected_items
       end

@@ -19,6 +19,8 @@ module ForemanPatch
       def reload
         return if window.ticket_id.blank?
 
+        get(path)
+
         @affected_items = AffectedItems.new(self)
 
         ticket
