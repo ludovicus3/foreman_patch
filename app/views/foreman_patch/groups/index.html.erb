@@ -16,7 +16,7 @@
     <% @groups.each do |group| %>
       <tr>
         <td class="ellipsis">
-          <%= link_to group.name, hash_for_edit_group_path(id: group.id) %>
+          <%= link_to group.name, edit_group_path(group) %>
         </td>
         <td class="hidden-xs ellipsis">
           <%= group.label %>

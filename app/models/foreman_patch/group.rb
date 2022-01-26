@@ -2,6 +2,8 @@ module ForemanPatch
   class Group < ::ApplicationRecord
     include Katello::Ext::LabelFromName
     include ForemanTasks::Concerns::ActionSubject
+    extend FriendlyId
+    friendly_id :label
 
     include Authorizable
 
