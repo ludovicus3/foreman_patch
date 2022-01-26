@@ -10,7 +10,8 @@
       <th class="col-md-1"><%= sort :start_date, as: _("Start Date") %></th>
       <th class="col-md-1"><%= _("Interval") %></th>
       <th class="col-md-1"><%= _("Active Cycles") %></th>
-      <th><%= _("Actions") %></th>
+      <th class="col-md-1"><%= _("Cycles") %></th>
+      <th class="col-md-1"><%= _("Actions") %></th>
     </tr>
   </thead>
   <tbody>
@@ -20,7 +21,8 @@
         <td class="ellipsis"><%= plan.description %></td>
         <td><%= plan.start_date %></td>
         <td><%= n_("Every one %{singular}", "Every %{count} %{plural}", plan.interval) % {count: plan.interval, singular: plan.units.singularize, plural: plan.units } %></td>
-        <td><%= plan.cycles.count %></td>
+        <td><%= link_to plan.cycles.active.count, cycles_path(search: %Q[end_date >= #{Date.current}]) %></td>
+        <td><%= link_to plan.cycles.count, cycles_path(search: %Q[plan = "#{plan.name}"]) %></td>
         <td>TODO</td>
       </tr>
     <% end %>
