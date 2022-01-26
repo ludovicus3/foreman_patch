@@ -13,10 +13,32 @@ const InvocationItem = ({ id, name, state, result, task_id, host_id }) => {
       action: {
         href: `/hosts/${name}`,
         'data-method': 'get',
-        id: `${name}-actions-task`,
+        id: `${name}-actions-host`,
       }
-    }
+    },
   ];
+
+  if (task_id) {
+    actions.push({
+      title: __('Task Detail'),
+      action: {
+        href: `/foreman_tasks/tasks/${task_id}`,
+        'data-method': 'get',
+        id: `${name}-actions-task`,
+      },
+    });
+  }
+
+  if (state == 'pending' && result == 'pending') {
+    actions.push({
+      title: __('Cancel'),
+      action: {
+        href: `/foreman_patch/invocations/${id}`,
+        'data-method': 'delete',
+        id: `${name}-actions-cancel`,
+      }
+    });
+  }
 
   return (
     <tr id={`invocation-${id}`}>
