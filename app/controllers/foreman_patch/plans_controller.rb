@@ -1,8 +1,6 @@
 module ForemanPatch
   class PlansController < ApplicationController
 
-    helper ForemanPatch::CalendarHelper
-
     before_action :find_resource, only: [:show, :edit, :iterate, :update, :destroy]
 
     def index
