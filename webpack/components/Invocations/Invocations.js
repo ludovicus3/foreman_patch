@@ -32,8 +32,8 @@ const Invocations = ({ status, items }) => {
           <thead>
             <tr>
               <th>{__('Host')}</th>
-              <th>{__('Status')}</th>
-              <th>{__('Actions')}</th>
+              <th className="col-md-2">{__('Status')}</th>
+              <th className="col-md-1">{__('Actions')}</th>
             </tr>
           </thead>
           <tbody>{rows}</tbody>

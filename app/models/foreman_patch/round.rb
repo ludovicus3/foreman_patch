@@ -56,10 +56,12 @@ module ForemanPatch
           report[:success] += 1
         when 'cancelled'
           report[:cancelled] += 1
-        when 'running'
-          report[:running] += 1
         else
-          report[:pending] += 1
+          if invocation.state == 'running'
+            report[:running] += 1
+          else
+            report[:pending] += 1
+          end
         end
 
         report
