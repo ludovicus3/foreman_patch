@@ -12,7 +12,7 @@ module Actions
           action_subject(host)
 
           sequence do
-            plan_feature_action('katello_package_update', host)
+            plan_feature_action('katello_package_update', host, package: Setting[:skip_broken_patches] ? '--skip-broken' : nil)
             plan_self
           end
         end

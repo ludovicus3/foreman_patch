@@ -9,7 +9,7 @@ module Actions
           action_subject(host)
 
           sequence do
-            plan_feature_action('power_action', host, { 'action' => 'restart' })
+            plan_feature_action('power_action', host, action: 'restart')
             plan_self
           end
         end
@@ -39,7 +39,7 @@ module Actions
             continuous_output.add_output(_('Server status: up'))
 
             { up: true }
-          rescue => error
+          rescue
             continuous_output.add_output(_('Server status: down'))
 
             { up: false }
@@ -61,6 +61,7 @@ module Actions
             MailNotification[:patch_invocation_failure].deliver(user: users, host: host, output: live_output) unless users.blank?
           rescue => error
             message = _('Unable to send patch invocation failure: %{error}') % {error: error}
+            Rails.logger.error(message)
           end
         end
 

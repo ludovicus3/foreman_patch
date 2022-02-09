@@ -39,7 +39,8 @@ class Setting::Patching < ::Setting
       self.set('ticket_label_field', N_('Name of the field used for the ticket label'),
                'number', N_('Ticket label field')),
       self.set('ticket_id_field', N_('Name of the field used for the ticket id'),
-               'sys_id', N_('Ticket ID field'))
+               'sys_id', N_('Ticket ID field')),
+      self.set('skip_broken_patches', N_('Skip broken dependencies during patching'), true, N_('Skip broken patches'))
     ]
   end
 

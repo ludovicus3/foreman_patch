@@ -12,27 +12,23 @@ module Actions
         def plan(cycle)
           input.update serialize_args(cycle: cycle)
 
-          sequence do
-            concurrence do
-              cycle.windows.each do |window|
-                plan_action(Actions::ForemanPatch::Window::ResolveHosts, window)
-              end
-            end
+          plan_self
+        end
 
-            content_view_versions = cycle.hosts.map do |host|
-              host.content_view.version(host.lifecycle_environment)
-            end.uniq
-
-            concurrence do
-              content_view_versions.each do |version|
-                next unless available_content?(version)
-
-                plan_action(::Actions::ForemanPatch::Cycle::PrepareContent, version, _('Updating content for patch cycle: %s') % cycle.name)
-              end
-            end
+        def run
+          cycle.windows.each do |window|
+            trigger(Actions::ForemanPatch::Window::ResolveHosts, window)
           end
 
-          plan_self
+          content_view_versions = cycle.hosts.map do |host|
+            host.content_view.version(host.lifecycle_environment)
+          end.uniq
+
+          content_view_versions.each do |version|
+            next unless available_content?(version)
+
+            trigger(Actions::ForemanPatch::Cycle::PrepareContent, version, _('Updating content for patch cycle: %s') % cycle.name)
+          end
         end
 
         def finalize
