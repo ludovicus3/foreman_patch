@@ -17,6 +17,8 @@ module ForemanPatch
 
     scoped_search relation: :host, on: :name, complete_value: true
 
+    default_scope { includes(:host).order('hosts.name') }
+
     def phases
       task.main_action.planned_actions unless task.blank?
     end
