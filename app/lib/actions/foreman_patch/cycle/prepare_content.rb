@@ -2,6 +2,7 @@ module Actions
   module ForemanPatch
     module Cycle
       class PrepareContent < Actions::EntryAction
+        include ::Katello::ContentViewHelper
 
         def humanized_name
           _('Minor Version Update')
@@ -32,6 +33,14 @@ module Actions
 
             repository_mapping = plan_action(Actions::Katello::ContentViewVersion::CreateRepos,
                                              new_version, repositories).repository_mapping
+
+            separated_repo_map = separated_repo_mapping(repository_mapping, true)
+
+            if separated_repo_map[:pulp3_yum_multicopy].keys.flatten.present? &&
+                SmartProxy.pulp_primary.pulp3_support?(separated_repo_map[:pulp3_yum_multicopy].keys.flatten.first)
+              
+              plan_action(Actions::Katello::Repository::MultiCloneToVersion, separated_repo_map[:pulp3_yum_multicopy], new_version)
+            end
 
             concurrence do
               repositories.each do |repository|
