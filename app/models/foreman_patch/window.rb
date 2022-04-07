@@ -31,14 +31,6 @@ module ForemanPatch
       @ticket ||= Ticket.get(self)
     end
 
-    def state
-      if task.nil?
-        'planned'
-      else
-        task.state
-      end
-    end
-
     def duration
       end_by - start_at
     end

@@ -5,7 +5,8 @@
     <tr>
       <th><%= sort :name, as: _('Name') %></th>
       <th class="col-md-2"><%= sort :start_date, as: _('Start Date') %></th>
-      <th class="col-md-1"><%= _('Pending') %></th>
+      <th class="col-md-1"><%= _('Planned') %></th>
+      <th class="col-md-1"><%= _('Scheduled') %></th>
       <th class="col-md-1"><%= _('Running') %></th>
       <th class="col-md-1"><%= _('Completed') %></th>
       <th class="col-md-1"><%= _('Total Windows') %></th>
@@ -21,13 +22,16 @@
           <%= cycle.start_date %>
         </td>
         <td>
-          <%= cycle_result(cycle, ['planned', 'scheduled']) %>
+          <%= cycle_result(cycle, 'planned') %>
+        </td>
+        <td>
+          <%= cycle_result(cycle, 'scheduled') %>
         </td>
         <td>
           <%= cycle_result(cycle, 'running') %>
         </td>
         <td>
-          <%= cycle_result(cycle, ['stopped', 'cancelled']) %>
+          <%= cycle_result(cycle, ['success', 'failed', 'warning']) %>
         </td>
         <td>
           <%= cycle.windows.count %>
