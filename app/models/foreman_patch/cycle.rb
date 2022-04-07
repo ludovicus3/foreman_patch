@@ -5,6 +5,7 @@ module ForemanPatch
     belongs_to :plan, class_name: 'ForemanPatch::Plan'
 
     has_many :windows, -> { order(start_at: :asc) }, class_name: 'ForemanPatch::Window', foreign_key: :cycle_id, inverse_of: :cycle, dependent: :delete_all
+    has_many :rounds, through: :windows
     has_many :tasks, through: :windows
     has_many :hosts, through: :windows
 
