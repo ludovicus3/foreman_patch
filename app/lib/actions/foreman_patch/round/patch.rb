@@ -7,12 +7,11 @@ module Actions
         def plan(round)
           action_subject(round)
 
-          round.task_id = task.id
-          round.save!
-
           limit_concurrency_level round.max_unavailable unless round.max_unavailable.nil?
 
           plan_self
+
+          round.update!(status: 'pending')
         end
 
         def create_sub_plans
@@ -30,6 +29,8 @@ module Actions
         end
 
         def initiate
+          round.update!(status: 'running')
+
           users = ::User.select { |user| user.receives?(:patch_group_initiated) }.compact
 
           begin
@@ -45,6 +46,8 @@ module Actions
         end
 
         def on_finish
+          round.update!(status: 'complete')
+
           users = ::User.select { |user| user.receives?(:patch_group_completed) }.compact
 
           MailNotification[:patch_group_completed].deliver(users: users, group: round) unless users.blank?

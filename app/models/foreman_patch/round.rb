@@ -15,27 +15,16 @@ module ForemanPatch
     has_many :hosts, through: :invocations
 
     scoped_search on: :name, complete_value: true
-
-    def status
-      HostStatus::ExecutionStatus::ExecutionTaskStatusMapper.new(task).status
-    end
-
-    def status_label
-      HostStatus::ExecutionStatus::ExecutionTaskStatusMapper.new(task).status_label
-    end
+    scoped_search on: :status, complete_value: true
 
     def progress(total = nil, done = nil)
-      if queued? || invocations.empty? || done == 0
+      if invocations.empty? || done == 0
         0
       else
         total ||= invocations.count
         done ||= sub_tasks.where(result: %w(success warning error)).count
         ((done.to_f / total) * 100).round
       end
-    end
-
-    def queued?
-      status == HostStatus::ExecutionStatus::QUEUED
     end
 
     def progress_report

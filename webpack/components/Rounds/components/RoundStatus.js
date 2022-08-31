@@ -5,37 +5,7 @@ import { translate as __ } from 'foremanReact/common/I18n';
 
 const RoundStatus = ({ status }) => {
   switch (status) {
-    case 'error':
-      return (
-        <div>
-          <Icon type="pf" name="error-circle-o" /> {__('failed')}
-        </div>
-      );
-    case 'warning':
-      return (
-        <div>
-          <Icon type="pf" name="warning-triangle-o" /> {status}
-        </div>
-      );
-    case 'moved':
-      return (
-        <div>
-          <Icon type="pf" name="export" /> {status}
-        </div>
-      );
-    case 'retried':
-      return (
-        <div>
-          <Icon type="pf" name="history" /> {status}
-        </div>
-      );
-    case 'cancelled':
-      return (
-        <div>
-          <Icon type="fa" name="ban" /> {status}
-        </div>
-      );
-    case 'success':
+    case 'complete':
       return (
         <div>
           <Icon type="pf" name="ok" /> {status}
@@ -48,6 +18,7 @@ const RoundStatus = ({ status }) => {
         </div>
       );
     case 'pending':
+    case 'planned':
       return (
         <div>
           <Icon type="pf" name="pending" /> {status}
