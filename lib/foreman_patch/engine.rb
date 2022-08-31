@@ -44,13 +44,14 @@ module ForemanPatch
 
     # Include concerns in this config.to_prepare block
     config.to_prepare do
-      begin
-        ::Host::Managed.send(:include, ForemanPatch::Concerns::HostManagedExtensions)
-        HostsController.prepend ForemanPatch::Concerns::HostsControllerExtensions
+      # Model extensions
+      ::Host::Managed.send(:include, ForemanPatch::Concerns::HostManagedExtensions)
 
-      rescue => e
-        Rails.logger.warn "ForemanPatch: skipping engine hook (#{e})"
-      end
+      # Controller extensions      
+      ::HostsController.prepend ForemanPatch::Concerns::HostsControllerExtensions
+
+      # Api Controller extensions
+      ::Api::V2::HostsController.include ForemanPatch::Concerns::Api::V2::HostsControllerExtensions
     end
 
     rake_tasks do
