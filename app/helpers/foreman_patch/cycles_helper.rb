@@ -1,14 +1,6 @@
 module ForemanPatch
   module CyclesHelper
 
-    def cycle_result(cycle, states)
-      states = Array(states)
-
-      cycle.windows.count do |window|
-        states.include? window.state
-      end
-    end
-
     def cycle_length(cycle)
       if ForemanPatch::Cycle === cycle
         cycle = cycle.plan

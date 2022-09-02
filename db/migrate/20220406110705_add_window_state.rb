@@ -15,15 +15,17 @@ class AddWindowState < ActiveRecord::Migration[6.0]
       if window.task.nil?
         next if window.start_at > Time.current
 
-        window.state = 'success'
+        window.status = 'completed'
       else
         case window.task.state
         when 'scheduled'
-          window.state = window.task.state
+          window.status = window.task.state
         when 'pending','planning','planned','running'
-          window.state = 'running'
+          window.status = 'running'
+        when 'stopped'
+          window.status = 'completed'
         else
-          window.state = window.task.result
+          window.status = window.task.state
         end
       end
       window.save!

@@ -16,6 +16,13 @@ module ForemanPatch
     validates :start_at, presence: true
     validates :end_by, presence: true
 
+    scope :planned, -> { where(state: 'planned') }
+    scope :scheduled, -> { where(state: 'scheduled') }
+    scope :running, -> { where(state: 'running') }
+    scope :completed, -> { where(state: 'completed') }
+
+    scope :future, -> { where(state: ['planned', 'scheduled']) }
+
     scoped_search on: :name, complete_value: true
     scoped_search on: :start_at, complete_value: false
     scoped_search on: :end_by, complete_value: false

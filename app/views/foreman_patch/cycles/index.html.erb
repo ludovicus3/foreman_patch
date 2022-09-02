@@ -22,16 +22,16 @@
           <%= cycle.start_date %>
         </td>
         <td>
-          <%= cycle_result(cycle, 'planned') %>
+          <%= cycle.windows.planned.count %>
         </td>
         <td>
-          <%= cycle_result(cycle, 'scheduled') %>
+          <%= cycle.windows.scheduled.count %>
         </td>
         <td>
-          <%= cycle_result(cycle, 'running') %>
+          <%= cycle.windows.running.count %>
         </td>
         <td>
-          <%= cycle_result(cycle, ['success', 'failed', 'warning']) %>
+          <%= cycle.windows.completed.count %>
         </td>
         <td>
           <%= cycle.windows.count %>

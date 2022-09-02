@@ -2,8 +2,7 @@ module Actions
   module ForemanPatch
     module Window
       class Patch < Actions::EntryAction
-
-        execution_plan_hooks.use :update_window_state, on: ::Dynflow::ExecutionPlan.states
+        execution_plan_hooks.use :update_window_status, on: ::Dynflow::ExecutionPlan.states
 
         def resource_locks
           :link
@@ -52,16 +51,18 @@ module Actions
           end
         end
 
-        def update_window_state(execution_plan)
+        def update_window_status(execution_plan)
           return unless root_action?
 
           case execution_plan.state
           when 'scheduled'
-            window.state = execution_plan.state
+            window.status = execution_plan.state
           when 'pending','planning','planned','running'
-            window.state = 'running'
+            window.status = 'running'
+          when 'stopped'
+            window.status = 'completed'
           else
-            window.state = execution_plan.result
+            window.status = execution_plan.state
           end
           window.save!
         end
