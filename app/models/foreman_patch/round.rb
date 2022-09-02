@@ -14,6 +14,11 @@ module ForemanPatch
     has_many :invocations, class_name: 'ForemanPatch::Invocation', foreign_key: :round_id, inverse_of: :round, dependent: :destroy
     has_many :hosts, through: :invocations
 
+    scope :planned, -> { where(status: 'planned') }
+    scope :pending, -> { where(status: 'pending') }
+    scope :running, -> { where(status: 'running') }
+    scope :complete, -> { where(status: 'complete') }
+
     scoped_search on: :name, complete_value: true
     scoped_search on: :status, complete_value: true
 
