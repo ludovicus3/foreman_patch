@@ -8,8 +8,8 @@ class AddWindowState < ActiveRecord::Migration[6.0]
   end
 
   def up
-    add_column :foreman_patch_windows, :state, :string, default: 'planned', null: false
-    add_index :foreman_patch_windows, :state, name: :index_foreman_patch_windows_on_state
+    add_column :foreman_patch_windows, :status, :string, default: 'planned', null: false
+    add_index :foreman_patch_windows, :status, name: :index_foreman_patch_windows_on_status
 
     Window.all.each do |window|
       if window.task.nil?
@@ -33,7 +33,7 @@ class AddWindowState < ActiveRecord::Migration[6.0]
   end
 
   def down
-    remove_index :foreman_patch_windows, :state, name: :index_foreman_patch_windows_on_state
-    remove_column :foreman_patch_windows, :state
+    remove_index :foreman_patch_windows, :status, name: :index_foreman_patch_windows_on_status
+    remove_column :foreman_patch_windows, :status
   end
 end
