@@ -48,7 +48,7 @@ module ForemanPatch
       ::Host::Managed.send(:include, ForemanPatch::Concerns::HostManagedExtensions)
 
       # Controller extensions      
-      ::HostsController.prepend ForemanPatch::Concerns::HostsControllerExtensions
+      ::HostsController.include ForemanPatch::Concerns::HostsControllerExtensions
 
       # Api Controller extensions
       ::Api::V2::HostsController.include ForemanPatch::Concerns::Api::V2::HostsControllerExtensions

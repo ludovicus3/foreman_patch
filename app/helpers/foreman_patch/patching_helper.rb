@@ -89,13 +89,14 @@ module ForemanPatch
     def invocation_task_buttons(task, invocation)
       buttons = []
 
-      if authorized_for(permission: :view_foreman_tasks, auth_object: task)
+      if task.present? && authorized_for(permission: :view_foreman_tasks, auth_object: task)
         buttons << link_to(_('Task Details'), main_app.foreman_tasks_task_path(task),
                            class: 'btn btn-default',
                            title: _('See the task details'))
       end
 
       #if authorized_for... eventually
+      if task.present?
         buttons << link_to(_('Cancel Patch'), main_app.cancel_foreman_tasks_task_path(task),
                            class: 'btn btn-danger',
                            title: _('Try to cancel the patch of the host'),
@@ -106,6 +107,7 @@ module ForemanPatch
                            title: _('Try to abort the patching of the host without waiting for its result'),
                            disabled: !task.cancellable?,
                            method: :post)
+      end
       #end
       buttons
     end

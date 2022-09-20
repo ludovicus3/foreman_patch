@@ -9,22 +9,24 @@ module ForemanPatch
 
     belongs_to :task, class_name: 'ForemanTasks::Task'
 
-    scope :pending, -> { left_joins(:task).where(foreman_tasks_tasks: { result: [nil, 'pending'] }) }
-    scope :failed, -> { left_joins(:task).where(foreman_tasks_tasks: { result: 'failed' }) }
-    scope :warning, -> { left_joins(:task).where(foreman_tasks_tasks: { result: 'warning' }) }
-    scope :successful, -> { left_joins(:task).where(foreman_tasks_tasks: { result: 'success' }) }
-    scope :cancelled, -> { left_joins(:task).where(foreman_tasks_tasks: { result: 'cancelled' }) }
+    scope :planned, -> { where(status: 'planned') }
+    scope :pending, -> { where(status: 'pending') }
+    scope :running, -> { where(status: 'running') }
+    scope :successful, -> { where(status: 'success') }
+    scope :warning, -> { where(status: 'warning') }
+    scope :failed, -> { where(status: 'failed') }
+    scope :cancelled, -> { where(status: 'cancelled') }
 
     scoped_search relation: :host, on: :name, complete_value: true
 
     default_scope { includes(:host).order('hosts.name') }
 
     def phases
-      task.main_action.planned_actions unless task.blank?
+      task&.main_action&.planned_actions || []
     end
 
     def state
-      return 'pending' if task.nil?
+      return 'scheduled' if task.nil?
       task.state
     end
 
@@ -33,16 +35,20 @@ module ForemanPatch
       task.result
     end
 
+    def complete?
+      ['success', 'warning', 'failed', 'cancelled'].include? status
+    end
+
     def warning?
-      state == 'stopped' and result == 'warning'
+      status == 'warning'
     end
 
     def failed?
-      state == 'stopped' and result == 'error'
+      status == 'failed'
     end
 
     def success?
-      state == 'stopped' and result == 'success'
+      status == 'success'
     end
 
     def to_action_input

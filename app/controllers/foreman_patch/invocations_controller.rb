@@ -14,7 +14,7 @@ module ForemanPatch
       @window = @round.window
       @cycle = @window.cycle
 
-      @auto_refresh = @invocation.task.pending?
+      @auto_refresh = !@invocation.complete?
       @since = params[:since].to_f if params[:since].present?
 
       @invocation.phases.each do |phase|

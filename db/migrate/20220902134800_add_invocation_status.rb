@@ -11,9 +11,9 @@ class AddInvocationStatus < ActiveRecord::Migration[6.0]
     add_index :foreman_patch_invocations, :status, name: :foreman_patch_invocations_by_status
 
     Invocation.all.each do |invocation|
-      if invocation.task.nil?
-        next if invocation.task_id.nil?
+      next if invocation.task_id.nil?
 
+      if invocation.task.nil?
         invocation.update!(status: 'success')
       else
         invocation.update!(status: invocation.task.result)

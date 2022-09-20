@@ -2,6 +2,7 @@ module Actions
   module ForemanPatch
     module Invocation
       class Patch < Actions::EntryAction
+        execution_plan_hooks.use :update_status, on: ::Dynflow::ExecutionPlan.states
 
         def plan(invocation)
           action_subject(invocation.host, invocation_id: invocation.id)
@@ -31,6 +32,19 @@ module Actions
 
         def rescue_strategy_for_self
           ::Dynflow::Action::Rescue::Fail
+        end
+
+        def update_status(execution_plan)
+          return unless root_action?
+
+          case execution_plan.state
+          when 'scheduled', 'pending', 'planning', 'planned'
+            invocation.update!(status: 'pending')
+          when 'running'
+            invocation.update!(status: 'running')
+          else
+            invocation.update!(status: execution_plan.result)
+          end
         end
 
         private
