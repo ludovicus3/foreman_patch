@@ -13,9 +13,7 @@ class AddWindowState < ActiveRecord::Migration[6.0]
 
     Window.all.each do |window|
       if window.task.nil?
-        next if window.start_at > Time.current
-
-        window.status = 'completed'
+        window.status = 'completed' unless window.task_id.nil?
       else
         case window.task.state
         when 'scheduled'
