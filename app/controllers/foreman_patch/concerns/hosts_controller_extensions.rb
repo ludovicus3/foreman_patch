@@ -45,7 +45,7 @@ module ForemanPatch
           ForemanTasks.async_task(Actions::ForemanPatch::Host::BulkReschedule, @hosts)
 
           success _('Updated hosts: changed patch group')
-          redirect_to hosts_path
+          redirect_back_or_to hosts_path
         end
 
         def reschedule_patching
