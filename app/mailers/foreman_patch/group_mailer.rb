@@ -5,7 +5,7 @@ module ForemanPatch
       user = options[:user]
 
       @group = options[:group].name
-      @hosts = options[:group].invocations.map { |invocation| invocation.host.name }
+      @hosts = options[:group].invocations.pluck(:name)
 
       set_locale_for(user) do
         mail(to: user.mail, subject: (_("%s Patching Initiated") % @group))
@@ -17,9 +17,9 @@ module ForemanPatch
 
       @group = options[:group].name
       @total = options[:group].invocations.count
-      @successes = options[:group].invocations.select(&:success?).map { |invocation| invocation.host.name }
-      @warnings = options[:group].invocations.select(&:warning?).map { |invocation| invocation.host.name }
-      @failures = options[:group].invocations.select(&:failed?).map { |invocation| invocation.host.name }
+      @successes = options[:group].invocations.successful.pluck(:name)
+      @warnings = options[:group].invocations.warning.pluck(:name)
+      @failures = options[:group].invocations.failed.pluck(:name)
 
       set_locale_for(user) do
         mail(to: user.mail, subject: (_("%s Patching Completed") % @group))

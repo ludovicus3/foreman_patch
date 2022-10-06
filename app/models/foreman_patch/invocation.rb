@@ -14,7 +14,7 @@ module ForemanPatch
     scope :running, -> { where(status: 'running') }
     scope :successful, -> { where(status: 'success') }
     scope :warning, -> { where(status: 'warning') }
-    scope :failed, -> { where(status: 'failed') }
+    scope :failed, -> { where(status: 'error') }
     scope :cancelled, -> { where(status: 'cancelled') }
 
     scoped_search relation: :host, on: :name, complete_value: true
@@ -44,7 +44,7 @@ module ForemanPatch
     end
 
     def failed?
-      status == 'failed'
+      status == 'error'
     end
 
     def success?
