@@ -3,19 +3,29 @@ module Actions
     module Cycle
       class Create < Actions::EntryAction
 
-        def plan(params)
-          input.update serialize_args(params)
-          plan_self
+        def resource_locks
+          :link
+        end
+
+        def plan(plan)
+          action_subject(plan)
+
+          cycle = ::ForemanPatch::Cycle.create!(plan.to_params)
+
+          concurrence do
+            plan.window_plans.each do |window_plan|
+              plan_action(Actions::ForemanPatch::Window::Create, window_plan, cycle)
+            end
+          end
+
+          plan.start_date = plan.next_cycle_start
+          plan.save!
+
+          plan_self(cycle: cycle.to_action_input)
         end
 
         def run
-          cycle = ::ForemanPatch::Cycle.create!(params)
-
           output.update(cycle: cycle.to_action_input)
-        end
-
-        def finalize
-          cycle.schedule
 
           users = ::User.select { |user| user.receives?(:patch_cycle_planned) }.compact
 
@@ -26,19 +36,30 @@ module Actions
           end
         end
 
+        def finalize
+          plan = ::ForemanPatch::Plan.find(input[:plan][:id])
+
+          ::ForemanTasks.delay(Actions::ForemanPatch::Cycle::Initiate, delay_options, cycle, plan)
+
+          plan.iterate
+        end
+
         def cycle
-          @cycle ||= ::ForemanPatch::Cycle.find(output[:cycle][:id])
+          @cycle ||= ::ForemanPatch::Cycle.find(input[:cycle][:id])
+        end
+
+        def humanized_name
+          _('Create cycle: %s') % input[:plan][:name]
         end
 
         private
 
-        def params
-          {
-            plan_id: input[:plan_id] || input[:plan][:id],
-            name: input[:name],
-            start_date: input[:start_date],
-            end_date: input[:end_date],
-          }
+        def delay_options
+          Time.use_zone(Setting[:patch_schedule_time_zone]) do
+            {
+              start_at: cycle.start_date.beginning_of_day,
+            }
+          end
         end
 
       end

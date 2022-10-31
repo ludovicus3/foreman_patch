@@ -48,13 +48,19 @@ module ForemanPatch
     end
 
     def iterate
-      return if tasks.where(state: :scheduled).any?
+      count = tasks.where(state: 'scheduled').count
 
-      if active_count > cycles.active.count or active_count == 0
-        ::ForemanTasks.async_task(::Actions::ForemanPatch::Cycle::Plan, self)
-      else
-        ::ForemanTasks.delay(::Actions::ForemanPatch::Cycle::Plan, delay_options, self)
+      if count < active_count or active_count == 0
+        ForemanTasks.async_task(Actions::ForemanPatch::Cycle::Create, self)
       end
+    end
+
+    def to_params
+      {
+        name: ForemanPatch::CycleNameGenerator.generate(self),
+        start_date: start_date,
+        end_date: next_cycle_start - 1.day,
+      }
     end
 
     class Jail < Safemode::Jail

@@ -3,14 +3,16 @@ module Actions
     module Cycle
       class Initiate < Actions::EntryAction
 
-        def delay(delay_options, cycle)
+        def delay(delay_options, cycle, plan = nil)
           input.update serialize_args(cycle: cycle)
+          add_missing_task_group(plan) if plan.present?
 
           super delay_options, cycle
         end
 
-        def plan(cycle)
+        def plan(cycle, plan = nil)
           input.update serialize_args(cycle: cycle)
+          add_missing_task_group(plan) if plan.present?
 
           cycle.windows.each do |window|
             plan_action(Actions::ForemanPatch::Window::ResolveHosts, window)
@@ -32,6 +34,8 @@ module Actions
 
         def finalize
           cycle.windows.each(&:schedule)
+
+          cycle.plan.iterate if cycle.plan.present?
         end
 
         def humanized_name
@@ -44,23 +48,18 @@ module Actions
 
         private
 
-        def options(version, components)
-          {
-            content: {
-              package_ids: version.available_packages,
-              errata_ids: version.available_errata,
-              deb_ids: ::Katello::Deb.in_repositories(version.library_repos).where.not(id: version.debs),
-            },
-            resolve_dependencies: true,
-            description: humanized_name,
-            new_components: components,
-          }
-        end
-
         def available_content?(version)
           version.available_packages.any? or 
             version.available_errata.any? or
             ::Katello::Deb.in_repositories(version.library_repos).where.not(id: version.debs).any?
+        end
+
+        def add_missing_task_group(plan)
+          if plan.task_group.nil?
+            plan.task_group = ::ForemanPatch::PlanTaskGroup.create!
+            plan.save!
+          end
+          task.add_missing_task_groups(plan.task_group)
         end
 
       end

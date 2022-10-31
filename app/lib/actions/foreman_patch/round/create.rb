@@ -3,30 +3,31 @@ module Actions
     module Round
       class Create < Actions::EntryAction
 
-        def plan(params)
-          plan_self params
+        def resource_locks
+          :link
+        end
+
+        def plan(group, window)
+          action_subject(group, window)
+
+          round = window.rounds.create!({
+            group: group,
+            name: group.name,
+            description: group.description,
+            priority: group.priority,
+            max_unavailable: group.max_unavailable,
+          })
+
+          plan_self(round: round.to_action_input)
+          plan_action(Actions::ForemanPatch::Round::ResolveHosts, round)
         end
 
         def run
-          round = window.rounds.create!(params)
-
           output[:round] = round.to_action_input
         end
 
-        private
-
-        def params
-          {
-            group_id: input[:group][:id],
-            name: input[:name],
-            description: input[:description],
-            priority: input[:priority],
-            max_unavailable: input[:max_unavailable],
-          }
-        end
-
-        def window
-          @window ||= ::ForemanPatch::Window.find(input[:window][:id])
+        def round
+          @round = ::ForemanPatch::Round.find(input[:round][:id])
         end
 
       end

@@ -55,6 +55,15 @@ module ForemanPatch
       start_at + duration
     end
 
+    def to_params
+      {
+        name: name,
+        description: description,
+        start_at: start_at,
+        end_by: end_by,
+      }
+    end
+
     private
 
     def init

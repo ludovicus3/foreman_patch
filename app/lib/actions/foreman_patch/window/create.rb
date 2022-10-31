@@ -1,32 +1,39 @@
 module Actions
   module ForemanPatch
     module Window
-      class Create < Actions::Base
+      class Create < Actions::EntryAction
 
-        def plan(params)
-          plan_self params
+        def resource_locks
+          :link
+        end
+
+        def plan(window_plan, cycle)
+          action_subject(window_plan, cycle)
+
+          window = cycle.windows.create!(window_plan.to_params)
+
+          sequence do
+            concurrence do
+              window_plan.groups.each do |group|
+                plan_action(Actions::ForemanPatch::Round::Create, group, window)
+              end
+            end
+
+            plan_action(Actions::ForemanPatch::Window::Publish, window)
+          end
+
+          plan_self(window: window.to_action_input)
         end
 
         def run
-          window = cycle.windows.create!(params)
-
           output.update(window: window.to_action_input)
         end
 
+        def window
+          @window = ::ForemanPatch::Window.find(input[:window][:id])
+        end
+
         private
-
-        def params
-          {
-            name: input[:name],
-            description: input[:description],
-            start_at: input[:start_at],
-            end_by: input[:end_by],
-          }
-        end
-
-        def cycle
-          @cycle ||= ::ForemanPatch::Cycle.find(input[:cycle][:id])
-        end
 
       end
     end
