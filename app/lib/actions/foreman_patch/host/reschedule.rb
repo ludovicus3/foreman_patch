@@ -3,8 +3,11 @@ module Actions
     module Host
       class BulkReschedule < Actions::Base
 
-        def plan(hosts)
+        def plan(hosts, include_active = false)
           input.update(hosts: hosts.map(&:to_action_input))
+
+          statuses = ['planned']
+          statuses << 'scheduled' if include_active
 
           # this query must be converted to array otherwise changes will alter the results
           windows = ::ForemanPatch::Window.with_hosts(hosts).with_status(statuses).to_a
