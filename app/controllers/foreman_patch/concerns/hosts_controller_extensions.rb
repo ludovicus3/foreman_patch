@@ -42,7 +42,7 @@ module ForemanPatch
             end
           end
 
-          ForemanTasks.async_task(Actions::ForemanPatch::Host::BulkReschedule, @hosts)
+          ForemanTasks.async_task(Actions::ForemanPatch::Host::Reschedule, @hosts)
 
           success _('Updated hosts: changed patch group')
           redirect_back_or_to hosts_path
@@ -52,7 +52,7 @@ module ForemanPatch
           return if @host.group_facet.nil?
           return unless @host.group_facet.saved_change_to_attribute?(:group_id)
 
-          ForemanTasks.async_task(Actions::ForemanPatch::Host::BulkReschedule, @host)
+          ForemanTasks.async_task(Actions::ForemanPatch::Host::Reschedule, @host)
         end
 
       end

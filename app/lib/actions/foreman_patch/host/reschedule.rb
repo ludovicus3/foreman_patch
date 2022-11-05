@@ -1,31 +1,28 @@
 module Actions
   module ForemanPatch
     module Host
-      class Reschedule < Actions::EntryAction
+      class BulkReschedule < Actions::Base
 
-        def plan(host)
-          input.update serialize_args(host: host)
+        def plan(hosts)
+          input.update(hosts: hosts.map(&:to_action_input))
 
-          plan_self
-        end
+          # this query must be converted to array otherwise changes will alter the results
+          windows = ::ForemanPatch::Window.with_hosts(hosts).with_status(statuses).to_a
 
-        def run
-          host.invocations.planned.destroy_all
+          sequence do
+            ForemanPatch::Invocation.in_windows(windows).where(host: hosts).each do |invocation|
+              plan_action(Actions::ForemanPatch::Invocation::Reschedule, invocation)
+            end
+            ForemanPatch::Round.in_windows(windows).missing_hosts(hosts) do |round|
+              plan_action(Actions::ForemanPatch::Round::AddMissingHosts, round, hosts)
+            end
 
-          ::ForemanPatch::Round.where(window: ::ForemanPatch::Window.planned, group: host.group).each do |round|
-            round.invocations.find_or_create_by!(host_id: host.id)
+            plan_action(Actions::BulkAction, Actions::ForemanPatch::Window::Publish, windows) unless windows.empty?
           end
-        end
-
-        private
-
-        def host
-          @host ||= ::Host.find(input[:host][:id])
         end
 
       end
     end
   end
 end
-
 
