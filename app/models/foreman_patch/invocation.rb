@@ -16,23 +16,17 @@ module ForemanPatch
     scope :warning, -> { where(status: 'warning') }
     scope :failed, -> { where(status: 'error') }
     scope :cancelled, -> { where(status: 'cancelled') }
+    scope :completed, -> { where(status: ['success', 'warning', 'error', 'cancelled']) }
 
+    scope :in_windows, -> (*args) { joins(:window).where(foreman_patch_windows: { id: args.flatten }) }
+
+    scoped_search on: :status, complete_value: true
     scoped_search relation: :host, on: :name, complete_value: true
 
     default_scope { includes(:host).order('hosts.name') }
 
     def phases
       task&.main_action&.planned_actions || []
-    end
-
-    def state
-      return 'scheduled' if task.nil?
-      task.state
-    end
-
-    def result
-      return 'pending' if task.nil?
-      task.result
     end
 
     def complete?

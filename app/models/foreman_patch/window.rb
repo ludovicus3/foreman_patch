@@ -8,7 +8,8 @@ module ForemanPatch
     has_many :sub_tasks, through: :task
 
     has_many :rounds, -> { order(priority: :asc) }, class_name: 'ForemanPatch::Round', inverse_of: :window, dependent: :destroy
-    has_many :groups, class_name: 'ForemanPatch::Group', through: :rounds
+    has_many :groups, through: :rounds
+    has_many :invocations, through: :rounds
     has_many :hosts, through: :rounds
 
     validates :cycle, presence: true
@@ -21,7 +22,13 @@ module ForemanPatch
     scope :running, -> { where(status: 'running') }
     scope :completed, -> { where(status: 'completed') }
 
-    scope :future, -> { where(status: ['planned', 'scheduled']) }
+    scope :with_status, -> (*args) { where(status: args.flatten) }
+    scope :with_hosts, -> (*args) do
+      left_joins(rounds: [:invocations, {group: :group_facets}]).scoping do
+        where(foreman_patch_group_facets: { host_id: args.flatten })
+          .or(where(foreman_patch_invocations: { host_id: args.flatten }))
+      end
+    end
 
     scoped_search on: :name, complete_value: true
     scoped_search on: :start_at, complete_value: false

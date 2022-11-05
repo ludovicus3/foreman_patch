@@ -19,6 +19,14 @@ module ForemanPatch
     scope :running, -> { where(status: 'running') }
     scope :complete, -> { where(status: 'complete') }
 
+    scope :in_windows, -> (*args) { where(windows: args.flatten) }
+    scope :missing_hosts, -> (*args) do
+      left_joins(:invocations, { group: :group_facets }).scoping do
+        where(foreman_patch_group_facets: { host_id: args.flatten },
+              foreman_patch_invocations: { host_id: nil })
+      end
+    end
+
     scoped_search on: :name, complete_value: true
     scoped_search on: :status, complete_value: true
 
@@ -41,23 +49,8 @@ module ForemanPatch
         failed: 0,
         cancelled: 0,
       }) do |report, invocation|
-        case invocation.result
-        when 'error'
-          report[:failed] += 1
-        when 'warning'
-          report[:warning] += 1
-        when 'success'
-          report[:success] += 1
-        when 'cancelled'
-          report[:cancelled] += 1
-        else
-          if invocation.state == 'running'
-            report[:running] += 1
-          else
-            report[:pending] += 1
-          end
-        end
-
+        invocation = 'pending' if invocation == 'planned'
+        report[invocation.to_sym] += 1
         report
       end
     end
@@ -69,8 +62,6 @@ module ForemanPatch
     class Jail < ::Safemode::Jail
       allow :id, :name, :description, :invocations, :hosts, :priority, :max_unavailable, :status 
     end
-
-    private
 
   end
 end
