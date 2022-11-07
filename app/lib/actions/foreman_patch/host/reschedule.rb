@@ -1,22 +1,23 @@
 module Actions
   module ForemanPatch
     module Host
-      class BulkReschedule < Actions::Base
+      class Reschedule < Actions::Base
 
-        def plan(hosts, include_active = false)
+        def plan(*hosts, **options)
+          hosts.flatten!
           input.update(hosts: hosts.map(&:to_action_input))
 
           statuses = ['planned']
-          statuses << 'scheduled' if include_active
+          statuses << 'scheduled' if options.fetch(:include_active, false)
 
           # this query must be converted to array otherwise changes will alter the results
           windows = ::ForemanPatch::Window.with_hosts(hosts).with_status(statuses).to_a
 
           sequence do
-            ForemanPatch::Invocation.in_windows(windows).where(host: hosts).each do |invocation|
+            ::ForemanPatch::Invocation.in_windows(windows).where(host: hosts).each do |invocation|
               plan_action(Actions::ForemanPatch::Invocation::Reschedule, invocation)
             end
-            ForemanPatch::Round.in_windows(windows).missing_hosts(hosts) do |round|
+            ::ForemanPatch::Round.in_windows(windows).missing_hosts(hosts).each do |round|
               plan_action(Actions::ForemanPatch::Round::AddMissingHosts, round, hosts)
             end
 

@@ -4,6 +4,7 @@ module ForemanPatch
 
     belongs_to :round, class_name: 'ForemanPatch::Round', inverse_of: :invocations
     has_one :window, through: :round
+    has_one :cycle, through: :window
 
     belongs_to :host, class_name: 'Host::Managed'
 
