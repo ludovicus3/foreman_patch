@@ -4,8 +4,8 @@ module Actions
       class Reschedule < Actions::Base
 
         def plan(*hosts, **options)
-          hosts.flatten!
-          input.update(hosts: hosts.map(&:to_action_input))
+          hosts = hosts.flatten
+          input.update(**options, hosts: hosts.map(&:to_action_input))
 
           statuses = ['planned']
           statuses << 'scheduled' if options.fetch(:include_active, false)
