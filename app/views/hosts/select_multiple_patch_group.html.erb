@@ -8,4 +8,5 @@
     {},
     label: _('Patch Group'),
     onchange: 'tfm.hosts.table.toggleMultipleOkButton(this)' %>
+  <%= checkbox_f f, :include_active, { label: _('Include Active'), help_inline: _('Reschedule patch invocations in currently active patch cycles') }, true, false %>
 <% end %>

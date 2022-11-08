@@ -42,7 +42,7 @@ module ForemanPatch
             end
           end
 
-          ForemanTasks.async_task(Actions::ForemanPatch::Host::Reschedule, @hosts)
+          ForemanTasks.async_task(Actions::ForemanPatch::Host::Reschedule, @hosts, include_active: params['patch_group']['include_active'])
 
           success _('Updated hosts: changed patch group')
           redirect_back_or_to hosts_path

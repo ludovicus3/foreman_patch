@@ -10,7 +10,9 @@ module ForemanPatch
           return if @host.group_facet.nil?
           return unless @host.group_facet.saved_change_to_attribute?(:group_id)
 
-          ForemanTasks.async_task(Actions::ForemanPatch::Host::Reschedule, @host)
+          schedule = params.dig('host', 'group_facet_attributes', 'schedule') || 'future-only'
+
+          ForemanTasks.async_task(Actions::ForemanPatch::Host::Reschedule, @host, include_active: schedule == 'all') unless schedule == 'none'
         end
 
       end
