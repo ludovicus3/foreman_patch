@@ -5,7 +5,7 @@ import { translate as __ } from 'foremanReact/common/I18n';
 
 import InvocationStatus from './InvocationStatus';
 
-const InvocationItem = ({ id, name, state, result, task_id, host_id }) => {
+const InvocationItem = ({ id, name, status, task_id, host_id }) => {
 
   const actions = [
     {
@@ -29,7 +29,7 @@ const InvocationItem = ({ id, name, state, result, task_id, host_id }) => {
     });
   }
 
-  if (state == 'pending' && result == 'pending') {
+  if (status == 'pending') {
     actions.push({
       title: __('Cancel'),
       action: {
@@ -46,7 +46,7 @@ const InvocationItem = ({ id, name, state, result, task_id, host_id }) => {
         <a href={`/foreman_patch/invocations/${id}`}>{name}</a>
       </td>
       <td className="invocation_status">
-        <InvocationStatus state={state} result={result} />
+        <InvocationStatus status={status} />
       </td>
       <td className="invocation_actions">
         <ActionButtons buttons={[...actions]} />
@@ -58,8 +58,7 @@ const InvocationItem = ({ id, name, state, result, task_id, host_id }) => {
 InvocationItem.propTypes = {
   id: PropTypes.number.isRequired,
   name: PropTypes.string.isRequired,
-  state: PropTypes.string.isRequired,
-  result: PropTypes.string.isRequired,
+  status: PropTypes.string.isRequired,
   host_id: PropTypes.number.isRequired,
   task_id: PropTypes.number.isRequired,
 };

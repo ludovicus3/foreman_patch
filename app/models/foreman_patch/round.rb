@@ -49,8 +49,8 @@ module ForemanPatch
         failed: 0,
         cancelled: 0,
       }) do |report, invocation|
-        invocation = 'pending' if invocation == 'planned'
-        report[invocation.to_sym] += 1
+        status = (invocation.status == 'planned' ? 'pending' : invocation.status)
+        report[status.to_sym] += 1
         report
       end
     end
