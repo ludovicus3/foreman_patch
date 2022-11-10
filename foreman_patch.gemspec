@@ -18,8 +18,8 @@ Gem::Specification.new do |s|
   s.test_files = Dir['test/**/*']
 
   s.add_dependency 'katello', '~> 4.1'
-  s.add_dependency 'foreman-tasks', '~> 4.1.5'
-  s.add_dependency 'foreman_remote_execution', '~> 4.5.6'
+  s.add_dependency 'foreman-tasks', '>= 4.0'
+  s.add_dependency 'foreman_remote_execution', '>= 4.0'
 
   s.add_development_dependency 'rubocop', '~> 0.80.0'
 end

@@ -15,7 +15,7 @@ module Actions
         end
 
         def done?
-          external_task[:up]
+          external_task[:status] == :running
         end
 
         def invoke_external_task
@@ -24,25 +24,36 @@ module Actions
             fail(_('Restart command failed to execute'))
           end
 
-          sleep(60)
-        
           schedule_timeout(Setting[:host_max_wait_for_up]) if Setting[:host_max_wait_for_up]
           
-          { up: false }
+          { status: :stopping }
         end
 
         def poll_external_task
-          begin
-            socket = TCPSocket.new(host.ip, Setting[:remote_execution_ssh_port])
-            socket.close
+          socket = TCPSocket.new(host.ip, Setting[:remote_execution_ssh_port])
+          socket.close
 
-            continuous_output.add_output(_('Server status: up'))
+          if external_task[:status] == :stopping
+            log_poll_result(_('Server status: stopping'))
+            { status: :stopping }
+          else
+            log_poll_result(_('Server status: running'))
+            { status: :running }
+          end
+        rescue
+          log_poll_result(_('Server status: starting'))
 
-            { up: true }
-          rescue
-            continuous_output.add_output(_('Server status: down'))
+          { status: :starting }
+        end
 
-            { up: false }
+        def poll_intervals
+          case external_task[:status]
+          when :stopping
+            [1]
+          when :starting
+            [10]
+          else
+            super
           end
         end
 
@@ -52,6 +63,16 @@ module Actions
           send_failure_notification
 
           fail("Timeout exceeded.")
+        end
+
+        def log_poll_result(status)
+          results = delegated_output.fetch('result', [])
+
+          results << {
+            'output_type' => 'debug',
+            'output' => status,
+            'timestamp' => Time.now.getlocal
+          }
         end
 
         def send_failure_notification

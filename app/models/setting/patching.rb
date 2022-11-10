@@ -20,6 +20,8 @@ class Setting::Patching < ::Setting
     [
       self.set('host_max_wait_for_up', N_("Maximum seconds to wait for a host after patching restart."),
                600, N_("Max wait for host up")),
+      self.set('host_patch_timeout', N_("Maximum seconds for a patching invocation to run before timing out"),
+               nil, N_('Patch Timeout')),
       self.set('patch_schedule_time_zone', N_('Time zone used to base patch window scheduling off of.'),
                'UTC', N_('Patch Schedule Time Zone'), nil,
                collection: proc { time_zone_select }),
@@ -49,7 +51,7 @@ class Setting::Patching < ::Setting
   end
 
   def self.load_defaults
-    BLANK_ATTRS.concat %w(ticket_api_host ticket_api_proxy ticket_api_user ticket_api_password)
+    BLANK_ATTRS.concat %w(ticket_api_host ticket_api_proxy ticket_api_user ticket_api_password, host_patch_timeout)
     super
   end
 end
