@@ -27,7 +27,7 @@ module ForemanPatch
       left_joins(rounds: [:invocations, {group: :group_facets}]).scoping do
         where(foreman_patch_group_facets: { host_id: args.flatten })
           .or(where(foreman_patch_invocations: { host_id: args.flatten }))
-      end
+      end.distinct
     end
 
     scoped_search on: :name, complete_value: true
