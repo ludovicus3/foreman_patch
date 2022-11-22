@@ -21,9 +21,11 @@ module ForemanPatch
 
     scope :in_windows, -> (*args) { where(window: args.flatten) }
     scope :missing_hosts, -> (*args) do
-      left_joins(:invocations, { group: :group_facets }).scoping do
-        where(foreman_patch_group_facets: { host_id: args.flatten },
-              foreman_patch_invocations: { host_id: nil })
+      left_joins(group: :group_facets).scoping do
+        where(foreman_patch_group_facets: { host_id: args.flatten })
+        .where('NOT EXISTS (:invocations)',
+               invocations: ForemanPatch::Invocation.where(host_id: args.flatten)
+          .where('foreman_patch_rounds.id = foreman_patch_invocations.round_id'))
       end
     end
 
