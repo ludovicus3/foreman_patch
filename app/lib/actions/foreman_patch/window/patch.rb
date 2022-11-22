@@ -55,11 +55,11 @@ module Actions
           return unless root_action?
 
           case execution_plan.state
-          when 'scheduled'
-            window.status = execution_plan.state
-          when 'pending','planning','planned','running'
+          when :scheduled
+            window.status = 'scheduled'
+          when :pending, :planning, :planned, :running
             window.status = 'running'
-          when 'stopped'
+          when :stopped
             window.status = 'completed'
           else
             window.status = execution_plan.state
