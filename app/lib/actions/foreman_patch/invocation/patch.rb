@@ -32,9 +32,9 @@ module Actions
           return unless root_action?
 
           case execution_plan.state
-          when 'scheduled', 'pending', 'planning', 'planned'
+          when :scheduled, :pending, :planning, :planned
             invocation.update!(status: 'pending')
-          when 'running'
+          when :running
             invocation.update!(status: 'running')
           else
             action = failed_action
@@ -68,6 +68,10 @@ module Actions
 
         def rescue_strategy_for_self
           ::Dynflow::Action::Rescue::Fail
+        end
+
+        def humanized_name
+          _('Patch %s') % host.name
         end
 
         private
