@@ -3,7 +3,6 @@ module Actions
     module Invocation
       class WaitForHost < Actions::EntryAction
         include Actions::Helpers::WithContinuousOutput
-        include Actions::Helpers::FailureNotification
         include Dynflow::Action::Polling
 
         def plan(host)
@@ -13,7 +12,7 @@ module Actions
         end
 
         def done?
-          external_task[:status] == 'available'
+          ['available', 'timeout'].include? external_task[:status]
         end
 
         def invoke_external_task
@@ -40,7 +39,7 @@ module Actions
         def poll_intervals
           case external_task[:status]
           when 'waiting'
-            [10, 1]
+            [1]
           when 'starting'
             [10]
           else
@@ -49,17 +48,13 @@ module Actions
         end
 
         def on_finish
-          add_output(_('Host is up'), 'stdout')
+          add_output(_('Host is up'), 'stdout') if external_task[:status] == 'available'
         end
 
         def process_timeout
           add_output(_('Server did not respond withing alloted time after restart.'), 'stderr')
-          send_failure_notification
-          fail('Timeout exceeded.')
-        end
 
-        def rescue_strategy
-          ::Dynflow::Action::Rescue::Fail
+          self.external_task[:status] = 'timeout'
         end
 
         def live_output
