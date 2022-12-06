@@ -12,32 +12,30 @@ module Actions
         end
 
         def done?
-          ['available', 'timeout'].include? external_task[:status]
+          ['available', 'timeout'].include? external_task
         end
 
         def invoke_external_task
           schedule_timeout(Setting[:host_max_wait_for_up]) if Setting[:host_max_wait_for_up]
 
-          { status: 'waiting' }
+          'waiting'
         end
 
         def poll_external_task
+          return status = external_task if external_task == 'timeout'
+
           socket = TCPSocket.new(host.ip, Setting[:remote_execution_ssh_port])
           
           status = starting? ? 'available' : 'waiting'
-          
-          { status: status }
         rescue
           status = 'starting'
-
-          { status: status }
         ensure
           socket.close if socket
           add_output("Poll result: #{status}")
         end
 
         def poll_intervals
-          case external_task[:status]
+          case external_task
           when 'waiting'
             [1]
           when 'starting'
@@ -48,13 +46,13 @@ module Actions
         end
 
         def on_finish
-          add_output(_('Host is up'), 'stdout') if external_task[:status] == 'available'
+          add_output(_('Host is up'), 'stdout') if external_task == 'available'
         end
 
         def process_timeout
           add_output(_('Server did not respond withing alloted time after restart.'), 'stderr')
 
-          self.external_task[:status] = 'timeout'
+          self.external_task = 'timeout'
         end
 
         def live_output
@@ -79,7 +77,7 @@ module Actions
         end
 
         def starting?
-          external_task[:status] == 'starting'
+          external_task == 'starting'
         end
 
         def add_output(message, type = 'debug', timestamp = Time.now.getlocal)
