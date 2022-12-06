@@ -50,7 +50,7 @@ module ForemanPatch
     def iterate
       count = tasks.where(state: 'scheduled').count
 
-      if count < active_count or active_count == 0
+      if (count < active_count - 1) or active_count == 0
         ForemanTasks.async_task(Actions::ForemanPatch::Cycle::Create, self)
       end
     end
