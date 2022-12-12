@@ -13,17 +13,18 @@ fi
 
 set -- $options
 
-webpack=$(false)
-move=$(true)
+webpack=false
+move=false
 
 while true
 do
   case "$1" in
     -w|--webpack)
-      webpack=$(true)
+      webpack=true
       shift
       ;;
     -m|--move)
+      move=true
       shift
       ;;
     --)
@@ -59,5 +60,5 @@ gem build foreman_patch.gemspec
   
 if $move
 then
-  mv -v foreman_patch*.gem /mnt/h/
+  mv -v foreman_patch*.gem /mnt/h/foreman_patch/
 fi
