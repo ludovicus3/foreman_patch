@@ -35,7 +35,8 @@ module Actions
         def finalize
           cycle.windows.each(&:schedule)
 
-          cycle.plan.iterate if cycle.plan.present?
+          plan = find_plan
+          plan.iterate if plan.present?
         end
 
         def humanized_name
@@ -60,6 +61,10 @@ module Actions
             plan.save!
           end
           task.add_missing_task_groups(plan.task_group)
+        end
+
+        def find_plan
+          task.task_groups.find_by(type: 'ForemanPatch::PlanTaskGroup')&.plan
         end
 
       end
