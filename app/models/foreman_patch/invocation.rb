@@ -2,6 +2,8 @@ module ForemanPatch
   class Invocation < ::ApplicationRecord
     include ForemanTasks::Concerns::ActionSubject
 
+    STATUSES = %w(planned pending running success warning error cancelled)
+
     belongs_to :round, class_name: 'ForemanPatch::Round', inverse_of: :invocations
     has_one :window, through: :round
     has_one :cycle, through: :window
@@ -28,6 +30,10 @@ module ForemanPatch
 
     def phases
       task&.main_action&.planned_actions || []
+    end
+
+    def events
+      task&.main_action&.live_output || []
     end
 
     def complete?

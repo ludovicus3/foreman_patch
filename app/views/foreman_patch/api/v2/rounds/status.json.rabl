@@ -1,11 +1,5 @@
 object @round
 
-attribute :id
+extends 'foreman_patch/api/v2/rounds/base'
 
-node :complete do
-  @round.finished?
-end
-
-node :progress do
-  @round.progress_report
-end
+attribute :progress

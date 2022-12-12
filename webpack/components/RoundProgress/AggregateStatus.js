@@ -19,7 +19,7 @@ const AggregateStatus = ({ progress }) => (
       <span className="card-pf-aggregate-status-notification">
         <span id="failed_count">
           <span className="pficon pficon-error-circle-o" />
-          {progress.failed}
+          {progress.error}
         </span>
       </span>
       <span className="card-pf-aggregate-status-notification">
@@ -31,7 +31,7 @@ const AggregateStatus = ({ progress }) => (
       <span className="card-pf-aggregate-status-notification">
         <span id="pending_count">
           <span className="pficon pficon-pending" />
-          {progress.pending}
+          {progress.pending + progress.planned}
         </span>
       </span>
       <span className="card-pf-aggregate-status-notification">
@@ -46,11 +46,12 @@ const AggregateStatus = ({ progress }) => (
 
 AggregateStatus.propTypes = {
   progress: PropTypes.shape({
+    planned: PropTypes.number,
+    pending: PropTypes.number,
+    running: PropTypes.number,
     success: PropTypes.number,
     warning: PropTypes.number,
-    failed: PropTypes.number,
-    running: PropTypes.number,
-    pending: PropTypes.number,
+    error: PropTypes.number,
     cancelled: PropTypes.number,
   }).isRequired,
 };

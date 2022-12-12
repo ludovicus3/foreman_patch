@@ -2,6 +2,8 @@ module ForemanPatch
   class Round < ::ApplicationRecord
     include ForemanTasks::Concerns::ActionSubject
 
+    STATUSES = %w(planned pending running complete).freeze
+
     belongs_to :window, class_name: 'ForemanPatch::Window'
     has_one :cycle, class_name: 'ForemanPatch::Cycle', through: :window
     belongs_to :group, class_name: 'ForemanPatch::Group'
@@ -32,29 +34,8 @@ module ForemanPatch
     scoped_search on: :name, complete_value: true
     scoped_search on: :status, complete_value: true
 
-    def progress(total = nil, done = nil)
-      if invocations.empty? || done == 0
-        0
-      else
-        total ||= invocations.count
-        done ||= sub_tasks.where(result: %w(success warning error)).count
-        ((done.to_f / total) * 100).round
-      end
-    end
-
-    def progress_report
-      invocations.reduce({
-        pending: 0,
-        running: 0,
-        success: 0,
-        warning: 0,
-        failed: 0,
-        cancelled: 0,
-      }) do |report, invocation|
-        status = (invocation.status == 'planned' ? 'pending' : invocation.status)
-        report[status.to_sym] += 1
-        report
-      end
+    def progress
+      ForemanPatch::Invocation::STATUSES.product([0]).to_h.merge(invocations.unscope(:order).group(:status).count)
     end
 
     def finished?
