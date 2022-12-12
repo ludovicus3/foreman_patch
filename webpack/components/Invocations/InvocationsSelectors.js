@@ -12,7 +12,7 @@ export const selectTotal = state =>
   selectAPIResponse(state, INVOCATIONS).total || 0;
 
 export const selectAutoRefresh = state =>
-  selectItems(state).some(item => (item.result === 'pending'));
+  selectItems(state).some(item => (item.status === 'pending' || item.status === 'planned'));
 
 export const selectStatus = state => selectAPIStatus(state, INVOCATIONS);
 
