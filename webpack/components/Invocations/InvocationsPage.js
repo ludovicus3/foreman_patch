@@ -17,6 +17,10 @@ const InvocationsPage = ({
   pagination,
   handleSearch,
   handlePagination,
+  selectAll,
+  areAllSelected,
+  onSelect,
+  isSelected
 }) => (
   <div id="patch_invocations">
     <Grid.Row>
@@ -37,7 +41,14 @@ const InvocationsPage = ({
       </Grid.Col>
     </Grid.Row>
     <br />
-    <Invocations status={status} items={items} />
+    <Invocations
+      status={status}
+      items={items}
+      selectAll={selectAll}
+      areAllSelected={areAllSelected}
+      onSelect={onSelect}
+      isSelected={isSelected}
+    />
     <Pagination
       viewType="table"
       itemCount={total}
@@ -57,6 +68,10 @@ InvocationsPage.propTypes = {
   pagination: PropTypes.object.isRequired,
   handleSearch: PropTypes.func.isRequired,
   handlePagination: PropTypes.func.isRequired,
+  selectAll: PropTypes.func.isRequired,
+  areAllSelected: PropTypes.bool.isRequired,
+  onSelect: PropTypes.func.isRequired,
+  isSelected: PropTypes.func.isRequired,
 };
 
 InvocationsPage.defaultProps = {

@@ -36,6 +36,9 @@ const WrappedInvocations = ({ round }) => {
   });
   const [url, setUrl] = useState(getUrl(round, searchQuery, pagination));
   const intervalExists = useSelector(selectIntervalExists);
+  const [selectedItems, setSelectedItems] = useState([]);
+  const [recentSelectedItemIndex, setRecentSelectedRowIndex] = useState(null);
+  const [shifting, setShifting] = useState(false);
 
   const handleSearch = query => {
     const defaultPagination = { page: 1, perPage: pagination.perPage };
@@ -52,6 +55,32 @@ const WrappedInvocations = ({ round }) => {
     setUrl(getUrl(round, searchQuery, args));
   };
 
+  const selectAll = (isSelecting) => setSelectedItems(isSelecting ? items.map(item => item.id) : []);
+
+  const areAllSelected = selectedItems.length == items.length;
+
+  const setItemSelected = (item, isSelecting) => 
+    setSelectedItems(prevSelected => {
+      const otherSelectedItems = prevSelected.filter(i => i !== item.id);
+      return isSelecting ? [...otherSelectedItems, item.id] : otherSelectedItems;
+    });
+
+  const onSelect = (item, rowIndex, isSelecting) => {
+    if (shifting && recentSelectedRowIndex !== null) {
+      const numberSelected = rowIndex - recentSelectedRowIndex;
+      const intermediateIndexes =
+        numberSelected > 0
+        ? Array.from(new Array(numberSelected + 1), (_x, i) => i + recentSelectedRowIndex)
+        : Array.from(new Array(Math.abs(numberSelected) + 1), (_x, i) => i + rowIndex);
+      intermediateIndexes.forEach(index, setItemSelected(items[index], isSelecting));
+    } else {
+      setItemSelected(item, isSelecting);
+    }
+    setRecentSelectedRowIndex(rowIndex);
+  };
+
+  const isSelected = item => selectedItems.includes(item.id);
+
   const stopApiInterval = () => {
     if (intervalExists) {
       dispatch(stopInterval(INVOCATIONS));
@@ -67,14 +96,30 @@ const WrappedInvocations = ({ round }) => {
   }), 5000);
 
   useEffect(() => {
+    const onKeyDown = (e) => {
+      if (e.key === 'Shift') {
+        setShifting(true);
+      }
+    };
+    const onKeyUp = (e) => {
+      if (e.key === 'Shift') {
+        setShifting(false);
+      }
+    };
+
     dispatch(getData(url));
 
     if (!autoRefresh) {
       dispatch(stopInterval(INVOCATIONS));
     }
 
+    document.addEventListener('keydown', onKeyDown);
+    document.addEventListener('keyup', onKeyUp);
+
     return () => {
       dispatch(stopInterval(INVOCATIONS));
+      document.removeEventListener('keydown', onKeyDown);
+      document.removeEventListener('keyup', onKeyUp);
     };
   }, [dispatch, url, autoRefresh]);
 
@@ -87,6 +132,10 @@ const WrappedInvocations = ({ round }) => {
       handleSearch={handleSearch}
       pagination={pagination}
       handlePagination={handlePagination}
+      selectAll={selectAll}
+      areAllSelected={areAllSelected}
+      onSelect={onSelect}
+      isSelected={isSelected}
     />
   );
 };

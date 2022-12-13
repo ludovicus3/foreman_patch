@@ -3,9 +3,7 @@ import PropTypes from 'prop-types';
 import { ActionButtons } from 'foremanReact/components/common/ActionButtons/ActionButtons';
 import { translate as __ } from 'foremanReact/common/I18n';
 
-import InvocationStatus from './InvocationStatus';
-
-const InvocationItem = ({ id, name, status, task_id, host_id }) => {
+const InvocationActions = ({ id, name, status, task_id, host_id }) => {
 
   const actions = [
     {
@@ -41,21 +39,11 @@ const InvocationItem = ({ id, name, status, task_id, host_id }) => {
   }
 
   return (
-    <tr id={`invocation-${id}`}>
-      <td className="invocation_name">
-        <a href={`/foreman_patch/invocations/${id}`}>{name}</a>
-      </td>
-      <td className="invocation_status">
-        <InvocationStatus status={status} />
-      </td>
-      <td className="invocation_actions">
-        <ActionButtons buttons={[...actions]} />
-      </td>
-    </tr>
+    <ActionButtons buttons={[...actions]} />
   );
 };
 
-InvocationItem.propTypes = {
+InvocationActions.propTypes = {
   id: PropTypes.number.isRequired,
   name: PropTypes.string.isRequired,
   status: PropTypes.string.isRequired,
@@ -63,4 +51,4 @@ InvocationItem.propTypes = {
   task_id: PropTypes.number.isRequired,
 };
 
-export default InvocationItem;
+export default InvocationActions;
