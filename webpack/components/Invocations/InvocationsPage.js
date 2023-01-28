@@ -4,6 +4,7 @@ import { Grid } from 'patternfly-react';
 
 import SearchBar from 'foremanReact/components/SearchBar';
 import Pagination from 'foremanReact/components/Pagination/PaginationWrapper';
+import { ActionButtons } form 'foremanReact/components/common/ActionButtons/ActionButtons';
 import { getControllerSearchProps } from 'foremanReact/constants';
 
 import Invocations from './Invocations';
@@ -20,7 +21,8 @@ const InvocationsPage = ({
   selectAll,
   areAllSelected,
   onSelect,
-  isSelected
+  isSelected,
+  actions
 }) => (
   <div id="patch_invocations">
     <Grid.Row>
@@ -38,6 +40,9 @@ const InvocationsPage = ({
             bookmarks: {},
           }}
         />
+      </Grid.Col>
+      <Grid.Col md={6} className="title_action">
+        <ActionButtons buttons={[]} />
       </Grid.Col>
     </Grid.Row>
     <br />
@@ -69,13 +74,16 @@ InvocationsPage.propTypes = {
   handleSearch: PropTypes.func.isRequired,
   handlePagination: PropTypes.func.isRequired,
   selectAll: PropTypes.func.isRequired,
-  areAllSelected: PropTypes.bool.isRequired,
+  areAllSelected: PropTypes.bool,
   onSelect: PropTypes.func.isRequired,
   isSelected: PropTypes.func.isRequired,
+  actions: PropTypes.array,
 };
 
 InvocationsPage.defaultProps = {
   status: null,
+  areAllSelected: false,
+  actions: []
 };
 
 export default InvocationsPage;

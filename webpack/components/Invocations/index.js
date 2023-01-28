@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import PropTypes from 'prop-types';
+import { Grid } from 'patternfly-react';
 
 import { 
   withInterval,
@@ -8,7 +9,13 @@ import {
 } from 'foremanReact/redux/middlewares/IntervalMiddleware';
 import { get } from 'foremanReact/redux/API';
 import { useForemanSettings } from 'foremanReact/Root/Context/ForemanContext';
+import { getControllerSearchProps } from 'foremanReact/constants';
+import { translate as __ } from 'foremanReact/common/I18n';
+import SearchBar from 'foremanReact/components/SearchBar';
+import Pagination from 'foremanReact/components/Pagination/PaginationWrapper';
+import { ActionButtons } from 'foremanReact/components/common/ActionButtons/ActionButtons';
 
+import Invocations from './Invocations';
 import {
   selectItems,
   selectTotal,
@@ -18,7 +25,8 @@ import {
 } from './InvocationsSelectors';
 import { getUrl } from './InvocationsHelpers';
 import { INVOCATIONS } from './InvocationsConstants';
-import InvocationsPage from './InvocationsPage';
+
+import './Invocations.scss';
 
 const WrappedInvocations = ({ round }) => {
   const dispatch = useDispatch();
@@ -124,19 +132,45 @@ const WrappedInvocations = ({ round }) => {
   }, [dispatch, url, autoRefresh]);
 
   return (
-    <InvocationsPage
-      status={status}
-      items={items}
-      total={total}
-      searchQuery={searchQuery}
-      handleSearch={handleSearch}
-      pagination={pagination}
-      handlePagination={handlePagination}
-      selectAll={selectAll}
-      areAllSelected={areAllSelected}
-      onSelect={onSelect}
-      isSelected={isSelected}
-    />
+    <React.Fragment>
+      <Grid.Row>
+        <Grid.Col md={6} className="title_filter">
+          <SearchBar
+            onSearch={handleSearch}
+            data={{
+              ...getControllerSearchProps('foreman_patch/invocations'),
+              autocomplete: {
+                id: 'invocations_search',
+                searchQuery,
+                url: '/foreman_patch/invocations/auto_complete_search',
+                useKeyShortcuts: true,
+              },
+              bookmarks: {},
+            }}
+          />
+        </Grid.Col>
+        <Grid.Col md={6}>
+          <ActionButtons buttons={actions} />
+        </Grid.Col>
+      </Grid.Row>
+      <br />
+      <Invocations
+        status={status}
+        items={items}
+        selectAll={selectAll}
+        areAllSelected={areAllSelected}
+        isSelected={isSelected}
+        onSelect={onSelect}
+      />
+      <Pagination
+        viewType="table"
+        itemCount={total}
+        pagination={pagination}
+        onChange={handlePagination}
+        dropdownButtonId="invocations-pagination-dropdown"
+        className="invocations-pagination"
+      />
+    </React.Fragment>
   );
 };
 

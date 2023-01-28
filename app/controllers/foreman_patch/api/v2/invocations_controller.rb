@@ -23,7 +23,6 @@ module ForemanPatch
         api :GET, '/invocations/:id', N_('Get details of an invocation')
         param :id, :identifier, required: true
         def show
-          @invocation = ForemanPatch::Invocation.find(params[:id])
         end
 
         api :PUT, '/invocations/:id', N_('Move the invocation to another round')
@@ -33,6 +32,29 @@ module ForemanPatch
         end
         def update
           process_response @invocation.update(invocation_params)
+        end
+
+        api :PUT, '/invocations/move', N_('Move invocations to another round')
+        param :ids, Array, required: true, desc: N_('List of invocation ids')
+        param :round_id, Integer, required: true, desc: N_('Id of the destination round')
+        def move
+          @invocations = ForemanPatch::Invocation.where(id: params[:ids])
+
+          @errors = []
+          @invocations.each do |invocation|
+            round = invocation.round.cycle.rounds.find(params[:round_id])
+            invocation.update(round: round)
+          rescue
+          end
+
+          @invocations = ForemanPatch::Invocation.where(id: params[:ids], round_id: params[:round_id])
+        end
+
+        api :PUT, '/invocations/cancel', N_('Cancel invocations')
+        param :ids, Array, required: true, desc: N_('List of invocation ids')
+        def cancel
+          @invocations = ForemanPatch::Invocation.where(id: params[:ids])
+          @invocations.update_all(status: 'cancelled')          
         end
 
         api :DELETE, 'invocations/:id', N_('Delete the patch invocation')
