@@ -1,6 +1,7 @@
 module ForemanPatch
   class Window < ::ApplicationRecord
     include ForemanTasks::Concerns::ActionSubject
+    include Foreman::ObservableModel
 
     belongs_to :cycle, class_name: 'ForemanPatch::Cycle', inverse_of: :windows
 
@@ -39,6 +40,8 @@ module ForemanPatch
 
     after_update :reschedule, if: :needs_reschedule?
     after_update :republish, if: :needs_republish?
+    
+    set_crud_hooks :patch_window
 
     def ticket
       @ticket ||= Ticket.get(self)

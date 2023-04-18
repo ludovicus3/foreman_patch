@@ -1,6 +1,7 @@
 module ForemanPatch
   class Invocation < ::ApplicationRecord
     include ForemanTasks::Concerns::ActionSubject
+    include Foreman::ObservableModel
 
     STATUSES = %w(planned pending running success warning error cancelled)
 
@@ -27,6 +28,8 @@ module ForemanPatch
     scoped_search relation: :host, on: :name, complete_value: true
 
     default_scope { includes(:host).order('hosts.name') }
+    
+    set_crud_hooks :patch_invocation
 
     def phases
       task&.main_action&.planned_actions || []

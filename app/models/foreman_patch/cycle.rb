@@ -1,7 +1,8 @@
 module ForemanPatch
   class Cycle < ::ApplicationRecord
     include ForemanTasks::Concerns::ActionSubject
-
+    include Foreman::ObservableModel
+    
     belongs_to :plan, class_name: 'ForemanPatch::Plan'
 
     has_many :windows, -> { order(start_at: :asc) }, class_name: 'ForemanPatch::Window', foreign_key: :cycle_id, inverse_of: :cycle, dependent: :delete_all
@@ -23,6 +24,8 @@ module ForemanPatch
     scope :active, -> { where('end_date >= ?', Date.current) }
     scope :running, -> { where('? BETWEEN start_date AND end_date', Date.current) }
     scope :completed, -> { where('end_date < ?', Date.current) }
+    
+    set_crud_hooks :patch_cycle
 
     def planned?
       start_date > Date.current
