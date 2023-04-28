@@ -1,4 +1,5 @@
-require 'foreman_patch/engine'
-
 module ForemanPatch
 end
+
+require 'foreman_patch/engine'
+
