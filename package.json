@@ -1,6 +1,8 @@
 {
   "name": "foreman_patch",
-  "version": "0.0.1",
+  "version": "0.0.2",
+  "description": "TODO",
+  "main": "index.js",
   "license": "GPL-3.0",
   "scripts": {
     "lint": "tfm-lint --plugin -d /webpack",
@@ -9,7 +11,8 @@
     "test:current": "tfm-test --plugin --watch",
     "publish-coverage": "tfm-publish-coverage",
     "stories": "tfm-stories --plugin",
-    "stories:build": "tfm-build-stories --plugin"
+    "stories:build": "tfm-build-stories --plugin",
+    "create-react-component": "yo react-domain"
   },
   "repository": {
     "type": "git",
@@ -20,16 +23,20 @@
   },
   "devDependencies": {
     "@babel/core": "^7.7.0",
-    "@theforeman/builder": "^6.0.0",
-    "@theforeman/eslint-plugin-foreman": "^6.0.0",
-    "@theforeman/stories": "^7.0.0",
-    "@theforeman/test": "^8.0.0",
-    "@theforeman/vendor-dev": "^6.0.0",
+    "@theforeman/builder": "^8.15.0",
+    "@theforeman/eslint-plugin-foreman": "^8.15.0",
+    "@theforeman/find-foreman": "^8.15.0",
+    "@theforeman/stories": "^8.15.0",
+    "@theforeman/test": "^8.15.0",
+    "@theforeman/vendor-dev": "^8.15.0",
     "babel-eslint": "^10.0.3",
     "eslint": "^6.7.2",
-    "prettier": "^1.19.1"
+    "jed": "^1.1.1",
+    "prettier": "^1.19.1",
+    "stylelint-config-standard": "^18.0.0",
+    "stylelint": "^9.3.0"
   },
   "peerDependencies": {
-    "@theforeman/vendor": ">= 6.0.0"
+    "@theforeman/vendor": "^8.15.0"
   }
 }
