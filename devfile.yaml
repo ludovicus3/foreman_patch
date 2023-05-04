@@ -21,7 +21,7 @@ commands:
     exec:
       label: "Run application"
       component: tools
-      workingDir: "${PROJECT_SOURCE}"
-      commandLine: "./hello.out"
+      workingDir: "/foreman"
+      commandLine: "bundle exec bin/rails server -b 0.0.0.0"
       group:
         kind: run
