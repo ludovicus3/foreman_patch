@@ -2,7 +2,7 @@
   "name": "foreman_patch",
   "version": "0.0.2",
   "description": "TODO",
-  "main": "index.js",
+  "main": "index.jsx",
   "license": "GPL-3.0",
   "scripts": {
     "lint": "tfm-lint --plugin -d /webpack",

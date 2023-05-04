@@ -7,6 +7,11 @@ module ForemanPatch
     config.autoload_paths += Dir["#{config.root}/app/helpers/concerns"]
     config.autoload_paths += Dir["#{config.root}/app/models/concerns"]
 
+    initializer 'foreman_patch.register_plugin', :before => :finisher_hook do |_app|
+      require 'foreman_patch/plugin'
+      Apipie.configuration.checksum_path += ['/foreman_patch/api/']
+    end
+
     initializer 'foreman_patch.configure_assets', group: :assets do
       SETTINGS[:foreman_patch] = { assets: { precompile: ['foreman_patch.css'] } }
     end
@@ -31,11 +36,6 @@ module ForemanPatch
     initializer 'foreman_patch.require_dynflow', before: 'foreman_tasks.initialize_dynflow' do |_app|
       ::ForemanTasks.dynflow.require!
       ::ForemanTasks.dynflow.config.eager_load_paths << File.join(ForemanPatch::Engine.root, 'app/lib/actions/foreman_patch')
-    end
-
-    initializer 'foreman_patch.register_plugin', :before => :finisher_hook do |_app|
-      require 'foreman_patch/plugin'
-      Apipie.configuration.checksum_path += ['/foreman_patch/api/']
     end
 
     initializer 'foreman_patch.helpers' do |_app|

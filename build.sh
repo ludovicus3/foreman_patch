@@ -40,13 +40,17 @@ done
 
 find ./app -name '*.rb' -exec ruby -wc {} >/dev/null \;
 
+export FOREMAN_APIPIE_LANGS=en
+export RAILS_ENV=${RAILS_ENV:-production}
+export DATABASE_URL=nulldb://nohost
+
 if $webpack
 then
   rm -rf public/webpack/foreman_patch/*
 
   cd ../foreman
 
-  rake plugin:assets:precompile[foreman_patch] RAILS_ENV=production DATABASE_URL=nulldb://nohost --trace
+  rake plugin:assets:precompile[foreman_patch] --trace
   if [ $? -ne 0 ]; then
     cd ../foreman_patch
     echo "Build failed..." 1>&2

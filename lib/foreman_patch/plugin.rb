@@ -1,5 +1,5 @@
 Foreman::Plugin.register :foreman_patch do
-  requires_foreman '>= 2.1'
+  requires_foreman '>= 3.0.0'
 
   apipie_documented_controllers(["#{ForemanPatch::Engine.root}/app/controllers/foreman_patch/api/v2/*.rb"])
 

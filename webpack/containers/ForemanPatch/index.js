@@ -1,10 +1,10 @@
 import React from 'react';
 import { BrowserRouter } from 'react-router-dom';
-import ForemanPatchRoute from './Router';
+import Routes from './routes';
 
 const ForemanPatch = () => (
   <BrowserRouter>
-    <ForemanPatchRoute />
+    <Routes />
   </BrowserRouter>
 );
 

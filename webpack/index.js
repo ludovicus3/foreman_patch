@@ -1,16 +1,17 @@
 /* eslint import/no-unresolved: [2, { ignore: [foremanReact/*] }] */
 /* eslint-disable import/no-extraneous-dependencies */
 /* eslint-disable import/extensions */
+/* eslint-disable import/no-unresolved */
 import componentRegistry from 'foremanReact/components/componentRegistry';
-import { registerReducer } from 'foremanReact/common/MountingService';
-import reducers from './src/reducers';
-import ForemanPatch from './src/ForemanPatch';
+import ForemanPatch from './containers/ForemanPatch';
 
 import Rounds from './components/Rounds';
 import Plan from './components/Plan';
 import Invocations from './components/Invocations';
 import RoundProgress from './components/RoundProgress';
 import Cycle from './components/Cycle';
+
+import './redux';
 
 const components = [
   { name: 'Rounds', type: Rounds },
@@ -19,10 +20,6 @@ const components = [
   { name: 'Cycle', type: Cycle },
   { name: 'RoundProgress', type: RoundProgress },
 ];
-
-Object.entries(reducers).forEach(([key, reducer]) =>
-  registerReducer(key, reducer)
-);
 
 components.forEach(component => componentRegistry.register(component));
 componentRegistry.register({ name: 'ForemanPatch', type: ForemanPatch });
