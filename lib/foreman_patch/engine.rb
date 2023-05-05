@@ -3,30 +3,24 @@ module ForemanPatch
     engine_name 'foreman_patch'
     isolate_namespace ForemanPatch
 
-    config.autoload_paths += Dir["#{config.root}/app/controllers/concerns"]
-    config.autoload_paths += Dir["#{config.root}/app/helpers/concerns"]
-    config.autoload_paths += Dir["#{config.root}/app/models/concerns"]
+    config.paths['config/routes.rb'].unshift('config/api_routes.rb')
 
-    initializer 'foreman_patch.register_plugin', :before => :finisher_hook do |_app|
+    initializer 'foreman_patch.register_plugin', before: :finisher_hook do |_app|
       require 'foreman_patch/plugin'
       Apipie.configuration.checksum_path += ['/foreman_patch/api/']
     end
 
-    initializer 'foreman_patch.configure_assets', group: :assets do
-      SETTINGS[:foreman_patch] = { assets: { precompile: ['foreman_patch.css'] } }
-    end
-
     # Add any db migrations
-    initializer 'foreman_patch.load_app_instance_data' do |app|
-      ForemanPatch::Engine.paths['db/migrate'].existent.each do |path|
-        app.config.paths['db/migrate'] << path
+    initializer 'foreman_patch.migrate_by_default' do |app|
+      unless Object.const_defined?(:APP_RAKEFILE)
+        paths['db/migrate'].existent.each do |path|
+          app.config.paths['db/migrate'] << path
+        end
       end
     end
 
-    initializer 'foreman_patch.mount_engine', before: :sooner_routes_load do |app|
-      app.routes_reloader.paths << "#{ForemanPatch::Engine.root}/config/routes/mount_engine.rb"
-      app.routes_reloader.paths << "#{ForemanPatch::Engine.root}/config/api_routes.rb"
-      app.routes_reloader.paths.unshift("#{ForemanPatch::Engine.root}/config/routes/overrides.rb")
+    initializer 'foreman_patch.configure_assets', group: :assets do
+      SETTINGS[:foreman_patch] = { assets: { precompile: ['foreman_patch.css'] } }
     end
 
     initializer 'foreman_patch.load_default_settings', before: :load_config_initializers do |_app|
@@ -36,10 +30,7 @@ module ForemanPatch
     initializer 'foreman_patch.require_dynflow', before: 'foreman_tasks.initialize_dynflow' do |_app|
       ::ForemanTasks.dynflow.require!
       ::ForemanTasks.dynflow.config.eager_load_paths << File.join(ForemanPatch::Engine.root, 'app/lib/actions/foreman_patch')
-    end
-
-    initializer 'foreman_patch.helpers' do |_app|
-      ActionView::Base.include ForemanPatch::HostsHelper
+      ::ForemanTasks.dynflow.eager_load_paths!
     end
 
     # Include concerns in this config.to_prepare block
@@ -61,7 +52,7 @@ module ForemanPatch
     end
 
     initializer 'foreman_patch.register_gettext', after: :load_config_initializers do |_app|
-      locale_dir = File.join(File.expand_path('../../..', __FILE__), 'locale')
+      locale_dir = File.join(File.expand_path('../..', __dir__), 'locale')
       locale_domain = 'foreman_patch'
       Foreman::Gettext::Support.add_text_domain locale_domain, locale_dir
     end
