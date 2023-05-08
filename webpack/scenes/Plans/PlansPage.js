@@ -21,4 +21,4 @@ const PlansPage = () => (
   </>
 );
 
-export PlansPage;
+export default PlansPage;
