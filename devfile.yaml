@@ -16,7 +16,7 @@ components:
       mountSources: true
   - name: gemstash
     container:
-      image: ghcr.io/ludovicus3/gemstash:v1.0.0
+      image: ghcr.io/ludovicus3/gemstash:latest
       endpoints:
         - name: http
           targetPort: 9292
