@@ -14,13 +14,6 @@ components:
         - name: http
           targetPort: 9292
 commands:
-  - id: gemstash
-    exec: 
-      label: "Gemstash Authorization"
-      component: gemstash
-      commandLine: bundle exec gemstash authorize
-      group:
-        kind: build
   - id: build
     composite:
       label: "Build application"
