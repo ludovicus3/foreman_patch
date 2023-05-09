@@ -9,7 +9,7 @@ components:
       mountSources: true
   - name: geminabox
     container:
-      image: quay.io/ludovicus/geminabox:latest
+      image: ghcr.io/ludovicus3/gemstash:v1.0.0
       endpoints:
         - name: http
           targetPort: 9292
