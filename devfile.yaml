@@ -7,22 +7,27 @@ components:
       image: quay.io/ludovicus/foreman:build-develop
       memoryLimit: 1G
       mountSources: true
-  - name: gemstash
+  - name: geminabox
     container:
-      image: ghcr.io/ludovicus3/gemstash-docker:master
-      volumeMounts:
-        - name: gemstash
-          path: /var/lib/gemstash
+      image: quay.io/ludovicus/geminabox:latest
       endpoints:
-        - name: gemstash
+        - name: http
           targetPort: 9292
 commands:
+  - id: gemstash
+    exec: 
+      label: "Gemstash Authorization"
+      component: gemstash
+      commandLine: bundle exec gemstash authorize
+      group:
+        kind: build
   - id: build
-    exec:
+    composite:
       label: "Build application"
       component: tools
       workingDir: "${PROJECT_SOURCE}"
-      commandLine: cmake --build ./build/
+      commands:
+        - gem build
       group:
         kind: build
         isDefault: true
