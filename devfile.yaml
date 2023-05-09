@@ -14,16 +14,6 @@ components:
         - name: http
           targetPort: 9292
 commands:
-  - id: build
-    composite:
-      label: "Build application"
-      component: tools
-      workingDir: "${PROJECT_SOURCE}"
-      commands:
-        - gem build
-      group:
-        kind: build
-        isDefault: true
   - id: run
     exec:
       label: "Run application"
