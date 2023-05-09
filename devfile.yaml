@@ -1,6 +1,4 @@
 schemaVersion: 2.1.0
-metadata:
-  name: foreman-patch
 components:
   - name: tools
     container:
