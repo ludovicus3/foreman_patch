@@ -15,4 +15,8 @@ Gem::Specification.new do |s|
   s.test_files = Dir['test/**/*']
 
   s.require_paths = ["lib"]
+
+  s.add_dependency 'katello', '~> 4.3.0'
+  s.add_dependency 'foreman_tasks', '~> 5.0'
+  s.add_dependency 'foreman_remote_execution', '~> 5.0.0'
 end
