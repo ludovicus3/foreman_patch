@@ -1,31 +1,47 @@
 #!/usr/bin/env rake
-foreman_path = Dir['./foreman', '../foreman', '../../foreman']
-foreman_path.select! { |path| File.exist?(File.join(path, 'Gemfile')) }
-raise 'Foreman has not been found!' unless foreman_path.any?
-foreman_path = File.expand_path(foreman_path.first, __dir__)
+begin
+  require 'bundler/setup'
+rescue LoadError
+  puts 'You must `gem install bundler` and `bundle install` to run rake tasks'
+end
+begin
+  require 'rdoc/task'
+rescue LoadError
+  require 'rdoc/rdoc'
+  require 'rake/rdoctask'
+  RDoc::Task = Rake::RDocTask
+end
 
-task 'dynflow:migrate' => 'app:dynflow:migrate'
-task 'parameters:reset_priorities' => 'app:parameters:reset_priorities'
+RDoc::Task.new(:rdoc) do |rdoc|
+  rdoc.rdoc_dir = 'rdoc'
+  rdoc.title    = 'ForemanPatch'
+  rdoc.options << '--line-numbers'
+  rdoc.rdoc_files.include('README.rdoc')
+  rdoc.rdoc_files.include('lib/**/*.rb')
+end
 
-APP_RAKEFILE = File.expand_path('Rakefile', foreman_path)
-load 'rails/tasks/engine.rake'
+APP_RAKEFILE = File.expand_path('../test/dummy/Rakefile', __FILE__)
 
 Bundler::GemHelper.install_tasks
 
 require 'rake/testtask'
-require 'rspec/core'
-require 'rspec/core/rake_task'
 
-Rake::TestTask.new(test: 'app:db:test:prepare') do |t|
+Rake::TestTask.new(:test) do |t|
+  t.libs << 'lib'
   t.libs << 'test'
-  t.libs << File.join(foreman_path, 'lib')
-  t.libs << File.join(foreman_path, 'test')
   t.pattern = 'test/**/*_test.rb'
   t.verbose = false
 end
 
-desc 'Run all specs in spec directory (excluding plugin specs)'
-RSpec::Core::RakeTask.new(spec: 'app:db:test:prepare')
-
 task default: :test
 
+begin
+  require 'rubocop/rake_task'
+  RuboCop::RakeTask.new
+rescue => _
+  puts 'Rubocop not loaded.'
+end
+
+task :default do
+  Rake::Task['rubocop'].execute
+end
