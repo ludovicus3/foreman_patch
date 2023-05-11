@@ -12,11 +12,12 @@ Gem::Specification.new do |s|
   s.description = 'Foreman Plugin for Managing Patching.'
 
   s.files = Dir['{app,config,db,lib,locale,webpack}/**/*'] + ['LICENSE', 'Rakefile', 'README.md', 'package.json']
-  s.test_files = Dir['test/**/*']
-
-  s.require_paths = ["lib"]
+  s.test_files = Dir['test/**/*'] + Dir['webpack/**/__tests__/*.js']
 
   s.add_dependency 'katello', '~> 4.3.0'
-  s.add_dependency 'foreman_tasks', '~> 5.0'
+  s.add_dependency 'foreman-tasks', '~> 5.0'
   s.add_dependency 'foreman_remote_execution', '~> 5.0.0'
+
+  s.add_development_dependency 'rubocop'
+  s.add_development_dependency 'rdoc'
 end
