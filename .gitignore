@@ -8,8 +8,11 @@ test/dummy/.sass-cache
 locale/*.mo
 locale/*/*.edit.po
 locale/*/*.po.time_stamp
+locale/.cache/*
 locale/*/*.pox
+locale/*/LC_MESSAGES
 Gemfile.lock
 package-lock.json
 node_modules
-public
+vendor/ruby
+public/assets
