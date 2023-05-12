@@ -13,7 +13,7 @@ Foreman::Plugin.register :foreman_patch do
       setting('host_patch_timeout',
         type: :integer,
         description: N_("Maximum seconds for a patching invocation to run before timing out"),
-        default: nil
+        default: nil,
         full_name: N_('Patch Timeout'))
       setting('patch_schedule_time_zone',
         type: :string,
@@ -27,7 +27,7 @@ Foreman::Plugin.register :foreman_patch do
         default: nil,
         full_name: N_('Ticket API host'))
       setting('ticket_api_proxy',
-        type: :string
+        type: :string,
         description: N_('HTTP Proxy to access ticket API host'),
         default: nil,
         full_name: N_('Ticket API HTTP proxy'),
