@@ -1,26 +1,20 @@
 module ForemanPatch
   class Engine < ::Rails::Engine
-    engine_name 'foreman_patch'
     isolate_namespace ForemanPatch
+    engine_name 'foreman_patch'
 
     config.paths['config/routes.rb'].unshift('config/api_routes.rb')
 
     initializer 'foreman_patch.register_plugin', before: :finisher_hook do |_app|
-      require 'foreman_patch/plugin'
+      require 'foreman_patch/register'
       Apipie.configuration.checksum_path += ['/foreman_patch/api/']
     end
 
     # Add any db migrations
-    initializer 'foreman_patch.migrate_by_default' do |app|
-      unless Object.const_defined?(:APP_RAKEFILE)
-        paths['db/migrate'].existent.each do |path|
-          app.config.paths['db/migrate'] << path
-        end
+    initializer 'foreman_patch.load_app_instance_data' do |app|
+      ForemanPatch::Engine.paths['db/migrate'].existent.each do |path|
+        app.config.paths['db/migrate'] << path
       end
-    end
-
-    initializer 'foreman_patch.configure_assets', group: :assets do
-      SETTINGS[:foreman_patch] = { assets: { precompile: ['foreman_patch.css'] } }
     end
 
     initializer 'foreman_patch.load_default_settings', before: :load_config_initializers do |_app|
@@ -34,15 +28,17 @@ module ForemanPatch
     end
 
     # Include concerns in this config.to_prepare block
-    config.to_prepare do      
+    config.to_prepare do
       # Model extensions
-      ::Host::Managed.send(:include, ForemanPatch::Concerns::HostManagedExtensions)
+      ::Host::Managed.include ForemanPatch::Concerns::HostManagedExtensions
 
       # Controller extensions      
       ::HostsController.include ForemanPatch::Concerns::HostsControllerExtensions
 
       # Api Controller extensions
       ::Api::V2::HostsController.include ForemanPatch::Concerns::Api::V2::HostsControllerExtensions
+    rescue => e
+      Rails.logger.warn "ForemanPatch: skipping engine hook (#{e})"
     end
 
     rake_tasks do
