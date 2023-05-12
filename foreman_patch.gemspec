@@ -4,7 +4,7 @@ Gem::Specification.new do |s|
   s.name        = 'foreman_patch'
   s.version     = ForemanPatch::VERSION
   s.license     = 'GPL-3.0'
-  s.authors     = File.readlines(File.expand_path('AUTHORS', __dir__), encoding: 'utf-8').map(&:strip)
+  s.authors     = ['Jason Galens']
   s.email       = ['bogey.jlg@gmail.com']
   s.homepage    = 'https://github.com/ludovicus3/foreman_patch'
   s.summary     = 'Foreman Plugin for Managing Patching'
@@ -17,7 +17,4 @@ Gem::Specification.new do |s|
   s.add_dependency 'katello', '~> 4.3.0'
   s.add_dependency 'foreman-tasks', '~> 5.0'
   s.add_dependency 'foreman_remote_execution', '~> 5.0.0'
-
-  s.add_development_dependency 'rubocop'
-  s.add_development_dependency 'rdoc'
 end

@@ -14,12 +14,6 @@ components:
       image: quay.io/ludovicus/foreman:build-develop
       memoryLimit: 1G
       mountSources: true
-  - name: gemstash
-    container:
-      image: ghcr.io/ludovicus3/gemstash:latest
-      endpoints:
-        - name: http
-          targetPort: 9292
 commands:
   - id: build
     exec:
