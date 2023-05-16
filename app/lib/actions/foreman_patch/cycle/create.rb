@@ -49,7 +49,11 @@ module Actions
         end
 
         def humanized_name
-          _('Create cycle: %s') % input[:plan][:name]
+          _('Create cycle:')
+        end
+
+        def humanized_input
+        input.dig(:plan, :name)
         end
 
         private

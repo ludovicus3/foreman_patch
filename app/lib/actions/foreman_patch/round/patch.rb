@@ -72,7 +72,11 @@ module Actions
         end
 
         def humanized_name
-          'Patch Group: %s' % round.name
+          'Patch Group:'
+        end
+
+        def humanized_input
+          round.name
         end
 
       end

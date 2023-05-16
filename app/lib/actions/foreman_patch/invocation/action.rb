@@ -114,10 +114,6 @@ module Actions
           input.fetch(:required, true)
         end
 
-        def humanized_name
-          input[:feature_name].titleize
-        end
-
         def rescue_strategy_for_self
           required? ? ::Dynflow::Action::Rescue::Fail : ::Dynflow::Action::Rescue::Skip
         end

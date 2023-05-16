@@ -22,7 +22,11 @@ module Actions
         end
 
         def humanized_name
-          _('Resolve Hosts for %s') % window.name
+          _('Resolve Hosts for:')
+        end
+
+        def humanized_input
+          window.name
         end
 
       end

@@ -23,7 +23,11 @@ module Actions
         end
 
         def humanized_name
-          _('Publish ticket for %s') % window.name
+          _('Publish ticket for:')
+        end
+
+        def humanized_input
+          window.name
         end
 
       end

@@ -71,7 +71,11 @@ module Actions
         end
 
         def humanized_name
-          _('Patch %s') % host.name
+          _('Patch:')
+        end
+
+        def humanized_input
+          host.name
         end
 
         private

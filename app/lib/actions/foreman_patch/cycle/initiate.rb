@@ -40,7 +40,11 @@ module Actions
         end
 
         def humanized_name
-          _('Initiating patch cycle: %s') % cycle.name
+          _('Initiating patch cycle:')
+        end
+
+        def humanized_input
+          cycle.name
         end
 
         def cycle
