@@ -5,11 +5,6 @@ module ForemanPatch
 
     config.paths['config/routes.rb'].unshift('config/api_routes.rb')
 
-    initializer 'foreman_patch.register_plugin', before: :finisher_hook do |_app|
-      require 'foreman_patch/register'
-      Apipie.configuration.checksum_path += ['/foreman_patch/api/']
-    end
-
     # Add any db migrations
     initializer 'foreman_patch.load_app_instance_data' do |app|
       ForemanPatch::Engine.paths['db/migrate'].existent.each do |path|
@@ -17,14 +12,15 @@ module ForemanPatch
       end
     end
 
-    initializer 'foreman_patch.load_default_settings', before: :load_config_initializers do |_app|
-      require_dependency File.expand_path('../../../app/models/setting/patching.rb', __FILE__)
+    initializer 'foreman_patch.register_plugin', before: :finisher_hook do |_app|
+      require 'foreman_patch/register'
+      Apipie.configuration.checksum_path += ['/foreman_patch/api/']
     end
 
-    initializer 'foreman_patch.require_dynflow', before: 'foreman_tasks.initialize_dynflow' do |_app|
-      ::ForemanTasks.dynflow.require!
-      ::ForemanTasks.dynflow.config.eager_load_paths << File.join(ForemanPatch::Engine.root, 'app/lib/actions/foreman_patch')
-      ::ForemanTasks.dynflow.eager_load_paths!
+    initializer 'foreman_patch.register_actions', before: :finisher_hook do |_app|
+      ForemanTasks.dynflow.require!
+      ForemanTasks.dynflow.config.eager_load_paths << File.join(ForemanPatch::Engine.root, 'app/lib/actions/foreman_patch')
+      ForemanTasks.dynflow.eager_load_actions!
     end
 
     # Include concerns in this config.to_prepare block
@@ -52,14 +48,6 @@ module ForemanPatch
       locale_domain = 'foreman_patch'
       Foreman::Gettext::Support.add_text_domain locale_domain, locale_dir
     end
-  end
-
-  def self.table_name_prefix
-    'foreman_patch_'
-  end
-
-  def self.use_relative_model_naming
-    true
   end
 
   def self.register_rex_features

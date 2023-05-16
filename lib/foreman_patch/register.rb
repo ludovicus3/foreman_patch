@@ -1,5 +1,5 @@
 Foreman::Plugin.register :foreman_patch do
-  requires_foreman '>= 3.0.0'
+  requires_foreman '~> 3.1'
 
   register_global_js_file 'global'
 
