@@ -1,7 +1,7 @@
 import { combineReducers } from 'redux';
 
 const reducers = {
-  foremanPatch: combineReducers({}),
+    foremanPatch: combineReducers({}),
 };
 
 export default reducers;

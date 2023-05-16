@@ -4,7 +4,7 @@ import { Grid } from 'patternfly-react';
 
 import SearchBar from 'foremanReact/components/SearchBar';
 import Pagination from 'foremanReact/components/Pagination/PaginationWrapper';
-import { ActionButtons } form 'foremanReact/components/common/ActionButtons/ActionButtons';
+import { ActionButtons } from 'foremanReact/components/common/ActionButtons/ActionButtons';
 import { getControllerSearchProps } from 'foremanReact/constants';
 
 import Invocations from './Invocations';
