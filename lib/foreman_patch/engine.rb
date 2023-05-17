@@ -49,14 +49,4 @@ module ForemanPatch
       Foreman::Gettext::Support.add_text_domain locale_domain, locale_dir
     end
   end
-
-  def self.register_rex_features
-    RemoteExecutionFeature.register(
-      :power_action,
-      N_('Power Action'),
-      description: N_('Power Action'),
-      provided_inputs: 'action',
-      host_action_button: false
-    )
-  end
 end
