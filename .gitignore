@@ -16,4 +16,4 @@ Gemfile.lock
 package-lock.json
 node_modules
 vendor/ruby
-public/assets
+public/

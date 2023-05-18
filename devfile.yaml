@@ -1,34 +1,101 @@
-schemaVersion: 2.1.0
+schemaVersion: 2.2.0
 metadata:
   name: foreman-patch
-  displayName: Foreman Patch
+  namespace: workspace-jason
+attributes:
+  controller.devfile.io/devworkspace-config:
+    name: devworkspace-config
+    namespace: eclipse-che
+  controller.devfile.io/scc: container-build
+  controller.devfile.io/storage-type: per-user
+  dw.metadata.annotations:
+    che.eclipse.org/devfile-source: |
+      scm:
+        repo: https://github.com/ludovicus3/foreman_patch.git
+        fileName: devfile.yaml
+      factory:
+        params: url=https://github.com/ludovicus3/foreman_patch.git
 projects:
-  - git:
+  - clonePath: foreman_patch
+    git:
       remotes:
-        origin: 'https://github.com/ludovicus3/foreman_patch.git'
+        origin: https://github.com/ludovicus3/foreman_patch.git
     name: foreman-patch
-    clonePath: foreman_patch
+  - clonePath: foreman
+    git:
+      checkoutFrom:
+        revision: '{{foremanVersion}}'
+      remotes:
+        origin: https://github.com/theforeman/foreman.git
+    name: foreman
 components:
-  - name: tools
+  - attributes:
+      controller.devfile.io/merge-contribution: true
     container:
+      endpoints:
+        - exposure: public
+          name: http
+          protocol: http
+          targetPort: 3000
+      env:
+        - name: CHE_DASHBOARD_URL
+          value: https://dev.galensfamily.org
+        - name: CHE_PLUGIN_REGISTRY_URL
+          value: https://dev.galensfamily.org/plugin-registry/v3
+        - name: CHE_PLUGIN_REGISTRY_INTERNAL_URL
+          value: http://plugin-registry.eclipse-che.svc:8080/v3
+        - name: CLUSTER_CONSOLE_URL
+          value: https://console-openshift-console.apps.kube.galensfamily.org
+        - name: CLUSTER_CONSOLE_TITLE
+          value: OpenShift console
+        - name: OPENVSX_REGISTRY_URL
+          value: https://open-vsx.org
+        - name: RAILS_ENV
+          value: development
+        - name: FOREMAN_FQDN
+          value: foreman.example.com
+        - name: FOREMAN_DOMAIN
+          value: example.com
       image: quay.io/ludovicus/foreman:build-develop
-      memoryLimit: 1G
+      memoryLimit: 2G
       mountSources: true
+      sourceMapping: /projects
+    name: tools
 commands:
-  - id: build
-    exec:
-      label: "Build application"
+  - exec:
+      commandLine: bundle install
       component: tools
-      workingDir: "${PROJECT_SOURCE}"
-      commandLine: gem build
+      label: Ruby Dependencies
+      workingDir: ${PROJECTS_ROOT}/foreman
+    id: ruby-dependencies
+  - exec:
+      commandLine: npm install
+      component: tools
+      label: Nodejs Dependencies
+      workingDir: ${PROJECTS_ROOT}/foreman
+    id: nodejs-dependencies
+  - exec:
+      commandLine: bundle exec bin/rake plugin:assets:precompile[foreman_patch]
+      component: tools
       group:
         kind: build
-        isDefault: true
-  - id: run
-    exec:
-      label: "Run application"
+      label: Precompile Assets
+      workingDir: ${PROJECTS_ROOT}/foreman
+    id: assets
+  - exec:
+      commandLine: gem build
       component: tools
-      workingDir: "/foreman"
-      commandLine: "bundle exec bin/rails server -b 0.0.0.0"
+      group:
+        isDefault: true
+        kind: build
+      label: Build application
+      workingDir: ${PROJECT_SOURCE}
+    id: build
+  - exec:
+      commandLine: bundle exec bin/rails server -b 0.0.0.0
+      component: tools
       group:
         kind: run
+      label: Run application
+      workingDir: /foreman
+    id: run
