@@ -7,7 +7,7 @@ variables:
   postgresHost: localhost
   postgresUser: foreman
   postgresPassword: foreman
-  postgresPools: 5
+  postgresPools: '5'
 projects:
   - clonePath: foreman_patch
     git:
