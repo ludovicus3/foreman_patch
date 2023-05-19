@@ -1,20 +1,6 @@
 schemaVersion: 2.2.0
 metadata:
   name: foreman-patch
-  namespace: workspace-jason
-attributes:
-  controller.devfile.io/devworkspace-config:
-    name: devworkspace-config
-    namespace: eclipse-che
-  controller.devfile.io/scc: container-build
-  controller.devfile.io/storage-type: per-user
-  dw.metadata.annotations:
-    che.eclipse.org/devfile-source: |
-      scm:
-        repo: https://github.com/ludovicus3/foreman_patch.git
-        fileName: devfile.yaml
-      factory:
-        params: url=https://github.com/ludovicus3/foreman_patch.git
 projects:
   - clonePath: foreman_patch
     git:
@@ -29,12 +15,10 @@ projects:
         origin: https://github.com/theforeman/foreman.git
     name: foreman
 components:
-  - attributes:
-      controller.devfile.io/merge-contribution: true
-    container:
+  - container:
       endpoints:
         - exposure: public
-          name: http
+          name: foreman-http
           protocol: http
           targetPort: 3000
       env:
@@ -56,6 +40,8 @@ components:
           value: foreman.example.com
         - name: FOREMAN_DOMAIN
           value: example.com
+        - name: DATABASE_URL
+          value: postgresql://{{postgresUser}}:{{postgresPassword}}@localhost/{{postgresDb}}?pool=5
       image: quay.io/ludovicus/foreman:build-develop
       memoryLimit: 2G
       mountSources: true
@@ -94,8 +80,43 @@ commands:
   - exec:
       commandLine: bundle exec bin/rails server -b 0.0.0.0
       component: tools
+      env:
+        - name: RAILS_LOG_TO_STDOUT
+          value: 'true'
       group:
         kind: run
       label: Run application
-      workingDir: /foreman
+      workingDir: ${PROJECTS_ROOT}/foreman
     id: run
+  - exec:
+      commandLine: bundle exec bin/rake db:drop
+      component: tools
+      group:
+        kind: run
+      label: Drop Database
+      workingDir: ${PROJECTS_ROOT}/foreman
+    id: drop-db
+  - exec:
+      commandLine: bundle exec bin/rake db:create
+      component: tools
+      group:
+        kind: run
+      label: Create Database
+      workingDir: ${PROJECTS_ROOT}/foreman
+    id: create-db
+  - exec:
+      commandLine: bundle exec bin/rake db:setup
+      component: tools
+      group:
+        kind: run
+      label: Setup Database
+      workingDir: ${PROJECTS_ROOT}/foreman
+    id: setup-db
+  - exec:
+      commandLine: bundle exec bin/rake db:migrate
+      component: tools
+      group:
+        kind: run
+      label: Migrate Database
+      workingDir: ${PROJECTS_ROOT}/foreman
+    id: migrate-db
