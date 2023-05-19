@@ -1,6 +1,13 @@
 schemaVersion: 2.2.0
 metadata:
   name: foreman-patch
+variables:
+  foremanVersion: develop
+  postgresDb: foreman_dev
+  postgresHost: localhost
+  postgresUser: foreman
+  postgresPassword: foreman
+  postgresPools: 5
 projects:
   - clonePath: foreman_patch
     git:
@@ -41,7 +48,7 @@ components:
         - name: FOREMAN_DOMAIN
           value: example.com
         - name: DATABASE_URL
-          value: postgresql://{{postgresUser}}:{{postgresPassword}}@localhost/{{postgresDb}}?pool=5
+          value: postgresql://{{postgresUser}}:{{postgresPassword}}@{{postgresHost}}/{{postgresDb}}?pool={{postgresPools}}
       image: quay.io/ludovicus/foreman:build-develop
       memoryLimit: 2G
       mountSources: true
