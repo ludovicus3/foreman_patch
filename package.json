@@ -2,7 +2,7 @@
   "name": "foreman_patch",
   "version": "0.0.2",
   "description": "TODO",
-  "main": "index.jsx",
+  "main": "index.js",
   "license": "GPL-3.0",
   "scripts": {
     "lint": "tfm-lint --plugin -d /webpack",
@@ -12,6 +12,7 @@
     "publish-coverage": "tfm-publish-coverage",
     "stories": "tfm-stories --plugin",
     "stories:build": "tfm-build-stories --plugin",
+    "stories:deploy": "surge --project .storybook-dist",
     "create-react-component": "yo react-domain"
   },
   "repository": {
