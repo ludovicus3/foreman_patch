@@ -12,7 +12,7 @@ module ForemanPatch
       end
     end
 
-    initializer 'foreman_patch.register_plugin', before: :finisher_hook do |_app|
+    initializer 'foreman_patch.register_plugin', before: :finisher_hook, after: 'katello.register_plugin' do |_app|
       require 'foreman_patch/register'
       Apipie.configuration.checksum_path += ['/foreman_patch/api/']
     end
