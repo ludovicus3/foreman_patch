@@ -1,4 +1,4 @@
-import React { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { stopInterval } from 'foremanReact/redux/middlewares/IntervalMiddleware';
 import Invocation from './Invocation';

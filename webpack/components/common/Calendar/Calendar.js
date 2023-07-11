@@ -7,7 +7,7 @@ import './Calendar.scss';
 import { views, getView } from './View';
 
 const Calendar = (props) => {
-  const {start, end, weekStartsOn, locale, onEventMoved} = props;
+  const { start, end, weekStartsOn, locale, onEventMoved } = props;
 
   const initialDate = () => {
     const { date } = props;
@@ -27,7 +27,7 @@ const Calendar = (props) => {
 
     const result = events.map(event => {
       if (event.id === updatedEvent.id) {
-        return {...event, ...updatedEvent};
+        return { ...event, ...updatedEvent };
       }
       return event;
     });
@@ -78,7 +78,7 @@ Calendar.defaultProps = {
   date: new Date(),
   view: views.MONTH,
   events: [],
-  onEventMoved: (event) => {},
+  onEventMoved: (event) => { },
   locale: 'en-US',
   weekStartsOn: 1,
 };

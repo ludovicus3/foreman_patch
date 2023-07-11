@@ -9,7 +9,6 @@ import Plan from './components/Plan';
 import Invocations from './components/Invocations';
 import RoundProgress from './components/RoundProgress';
 import Cycle from './components/Cycle';
-import PlansTable from './src/Components/PlansTable';
 
 const components = [
   { name: 'Rounds', type: Rounds },
@@ -17,7 +16,6 @@ const components = [
   { name: 'Invocations', type: Invocations },
   { name: 'Cycle', type: Cycle },
   { name: 'RoundProgress', type: RoundProgress },
-  { name: 'PlansTable', type: PlansTable },
 ];
 
 components.forEach(component => componentRegistry.register(component));

@@ -3,7 +3,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import PropTypes from 'prop-types';
 import { Grid } from 'patternfly-react';
 
-import { 
+import {
   withInterval,
   stopInterval
 } from 'foremanReact/redux/middlewares/IntervalMiddleware';
@@ -67,7 +67,7 @@ const WrappedInvocations = ({ round }) => {
 
   const areAllSelected = selectedItems.length == items.length;
 
-  const setItemSelected = (item, isSelecting) => 
+  const setItemSelected = (item, isSelecting) =>
     setSelectedItems(prevSelected => {
       const otherSelectedItems = prevSelected.filter(i => i !== item.id);
       return isSelecting ? [...otherSelectedItems, item.id] : otherSelectedItems;
@@ -78,8 +78,8 @@ const WrappedInvocations = ({ round }) => {
       const numberSelected = rowIndex - recentSelectedRowIndex;
       const intermediateIndexes =
         numberSelected > 0
-        ? Array.from(new Array(numberSelected + 1), (_x, i) => i + recentSelectedRowIndex)
-        : Array.from(new Array(Math.abs(numberSelected) + 1), (_x, i) => i + rowIndex);
+          ? Array.from(new Array(numberSelected + 1), (_x, i) => i + recentSelectedRowIndex)
+          : Array.from(new Array(Math.abs(numberSelected) + 1), (_x, i) => i + rowIndex);
       intermediateIndexes.forEach(index, setItemSelected(items[index], isSelecting));
     } else {
       setItemSelected(item, isSelecting);
@@ -95,7 +95,7 @@ const WrappedInvocations = ({ round }) => {
     }
   };
 
-  const getData = url =>  withInterval(get({
+  const getData = url => withInterval(get({
     key: INVOCATIONS,
     url,
     handleError: () => {

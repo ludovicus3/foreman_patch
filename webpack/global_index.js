@@ -13,4 +13,4 @@ Object.entries(reducers).forEach(([key, reducer]) =>
 registerRoutes('ForemanPatch', Routes);
 
 // register fills for extending foreman core
-//addGlobalFill();
+//addGlobalFill('host-overview-cards', 'Patching Details', );
