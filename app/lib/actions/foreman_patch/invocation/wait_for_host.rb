@@ -2,8 +2,8 @@ module Actions
   module ForemanPatch
     module Invocation
       class WaitForHost < Actions::EntryAction
-        include Actions::Helpers::WithContinuousOutput
         include Dynflow::Action::Polling
+        include ::Actions::ForemanPatch::Invocation::ProcessLogging
 
         def plan(host)
           action_subject(host)
@@ -31,7 +31,7 @@ module Actions
           status = 'starting'
         ensure
           socket.close if socket
-          add_output("Poll result: #{status}")
+          log_invocation_event("Poll result: #{status}")
         end
 
         def poll_intervals
@@ -46,28 +46,13 @@ module Actions
         end
 
         def on_finish
-          add_output(_('Host is up'), 'stdout') if external_task == 'available'
+          log_invocation_event(_('Host is up'), 'stdout') if external_task == 'available'
         end
 
         def process_timeout
-          add_output(_('Server did not respond withing alloted time after restart.'), 'stderr')
+          log_invocation_event(_('Server did not respond withing alloted time after restart.'), 'stderr')
 
           self.external_task = 'timeout'
-        end
-
-        def live_output
-          continuous_output.sort!
-          continuous_output.raw_outputs
-        end
-
-        def continuous_output_providers
-          super << self
-        end
-
-        def fill_continuous_output(continuous_output)
-          output.fetch('result', []).each do |raw_output|
-            continuous_output.add_raw_output(raw_output)
-          end
         end
 
         private
@@ -80,16 +65,6 @@ module Actions
           external_task == 'starting'
         end
 
-        def add_output(message, type = 'debug', timestamp = Time.now.getlocal)
-          formatted_output = {
-            output_type: type,
-            output: message,
-            timestamp: timestamp.to_f
-          }
-
-          output[:result] = [] if output[:result].nil?
-          output[:result] << formatted_output
-        end
       end
     end
   end

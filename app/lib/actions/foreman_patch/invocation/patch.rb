@@ -3,6 +3,7 @@ module Actions
     module Invocation
       class Patch < Actions::EntryAction
         include ::Actions::Helpers::WithContinuousOutput
+        include ::Actions::ForemanPatch::Invocation::ProcessLogging
 
         execution_plan_hooks.use :update_status, on: ::Dynflow::ExecutionPlan.states
 
@@ -52,8 +53,16 @@ module Actions
         end
 
         def continuous_output_providers
-          planned_actions.select do |action|
-            action.respond_to?(:fill_continuous_output)
+          super << self
+        end
+
+        def fill_continuous_output(continuous_output)
+          invocation.events.order(:sequence).find_each do |output|
+            if output.event_type == 'exit'
+              continuous_output.add_output(_('Exit status: %s') % output.event, 'stdout', output.timestamp)
+            else
+              continuous_output.add_raw_output(output.as_raw_continuous_output)
+            end
           end
         end
 
@@ -82,10 +91,6 @@ module Actions
 
         def host
           @host ||= ::Host.find(input[:host][:id])
-        end
-
-        def invocation
-          @invocation ||= ::ForemanPatch::Invocation.find(input[:invocation_id])
         end
 
         def failed_action

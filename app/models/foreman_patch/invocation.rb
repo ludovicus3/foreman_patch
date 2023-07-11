@@ -12,6 +12,8 @@ module ForemanPatch
 
     belongs_to :task, class_name: 'ForemanTasks::Task'
 
+    has_many :events, class_name: 'ForemanPatch::Events'
+
     scope :planned, -> { where(status: 'planned') }
     scope :pending, -> { where(status: 'pending') }
     scope :running, -> { where(status: 'running') }
@@ -30,10 +32,6 @@ module ForemanPatch
 
     def phases
       task&.main_action&.planned_actions || []
-    end
-
-    def events
-      task&.main_action&.live_output || []
     end
 
     def complete?

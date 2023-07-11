@@ -46,7 +46,7 @@ module Actions
           provider = template.provider
           proxy_selector = provider.required_proxy_selector_for(template) || ::RemoteExecutionProxySelector.new
 
-          proxy = proxy_selector.determine_proxy(host, template.provider_type.to_s)
+          proxy = determine_proxy!(proxy_selector, template.provider_type.to_s, host)
 
           renderer = InputTemplateRenderer.new(template, host, invocation)
           script = renderer.render
@@ -61,7 +61,7 @@ module Actions
           action_options = provider.proxy_command_options(invocation, host).merge(additional_options)
 
           sequence do
-            plan_delegated_action(proxy, provider.proxy_action_class, action_options)
+            plan_action(::Actions::ForemanPatch::Invocation::ProxyAction, proxy, provider.proxy_action_class, action_options)
             plan_self
           end
         end
@@ -87,29 +87,6 @@ module Actions
           @template ||= feature.job_template
         end
 
-        def live_output
-          continuous_output.sort!
-          continuous_output.raw_outputs
-        end
-
-        def continuous_output_providers
-          super << self
-        end
-
-        def fill_continuous_output(continuous_output)
-          delegated_output.fetch('result', []).each do |raw_output|
-            continuous_output.add_raw_output(raw_output)
-          end
-
-          final_timestamp = (continuous_output.last_timestamp || task.ended_at).to_f + 1
-
-          fill_planning_errors_to_continuous_output(continuous_output) unless exit_status
-            
-          continuous_output.add_output(_('Exit status: %s') % exit_status, 'stdout', final_timestamp) if exit_status
-        rescue => e
-          continuous_output.add_exception(_('Error loading data from proxy'), e)
-        end
-
         def required?
           input.fetch(:required, true)
         end
@@ -122,6 +99,27 @@ module Actions
 
         def host
           @host ||= ::Host.find(input[:host][:id])
+        end
+
+        def determine_proxy!(proxy_selector, provider, host)
+          proxy = proxy_selector.determine_proxy(host, provider)
+          if proxy == :not_available
+            offline_proxies = proxy_selector.offline
+            settings = { count: offline_proxies.count, proxy_names: offline_proxies.map(&:name).join(', ') }
+            raise n_('The only applicable proxy %{proxy_names} is down',
+                     'All %{count} applicable proxies are down. Tried %{proxy_names}',
+                     offline_proxies.count) % settings
+          elsif proxy == :not_defined
+            settings = {
+              global_proxy: 'remote_execution_global_proxy',
+              fallback_proxy: 'remote_execution_fallback_proxy',
+              provider: provider,
+            }
+
+            raise _('Could not use any proxy for the %{provider} job. Consider configuring %{global_proxy}, ' +
+                    '%{fallback_proxy} in settings') % settings
+          end
+          proxy
         end
 
       end
