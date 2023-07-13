@@ -37,6 +37,9 @@
     "stylelint-config-standard": "^18.0.0",
     "stylelint": "^9.3.0"
   },
+  "dependencies": {
+    "@patternfly/react-log-viewer": "~4.87.100"
+  },
   "peerDependencies": {
     "@theforeman/vendor": "^8.15.0"
   }
