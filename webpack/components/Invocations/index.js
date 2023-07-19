@@ -26,7 +26,7 @@ import {
 import { getUrl } from './InvocationsHelpers';
 import { INVOCATIONS } from './InvocationsConstants';
 
-import './Invocations.scss';
+import './Invocations.css';
 
 const WrappedInvocations = ({ round }) => {
   const dispatch = useDispatch();

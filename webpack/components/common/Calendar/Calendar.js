@@ -2,7 +2,8 @@ import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { DndProvider } from 'react-dnd';
 import HTML5Backend from 'react-dnd-html5-backend';
-import './Calendar.scss';
+
+import './Calendar.css';
 
 import { views, getView } from './View';
 
