@@ -11,6 +11,6 @@ Gem::Specification.new do |s|
   # also update locale/gemspec.rb
   s.description = "Foreman Plugin for Managing Patching."
 
-  s.files = Dir['{app,config,db,lib,locale,webpack}/**/*'] + ['LICENSE', 'Rakefile', 'README.md', 'package.json']
+  s.files = Dir['{app,config,db,lib,locale,webpack}/**/*'] + ['LICENSE', 'Rakefile', 'README.md', 'package.json'] + Dir['public/{assets,webpack}/foreman_patch/**/*']
   s.test_files = Dir['test/**/*'] + Dir['webpack/**/__tests__/*.js']
 end
