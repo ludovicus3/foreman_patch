@@ -6,6 +6,7 @@ import componentRegistry from 'foremanReact/components/componentRegistry';
 
 import Rounds from './components/Rounds';
 import Plan from './components/Plan';
+import Invocation from './src/Components/Invocation';
 import Invocations from './components/Invocations';
 import RoundProgress from './components/RoundProgress';
 import Cycle from './components/Cycle';
@@ -16,6 +17,7 @@ const components = [
   { name: 'Invocations', type: Invocations },
   { name: 'Cycle', type: Cycle },
   { name: 'RoundProgress', type: RoundProgress },
+  { name: 'Invocation', type: Invocation },
 ];
 
 components.forEach(component => componentRegistry.register(component));
