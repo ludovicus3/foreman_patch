@@ -1,0 +1,61 @@
+name: Build Foreman Patch
+on: [push, pull_request]
+env:
+  RAILS_ENV: production
+  DATABASE_URL: nulldb://nohost
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        foreman-core-branch: [3.1-stable]
+        katello-version: [~> 4.3.0]
+        foreman-tasks-version: [~> 5.2.3]
+        foreman_remote_execution-version: [~> 5.0.0]
+        ruby-version: [2.7]
+        node-version: [12]
+    steps:
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install build-essential libcurl4-openssl-dev libvirt-dev ruby-libvirt zlib1g-dev libpq-dev
+      - uses: actions/checkout@v3
+        with:
+          repository: theforeman/foreman
+          ref: ${{ matrix.foreman-core-branch }}
+      - uses: actions/checkout@v3
+        with:
+          path: foreman_patch
+      - name: Setup Foreman Plugins
+        run: |
+          echo "gem 'foreman_patch', path: './foreman_patch'" > bundler.d/foreman_patch.rb
+          echo "gem 'katello', '${{ matrix.katello-version }}'" > bundler.d/katello.rb
+          echo "gem 'foreman-tasks', '${{ matrix.foreman-tasks-version }}'" > bundler.d/foreman-tasks.rb
+          echo "gem 'foreman_remote_execution', '${{ matrix.foreman_remote_execution-version }}'" > bundler.d/foreman_remote_execution.rb
+          mv db/schema.rb.nulldb db/schema.rb
+      - name: Setup Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: ${{ matrix.ruby-version }}
+          bundler-cache: true
+      - name: Setup Node
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node-version }}
+      - name: Setup Plugin
+        run: |
+          npm install
+          bundle exec rake webpack:compile
+      - name: Precompile Plugin Assets
+        run: bundle exec rake 'plugin:assets:precompile[foreman_patch]'
+      - name: Build Apipie Cache
+        run: bundle exec rake 'plugin:apipie:cache[foreman_patch]'
+      - name: Build ForemanPatch Gem
+        working-directory: ./foreman_patch
+        run: gem build foreman_patch.gemspec
+      - name: Push to Rubygems.org
+        if: contains(github.ref, 'refs/tags/v')
+        env:
+          GEM_HOST_API_KEY: '${{ secrets.RUBYGEMS_AUTH_TOKEN }}'
+        working-directory: ./foreman_patch
+        run: gem push *.gem
