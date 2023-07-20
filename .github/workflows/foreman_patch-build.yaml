@@ -5,7 +5,7 @@ env:
   DATABASE_URL: nulldb://nohost
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
     strategy:
       matrix:
         foreman-core-branch: [3.1-stable]
