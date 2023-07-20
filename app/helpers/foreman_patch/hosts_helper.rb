@@ -3,7 +3,7 @@ module ForemanPatch
 
     def patch_host_multiple_actions
       [
-        {action: [_('Change Patch Group'), select_multiple_patch_group_hosts_path], priority: 1000}
+        {action: [_('Change Patch Group'),  foreman_patch.select_multiple_patch_group_hosts_path], priority: 1000}
       ]
     end
 
