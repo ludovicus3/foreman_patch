@@ -36,6 +36,8 @@ jobs:
           mv db/schema.rb.nulldb db/schema.rb
       - name: Setup Ruby
         uses: ruby/setup-ruby@v1
+        env:
+          BUNDLE_WITHOUT: devel,test,journald,factor,console,openid,libvirt
         with:
           ruby-version: ${{ matrix.ruby-version }}
           bundler-cache: true
