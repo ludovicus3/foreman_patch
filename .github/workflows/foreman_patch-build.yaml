@@ -17,8 +17,9 @@ jobs:
     steps:
       - name: Install dependencies
         run: |
+          sudo add-apt-repository ppa:qpid/released
           sudo apt-get update
-          sudo apt-get install build-essential libcurl4-openssl-dev libvirt-dev ruby-libvirt zlib1g-dev libpq-dev
+          sudo apt-get install build-essential libcurl4-openssl-dev libvirt-dev ruby-libvirt zlib1g-dev libpq-dev qpid-proton-c-devel
       - uses: actions/checkout@v3
         with:
           repository: theforeman/foreman
