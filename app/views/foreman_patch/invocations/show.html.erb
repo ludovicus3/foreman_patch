@@ -11,34 +11,9 @@ breadcrumbs(resource_url: api_round_invocations_path(@round.id),
             items: items)
 %>
 
-<% stylesheet 'foreman_remote_execution/foreman_remote_execution' %>
-<% javascript 'foreman_remote_execution/template_invocation' %>
-
 <%=
   title_actions(link_to(_('Back to Group'), round_path(@round), class: 'btn btn-default'),
-                button_group(link_to_function(_('Toggle STDERR'), '$("div.line.stderr").toggle()', class: 'btn btn-default'),
-                             link_to_function(_('Toggle STDOUT'), '$("div.line.stdout").toggle()', class: 'btn btn-default'),
-                             link_to_function(_('Toggle DEBUG'), '$("div.line.debug").toggle()', class: 'btn btn-default')),
                 button_group(invocation_task_buttons(@invocation.task, @invocation)))
 %>
 
-<ul class="nav nav-tabs" data="tabs">
-  <li class="active"><a href="#primary" data-toggle="tab"><%= _('Primary') %></a></li>
-  <% @invocation.phases.each do |phase| %>
-    <li><a href="#<%= phase.class.name.demodulize.underscore %>" data-toggle="tab"><%= phase.humanized_name.titlecase %></a></li>
-  <% end %>
-</ul>
-
-<div class="tab-content">
-  <div class="tab-pane active" id="primary">
-    <%= render partial: 'primary' %>
-  </div>
-
-  <% @invocation.phases.each do |phase| %>
-    <%= render partial: 'phase', locals: { phase: phase } %>
-  <% end %>
-</div>
-
-<script>
-  <%= render partial: 'refresh.js' %>
-</script>
+<%= react_component('Invocation', id: @round.id) %>
