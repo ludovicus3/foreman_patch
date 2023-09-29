@@ -12,7 +12,7 @@ module ForemanPatch
 
     belongs_to :task, class_name: 'ForemanTasks::Task'
 
-    has_many :events, class_name: 'ForemanPatch::Events'
+    has_many :events, class_name: 'ForemanPatch::Event'
 
     scope :planned, -> { where(status: 'planned') }
     scope :pending, -> { where(status: 'pending') }
