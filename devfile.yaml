@@ -1,13 +1,7 @@
 schemaVersion: 2.2.0
 metadata:
   name: foreman-patch
-variables:
-  foremanVersion: develop
-  postgresDb: foreman_dev
-  postgresHost: localhost
-  postgresUser: foreman
-  postgresPassword: foreman
-  postgresPools: '5'
+  namespace: workspace-jason
 projects:
   - clonePath: foreman_patch
     git:
@@ -24,10 +18,34 @@ projects:
 components:
   - container:
       endpoints:
+        - exposure: none
+          name: postgresql
+          targetPort: 5432
+      env:
+        - name: POSTGRES_USER
+          value: '{{postgresUser}}'
+        - name: POSTGRES_PASSWORD
+          value: '{{postgresPassword}}'
+        - name: POSTGRES_DB
+          value: '{{postgresDb}}'
+        - name: PGDATA
+          value: /var/lib/postgresql/data/pgdata
+      image: quay.io/ludovicus/foreman:postgres13-latest
+      volumeMounts:
+        - name: data
+          path: /var/lib/postgresql/data
+  - container:
+      endpoints:
         - exposure: public
-          name: foreman-http
+          name: rails
           protocol: http
-          targetPort: 3000
+          targetPort: 5000
+          urlRewriteSupported: true
+        - exposure: public
+          name: webpack
+          protocol: http
+          targetPort: 3808
+          urlRewriteSupported: true
       env:
         - name: CHE_DASHBOARD_URL
           value: https://dev.galensfamily.org
@@ -48,7 +66,7 @@ components:
         - name: FOREMAN_DOMAIN
           value: example.com
         - name: DATABASE_URL
-          value: postgresql://{{postgresUser}}:{{postgresPassword}}@{{postgresHost}}/{{postgresDb}}?pool={{postgresPools}}
+          value: postgresql://{{postgresUser}}:{{postgresPassword}}@localhost/{{postgresDb}}?pool=5
       image: quay.io/ludovicus/foreman:build-develop
       memoryLimit: 2G
       mountSources: true
@@ -85,15 +103,17 @@ commands:
       workingDir: ${PROJECT_SOURCE}
     id: build
   - exec:
-      commandLine: bundle exec bin/rails server -b 0.0.0.0
+      commandLine: bundle exec bin/foreman start
       component: tools
       env:
         - name: RAILS_LOG_TO_STDOUT
           value: 'true'
+        - name: BIND
+          value: 0.0.0.0
       group:
         kind: run
       label: Run application
-      workingDir: ${PROJECTS_ROOT}/foreman
+      workingDir: /foreman
     id: run
   - exec:
       commandLine: bundle exec bin/rake db:drop
@@ -101,7 +121,7 @@ commands:
       group:
         kind: run
       label: Drop Database
-      workingDir: ${PROJECTS_ROOT}/foreman
+      workingDir: /foreman
     id: drop-db
   - exec:
       commandLine: bundle exec bin/rake db:create
@@ -109,7 +129,7 @@ commands:
       group:
         kind: run
       label: Create Database
-      workingDir: ${PROJECTS_ROOT}/foreman
+      workingDir: /foreman
     id: create-db
   - exec:
       commandLine: bundle exec bin/rake db:setup
@@ -117,7 +137,7 @@ commands:
       group:
         kind: run
       label: Setup Database
-      workingDir: ${PROJECTS_ROOT}/foreman
+      workingDir: /foreman
     id: setup-db
   - exec:
       commandLine: bundle exec bin/rake db:migrate
@@ -125,5 +145,10 @@ commands:
       group:
         kind: run
       label: Migrate Database
-      workingDir: ${PROJECTS_ROOT}/foreman
+      workingDir: /foreman
     id: migrate-db
+variables:
+  foremanVersion: 3.1-stable
+  postgresDb: foreman
+  postgresUser: foreman
+  postgresPassword: xAtrnf66qqDtPL4cwyP9
