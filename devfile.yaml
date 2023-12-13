@@ -47,18 +47,6 @@ components:
           targetPort: 3808
           urlRewriteSupported: true
       env:
-        - name: CHE_DASHBOARD_URL
-          value: https://dev.galensfamily.org
-        - name: CHE_PLUGIN_REGISTRY_URL
-          value: https://dev.galensfamily.org/plugin-registry/v3
-        - name: CHE_PLUGIN_REGISTRY_INTERNAL_URL
-          value: http://plugin-registry.eclipse-che.svc:8080/v3
-        - name: CLUSTER_CONSOLE_URL
-          value: https://console-openshift-console.apps.kube.galensfamily.org
-        - name: CLUSTER_CONSOLE_TITLE
-          value: OpenShift console
-        - name: OPENVSX_REGISTRY_URL
-          value: https://open-vsx.org
         - name: RAILS_ENV
           value: development
         - name: FOREMAN_FQDN
@@ -151,4 +139,4 @@ variables:
   foremanVersion: 3.1-stable
   postgresDb: foreman
   postgresUser: foreman
-  postgresPassword: xAtrnf66qqDtPL4cwyP9
+  postgresPassword: REDACTED
