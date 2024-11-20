@@ -6,7 +6,7 @@ projects:
   - clonePath: foreman_patch
     git:
       remotes:
-        origin: https://github.com/ludovicus3/foreman_patch.git
+        origin: git@github.com:ludovicus3/foreman_patch.git
     name: foreman-patch
   - clonePath: foreman
     git:
@@ -30,7 +30,7 @@ components:
           value: '{{postgresDb}}'
         - name: PGDATA
           value: /var/lib/postgresql/data/pgdata
-      image: quay.io/ludovicus/foreman:postgres13-latest
+      image: postgres:13
       volumeMounts:
         - name: data
           path: /var/lib/postgresql/data
@@ -55,86 +55,11 @@ components:
           value: example.com
         - name: DATABASE_URL
           value: postgresql://{{postgresUser}}:{{postgresPassword}}@localhost/{{postgresDb}}?pool=5
-      image: quay.io/ludovicus/foreman:build-develop
+      image: quay.io/ludovicus/foreman-developer-image:bookworm
       memoryLimit: 2G
       mountSources: true
       sourceMapping: /projects
     name: tools
-commands:
-  - exec:
-      commandLine: bundle install
-      component: tools
-      label: Ruby Dependencies
-      workingDir: ${PROJECTS_ROOT}/foreman
-    id: ruby-dependencies
-  - exec:
-      commandLine: npm install
-      component: tools
-      label: Nodejs Dependencies
-      workingDir: ${PROJECTS_ROOT}/foreman
-    id: nodejs-dependencies
-  - exec:
-      commandLine: bundle exec bin/rake plugin:assets:precompile[foreman_patch]
-      component: tools
-      group:
-        kind: build
-      label: Precompile Assets
-      workingDir: ${PROJECTS_ROOT}/foreman
-    id: assets
-  - exec:
-      commandLine: gem build
-      component: tools
-      group:
-        isDefault: true
-        kind: build
-      label: Build application
-      workingDir: ${PROJECT_SOURCE}
-    id: build
-  - exec:
-      commandLine: bundle exec bin/foreman start
-      component: tools
-      env:
-        - name: RAILS_LOG_TO_STDOUT
-          value: 'true'
-        - name: BIND
-          value: 0.0.0.0
-      group:
-        kind: run
-      label: Run application
-      workingDir: /foreman
-    id: run
-  - exec:
-      commandLine: bundle exec bin/rake db:drop
-      component: tools
-      group:
-        kind: run
-      label: Drop Database
-      workingDir: /foreman
-    id: drop-db
-  - exec:
-      commandLine: bundle exec bin/rake db:create
-      component: tools
-      group:
-        kind: run
-      label: Create Database
-      workingDir: /foreman
-    id: create-db
-  - exec:
-      commandLine: bundle exec bin/rake db:setup
-      component: tools
-      group:
-        kind: run
-      label: Setup Database
-      workingDir: /foreman
-    id: setup-db
-  - exec:
-      commandLine: bundle exec bin/rake db:migrate
-      component: tools
-      group:
-        kind: run
-      label: Migrate Database
-      workingDir: /foreman
-    id: migrate-db
 variables:
   foremanVersion: 3.1-stable
   postgresDb: foreman
