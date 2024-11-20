@@ -15,14 +15,7 @@ module Actions
           add_missing_task_group(plan)
 
           sequence do
-            creation = plan_action(::Actions::ForemanPatch::Cycle::Create, params(plan))
-
-            concurrence do
-              plan.window_plans.each do |window_plan|
-                plan_action(::Actions::ForemanPatch::Window::Plan, window_plan, creation.output[:cycle])
-              end
-            end
-
+            plan_action(::Actions::ForemanPatch::Cycle::Create, plan)
             plan_self
           end
         end

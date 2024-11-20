@@ -30,6 +30,10 @@ module ForemanPatch
       task&.main_action&.planned_actions || []
     end
 
+    def events
+      task&.main_action&.live_output || []
+    end
+
     def complete?
       ['success', 'warning', 'failed', 'cancelled'].include? status
     end

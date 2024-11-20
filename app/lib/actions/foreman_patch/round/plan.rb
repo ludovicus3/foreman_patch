@@ -10,7 +10,7 @@ module Actions
         def plan(group, window)
           action_subject(group, window: window)
 
-          action = plan_action(::Actions::ForemanPatch::Round::Create, params(group, window))
+          action = plan_action(::Actions::ForemanPatch::Round::Create, group, window)
           plan_action(::Actions::ForemanPatch::Round::ResolveHosts, action.output[:round])
         end
 

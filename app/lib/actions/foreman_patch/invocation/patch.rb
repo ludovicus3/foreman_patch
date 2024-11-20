@@ -30,6 +30,7 @@ module Actions
 
         def update_status(execution_plan)
           return unless root_action?
+          return if input[:invocation_id].nil?
 
           case execution_plan.state
           when :scheduled, :pending, :planning, :planned

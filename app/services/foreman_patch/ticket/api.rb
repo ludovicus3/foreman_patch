@@ -57,8 +57,7 @@ module ForemanPatch
 
         @response = JSON.parse(raw)
       rescue RestClient::ExceptionWithResponse => error
-        @errors = JSON.parse(error.response)
-        Rails.logger.error(error)
+        Rails.logger.error(error.response)
       rescue => error
         Rails.logger.error(error)
       end

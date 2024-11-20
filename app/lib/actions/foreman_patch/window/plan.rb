@@ -7,7 +7,7 @@ module Actions
           input.update serialize_args(window_plan: window_plan, cycle: cycle)
 
           sequence do
-            action = plan_action(::Actions::ForemanPatch::Window::Create, params(window_plan, cycle))
+            action = plan_action(::Actions::ForemanPatch::Window::Create, window_plan, cycle)
 
             concurrence do
               window_plan.groups.each do |group|
