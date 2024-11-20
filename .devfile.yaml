@@ -3,20 +3,40 @@ metadata:
   name: foreman-patch
   namespace: workspace-jason
 projects:
-  - clonePath: foreman_patch
+  - name: foreman-patch
+    clonePath: foreman_patch
     git:
       remotes:
         origin: git@github.com:ludovicus3/foreman_patch.git
-    name: foreman-patch
-  - clonePath: foreman
+  - name: foreman
+    clonePath: foreman
     git:
       checkoutFrom:
         revision: '{{foremanVersion}}'
       remotes:
         origin: https://github.com/theforeman/foreman.git
-    name: foreman
 components:
-  - container:
+  - name: tools
+    container:
+      endpoints:
+        - name: foreman
+          exposure: public
+          protocol: http
+          targetPort: 5000
+      env:
+        - name: RAILS_ENV
+          value: development
+        - name: FOREMAN_FQDN
+          value: foreman.example.com
+        - name: FOREMAN_DOMAIN
+          value: example.com
+        - name: DATABASE_URL
+          value: postgresql://{{postgresUser}}:{{postgresPassword}}@localhost/{{postgresDb}}?pool=5
+      image: quay.io/ludovicus/foreman-developer-image:bookworm
+      memoryLimit: 2G
+      mountSources: true
+  - name: postgresql
+    container:
       endpoints:
         - exposure: none
           name: postgresql
@@ -31,35 +51,13 @@ components:
         - name: PGDATA
           value: /var/lib/postgresql/data/pgdata
       image: postgres:13
+      mountSources: false
       volumeMounts:
         - name: data
           path: /var/lib/postgresql/data
-  - container:
-      endpoints:
-        - exposure: public
-          name: rails
-          protocol: http
-          targetPort: 5000
-          urlRewriteSupported: true
-        - exposure: public
-          name: webpack
-          protocol: http
-          targetPort: 3808
-          urlRewriteSupported: true
-      env:
-        - name: RAILS_ENV
-          value: development
-        - name: FOREMAN_FQDN
-          value: foreman.example.com
-        - name: FOREMAN_DOMAIN
-          value: example.com
-        - name: DATABASE_URL
-          value: postgresql://{{postgresUser}}:{{postgresPassword}}@localhost/{{postgresDb}}?pool=5
-      image: quay.io/ludovicus/foreman-developer-image:bookworm
-      memoryLimit: 2G
-      mountSources: true
-      sourceMapping: /projects
-    name: tools
+  - name: data
+    volume:
+      size: 10Gi
 variables:
   foremanVersion: 3.1-stable
   postgresDb: foreman
