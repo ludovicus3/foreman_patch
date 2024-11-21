@@ -17,7 +17,7 @@ Gem::Specification.new do |s|
   s.files = Dir['{app,config,db,lib,locale,webpack}/**/*'] + ['LICENSE', 'Rakefile', 'README.md', 'package.json'] + Dir['public/{assets,webpack}/foreman_patch/**/*']
   s.test_files = Dir['test/**/*']
 
-  s.add_dependency 'katello', '~> 4.1'
-  s.add_dependency 'foreman-tasks', '>= 4.0'
-  s.add_dependency 'foreman_remote_execution', '>= 4.0'
+  s.add_dependency 'katello', '~> 4.3.0'
+  s.add_dependency 'foreman-tasks', '~> 5.2.3'
+  s.add_dependency 'foreman_remote_execution', '~> 5.0.8'
 end
