@@ -4,15 +4,13 @@ metadata:
   displayName: Foreman Patch
 projects:
   - name: foreman-patch
-    clonePath: foreman_patch
     git:
       remotes:
         origin: git@github.com:ludovicus3/foreman_patch.git
   - name: foreman
-    clonePath: foreman
     git:
       checkoutFrom:
-        revision: '{{foremanVersion}}'
+        revision: 3.1-stable
       remotes:
         origin: https://github.com/theforeman/foreman.git
 components:
@@ -22,7 +20,7 @@ components:
         - name: foreman
           exposure: public
           protocol: http
-          targetPort: 5000
+          targetPort: 3000
       env:
         - name: RAILS_ENV
           value: development
@@ -50,7 +48,7 @@ components:
           value: '{{postgresDb}}'
         - name: PGDATA
           value: /var/lib/postgresql/data/pgdata
-      image: postgres:13
+      image: docker pull ghcr.io/theforeman/postgresql-evr:13
       mountSources: false
       volumeMounts:
         - name: data
@@ -59,7 +57,6 @@ components:
     volume:
       size: 10Gi
 variables:
-  foremanVersion: 3.1-stable
   postgresDb: foreman
   postgresUser: foreman
   postgresPassword: REDACTED

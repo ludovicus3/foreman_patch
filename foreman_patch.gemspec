@@ -20,6 +20,4 @@ Gem::Specification.new do |s|
   s.add_dependency 'katello', '~> 4.1'
   s.add_dependency 'foreman-tasks', '>= 4.0'
   s.add_dependency 'foreman_remote_execution', '>= 4.0'
-
-  s.add_development_dependency 'rubocop', '~> 0.80.0'
 end

@@ -22,7 +22,7 @@
           <%= group.label %>
         </td>
         <td class="hidden-xs ellipsis">
-          <%= group.default_window_plan.name %>
+          <%= group.default_window_plan&.name %>
         </td>
         <td class="hidden-xs">
           <%= link_to group.hosts.count, main_app.hosts_path(search: %Q[patch_group = "#{group.name}"]) %>
