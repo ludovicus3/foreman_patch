@@ -7,12 +7,6 @@ projects:
     git:
       remotes:
         origin: git@github.com:ludovicus3/foreman_patch.git
-  - name: foreman
-    git:
-      checkoutFrom:
-        revision: 3.1-stable
-      remotes:
-        origin: https://github.com/theforeman/foreman.git
 components:
   - name: tools
     container:
@@ -30,7 +24,7 @@ components:
           value: example.com
         - name: DATABASE_URL
           value: postgresql://{{postgresUser}}:{{postgresPassword}}@localhost/{{postgresDb}}?pool=5
-      image: quay.io/ludovicus/foreman-developer-image:stream8
+      image: quay.io/ludovicus/foreman-developer-image:3.1-stable
       memoryLimit: 2G
       mountSources: true
   - name: postgresql
@@ -48,7 +42,7 @@ components:
           value: '{{postgresDb}}'
         - name: PGDATA
           value: /var/lib/postgresql/data/pgdata
-      image: docker pull ghcr.io/theforeman/postgresql-evr:13
+      image: ghcr.io/theforeman/postgresql-evr:13
       mountSources: false
       volumeMounts:
         - name: data
