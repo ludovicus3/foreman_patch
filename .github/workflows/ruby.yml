@@ -18,6 +18,7 @@ env:
   RUBY_VERSION: '2.7'
   NODEJS_VERSION: '12'
   DATABASE_URL: nulldb://nohost
+  BUNDLER_SKIPPED_GROUPS: "test development openid libvirt journald facter console"
 jobs:
   build:
     runs-on: ubuntu-24.04
@@ -50,7 +51,7 @@ jobs:
         gem 'foreman_patch', path: '$GITHUB_WORKSPACE/foreman_patch'
         EOF
 
-        bundle config set --local without "test development openid libvirt journald facter console"
+        bundle config set --local without "${BUNDLER_SKIPPED_GROUPS}"
         bundle config set --local clean true
         bundle config set --local path vendor
         bundle config set --local jobs 5
@@ -65,7 +66,7 @@ jobs:
 
         make -C locale all-mo
         mv -v db/schema.rb.nulldb db/schema.rb
-        bundle exec rake assets:clean assets:precompile apipie:cache:index
+        bundle exec bin/rake assets:clean assets:precompile apipie:cache:index
 
         npm install --no-optional
         ./node_modules/webpack/bin/webpack.js --config config/webpack.config.js
@@ -73,7 +74,7 @@ jobs:
     - name: Compile Foreman Patch Assets
       working-directory: foreman
       run: |
-        bundle exec rake plugin:assets:precompile[foreman_patch] --trace
+        bundle exec bin/rake plugin:assets:precompile[foreman_patch] --trace
     - name: Build Gem
       working-directory: foreman_patch
       run: |
