@@ -45,6 +45,9 @@ jobs:
       uses: ruby/setup-ruby@v1
       with:
         ruby-version: ${{ matrix.ruby-version }}
+    - name: Install Dependencies
+      run: |
+        sudo apt-get install -y libqpid-proton11-dev
     - name: Configure Foreman
       working-directory: foreman
       run: |
