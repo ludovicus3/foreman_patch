@@ -15,9 +15,9 @@ on:
 env:
   RAILS_ENV: production
 jobs:
-  test:
+  build:
 
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     strategy:
       matrix:
         foreman-versin:
