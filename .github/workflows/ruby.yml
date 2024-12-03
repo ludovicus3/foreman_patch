@@ -19,6 +19,8 @@ env:
   NODEJS_VERSION: '12'
   DATABASE_URL: nulldb://nohost
   BUNDLER_SKIPPED_GROUPS: "test development openid libvirt journald facter console"
+  FOREMAN_FQDN: foreman.example.com
+  FOREMAN_DOMAIN: example.com
 jobs:
   build:
     runs-on: ubuntu-24.04
