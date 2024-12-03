@@ -19,9 +19,12 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        foreman-versin: 3.1-stable
-        ruby-version: '2.7'
-        node-version: '12'
+        foreman-versin:
+          - 3.1-stable
+        ruby-version:
+          - '2.7'
+        node-version:
+          - '12'
 
     steps:
     - name: Checkout Foreman Patch
