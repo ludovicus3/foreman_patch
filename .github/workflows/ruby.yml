@@ -48,7 +48,7 @@ jobs:
         ruby-version: ${{ matrix.ruby-version }}
     - name: Install Dependencies
       run: |
-        sudo apt-get install -y libqpid-proton11-dev libxml2-dev libcurl-dev
+        sudo apt-get install -y libqpid-proton11-dev libxml2-dev libcurl4-openssl-dev
     - name: Configure Foreman
       working-directory: foreman
       run: |
