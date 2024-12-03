@@ -16,7 +16,7 @@ env:
   RAILS_ENV: production
   FOREMAN_VERSION: 3.1-stable
   RUBY_VERSION: '2.7'
-  NODEJS_VERSION: '12'
+  NODE_VERSION: '12'
   DATABASE_URL: nulldb://nohost
   BUNDLER_SKIPPED_GROUPS: "test development openid libvirt journald facter console"
   FOREMAN_FQDN: foreman.example.com
