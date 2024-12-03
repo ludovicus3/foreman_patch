@@ -19,10 +19,25 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        ruby-version: ['2.6', '2.7', '3.0']
+        foreman-versin: 3.1-stable
+        ruby-version: '2.7'
+        node-version: '12'
 
     steps:
-    - uses: actions/checkout@v2
+    - name: Checkout Foreman Patch
+      uses: actions/checkout@v4
+      with:
+        path: foreman_patch
+    - name: Checkout Foreman
+      uses: actions/checkout@v4
+      with:
+        repository: github.com/theforeman/foreman.git
+        ref: ${{ matrix.foreman-version }}
+        path: foreman
+    - name: Setup Nodejs
+      uses: actions/setup-node@v4
+      with:
+        node-version: ${{ matrix.node-version }}
     - name: Set up Ruby
     # To automatically get bug fixes and new Ruby versions for ruby/setup-ruby,
     # change this to (see https://github.com/ruby/setup-ruby#versioning):
@@ -31,5 +46,38 @@ jobs:
       with:
         ruby-version: ${{ matrix.ruby-version }}
         bundler-cache: true # runs 'bundle install' and caches installed gems automatically
-    - name: Run tests
-      run: bundle exec rake
+    - name: Configure Foreman
+      working-directory: foreman
+      run: |
+        cat <<EOF > bundler.d/foreman_patch.rb
+        gem 'foreman_patch', path: $GITHUB_WORKSPACE/foreman_patch
+        EOF
+
+        bundle config set --local without "${BUNDLER_SKIPPED_GROUPS}"
+        bundle config set --local clean true
+        bundle config set --local path vendor
+        bundle config set --local jobs 5
+        bundle config set --local retry 3
+
+        bundle install
+        bundle binstubs --all
+
+        rm -rf vendor/ruby/*/cache/*.gem
+        find vendor/ruby/*/gems -name "*.c" -delete
+        find vendor/ruby/*/gems -name "*.o" -delete
+
+        make -C locale all-mo
+        mv -v db/schema.rb.nulldb db/schema.rb
+        bundle exec rake assets:clean assets:precompile apipie:cache:index
+
+        npm install --no-optional
+        ./node_modules/webpack/bin/webpack.js --config config/webpack.config.js
+        npm run analyze
+    - name: Compile Foreman Patch Assets
+      working-directory: foreman
+      run: |
+        bundle exec rake plugin:assets:precompile[foreman_patch] RAILS_ENV=production DATABASE_URL=nulldb://nohost --trace
+    - name: Build Gem
+      working-directory: foreman_patch
+      run: |
+        gem build foreman_patch.gemspec
