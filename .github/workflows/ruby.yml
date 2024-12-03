@@ -34,7 +34,7 @@ jobs:
     - name: Checkout Foreman
       uses: actions/checkout@v4
       with:
-        repository: github.com/theforeman/foreman.git
+        repository: theforeman/foreman
         ref: ${{ matrix.foreman-version }}
         path: foreman
     - name: Setup Nodejs
