@@ -49,7 +49,7 @@ jobs:
       working-directory: foreman
       run: |
         cat <<EOF > bundler.d/foreman_patch.rb
-        gem 'foreman_patch', path: $GITHUB_WORKSPACE/foreman_patch
+        gem 'foreman_patch', path: '$GITHUB_WORKSPACE/foreman_patch'
         EOF
 
         bundle config set --local without "test development openid libvirt journald facter console"
