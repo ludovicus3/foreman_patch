@@ -12,7 +12,8 @@ on:
     branches: [ develop ]
   pull_request:
     branches: [ develop ]
-
+env:
+  RAILS_ENV: production
 jobs:
   test:
 
@@ -47,7 +48,7 @@ jobs:
         ruby-version: ${{ matrix.ruby-version }}
     - name: Install Dependencies
       run: |
-        sudo apt-get install -y libqpid-proton11-dev
+        sudo apt-get install -y libqpid-proton11-dev libxml2-dev libcurl-dev
     - name: Configure Foreman
       working-directory: foreman
       run: |
