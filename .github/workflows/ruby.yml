@@ -56,7 +56,7 @@ jobs:
         gem 'foreman_patch', path: $GITHUB_WORKSPACE/foreman_patch
         EOF
 
-        bundle config set --local without "${BUNDLER_SKIPPED_GROUPS}"
+        bundle config set --local without "test development openid libvirt journald facter console"
         bundle config set --local clean true
         bundle config set --local path vendor
         bundle config set --local jobs 5
