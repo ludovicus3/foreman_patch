@@ -1,16 +1,18 @@
 module ForemanPatch
   module Ticket
     module API
-      attr_reader :response, :errors
-
-      private
+      attr_reader :request
 
       def host
         Setting[:ticket_api_host]
       end
 
-      def url(path)
-        host + path
+      def response
+        @response ||= send_request
+      end
+
+      def url
+        request.uri.to_s
       end
 
       def proxy
@@ -20,27 +22,27 @@ module ForemanPatch
       end
 
       def get(path, params = {})
-        request(:get, path, params)
+        create_request(:get, path, params)
       end
 
       def post(path, payload, params = {})
-        request(:post, path, params, payload)
+        create_request(:post, path, params, payload)
       end
 
       def put(path, payload, params = {})
-        request(:put, path, params, payload)
+        create_request(:put, path, params, payload)
       end
 
       def delete(path)
-        request(:delete, path)
+        create_request(:delete, path)
       end
 
-      def request(method, path, params = {}, payload = nil)
+      def create_request(method, path, params = {}, payload = nil)
         @response = nil
 
         args = {
           method: method,
-          url: url(path),
+          url: URI.join(Setting[:ticket_api_host], path).to_s,
           headers: {
             accept: :json,
             content_type: :json,
@@ -53,15 +55,17 @@ module ForemanPatch
         args[:payload] = payload.to_json unless payload.nil?
         args[:proxy] = proxy
 
-        raw = RestClient::Request.execute(args)
+        @request = RestClient::Request.new(args)
+      end
 
-        @response = JSON.parse(raw)
+      def send_request
+        @response = JSON.parse(@request.execute)
       rescue RestClient::ExceptionWithResponse => error
         Rails.logger.error(error.response)
       rescue => error
         Rails.logger.error(error)
       end
-
+      
     end
   end
 end

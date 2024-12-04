@@ -38,15 +38,36 @@ module ForemanPatch
       private
 
       def get_configuration_items(hosts)
+        ###
+        # This needs to be batched as too many hostnames will excede most server url limits
+        ###
         params = {
-          sysparm_query: "host_nameIN#{hosts.map(&:name).join(',')}",
           sysparm_exclude_reference_link: true,
           sysparm_fields: 'sys_id,host_name',
         }
 
-        get('/api/now/table/cmdb_ci_server', params)
+        uri = URI.join(Setting[:ticket_api_host], '/api/now/table/cmdb_ci_server')
 
-        response.nil? ? [] : response['result']
+        hosts.each_with_object([]) do |host, batches|
+          batches.push([]) if batches.empty?
+
+          batch = batch.last.push(host)
+
+          uri.query = URI.encode_www_form(param.merge({
+            sysparm_query: "host_nameIN#{batch.join(',')}",
+          }))
+
+          if uri.to_s.length > (Setting[:ticket_api_max_url_length] || 8000)
+            batch.pop
+            batches.push([host])
+          end
+        end.each_with_object([]) do |batch, items|
+          get(uri.path, params.merge({
+            sysparm_query: "host_nameIN#{batch.join(',')}",
+          }))
+
+          items.concat(response['result']) unless response.nil?
+        end
       end
 
       def get_affected_items
