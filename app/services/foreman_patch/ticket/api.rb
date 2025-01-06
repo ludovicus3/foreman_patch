@@ -7,14 +7,6 @@ module ForemanPatch
         Setting[:ticket_api_host]
       end
 
-      def response
-        @response ||= send_request
-      end
-
-      def url
-        request.uri.to_s
-      end
-
       def proxy
         return nil if Setting[:ticket_api_proxy].blank?
 
@@ -22,24 +14,24 @@ module ForemanPatch
       end
 
       def get(path, params = {})
-        create_request(:get, path, params)
+        send_request(:get, path, params)
       end
 
       def post(path, payload, params = {})
-        create_request(:post, path, params, payload)
+        send_request(:post, path, params, payload)
       end
 
       def put(path, payload, params = {})
-        create_request(:put, path, params, payload)
+        send_request(:put, path, params, payload)
       end
 
       def delete(path)
-        create_request(:delete, path)
+        send_request(:delete, path)
       end
 
-      def create_request(method, path, params = {}, payload = nil)
-        @response = nil
-
+      private 
+      
+      def send_request(method, path, params = {}, payload = nil)
         args = {
           method: method,
           url: URI.join(Setting[:ticket_api_host], path).to_s,
@@ -55,17 +47,12 @@ module ForemanPatch
         args[:payload] = payload.to_json unless payload.nil?
         args[:proxy] = proxy
 
-        @request = RestClient::Request.new(args)
-      end
-
-      def send_request
-        @response = JSON.parse(@request.execute)
+        JSON.parse(RestClient::Request.execute(args))
       rescue RestClient::ExceptionWithResponse => error
         Rails.logger.error(error.response)
       rescue => error
         Rails.logger.error(error)
       end
-      
     end
   end
 end

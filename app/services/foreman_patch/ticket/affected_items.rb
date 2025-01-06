@@ -51,9 +51,9 @@ module ForemanPatch
         hosts.each_with_object([]) do |host, batches|
           batches.push([]) if batches.empty?
 
-          batch = batch.last.push(host)
+          batch = batches.last.push(host)
 
-          uri.query = URI.encode_www_form(param.merge({
+          uri.query = URI.encode_www_form(params.merge({
             sysparm_query: "host_nameIN#{batch.join(',')}",
           }))
 
@@ -62,7 +62,7 @@ module ForemanPatch
             batches.push([host])
           end
         end.each_with_object([]) do |batch, items|
-          get(uri.path, params.merge({
+          response = get(uri.path, params.merge({
             sysparm_query: "host_nameIN#{batch.join(',')}",
           }))
 
@@ -77,7 +77,7 @@ module ForemanPatch
           sysparm_fields: 'sys_id,task,ci_item',
         }
 
-        get('/api/now/table/task_ci', params)
+        response = get('/api/now/table/task_ci', params)
 
         response.nil? ? [] : response['result']
       end

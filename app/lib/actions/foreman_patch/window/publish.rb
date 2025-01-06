@@ -15,7 +15,7 @@ module Actions
 
           ticket.save
 
-          output.update(response: ticket.response)
+          output.update(response: ticket.to_h)
         end
 
         def window

@@ -5,42 +5,43 @@ module ForemanPatch
 
       attr_reader :window, :response, :affected_items
 
-      def self.publish(window)
-        ticket = Ticket.new(window)
-        ticket.save
-      end
-
       def initialize(window)
         @window = window
-        @hash = {}
+        @ticket = {}
         reload
       end
 
       def reload
         return if window.ticket_id.blank?
 
-        get(path)
+        response = get(path)
+        unless response.empty?
+          @ticket = response['result']
+        
+          @affected_items = AffectedItems.new(self)
+        end
 
-        @affected_items = AffectedItems.new(self)
-
-        ticket
+        @ticket
       end
 
       def save
+        response = {}
         if window.ticket_id.blank?
-          post(path, payload)
+          response = post(path, payload)
         else
-          put(path, payload)
+          response = put(path, payload)
         end
 
         unless response.empty?
+          @ticket = response['result']
+
+          window.update(ticket_id: id) if id != window.ticket_id
+
           @affected_items = AffectedItems.new(self)
           @affected_items.set(window.hosts)
         end
 
-        window.update(ticket_id: id)
-
-        ticket
+        @ticket
       end
 
       def payload
@@ -48,11 +49,11 @@ module ForemanPatch
       end
 
       def id
-        ticket.fetch(Setting[:ticket_id_field], window.ticket_id)
+        @ticket.fetch(Setting[:ticket_id_field], window.ticket_id)
       end
 
       def label
-        ticket.fetch(Setting[:ticket_label_field], window.name)
+        @ticket.fetch(Setting[:ticket_label_field], window.name)
       end
 
       def link
@@ -62,11 +63,15 @@ module ForemanPatch
       end
 
       def keys
-        ticket.keys
+        @ticket.keys
       end
 
       def [](key)
-        ticket[key]
+        @ticket[key]
+      end
+
+      def to_h
+        @ticket
       end
 
       class Jail < Safemode::Jail
@@ -74,12 +79,6 @@ module ForemanPatch
       end
 
       private
-
-      def ticket
-        return {} if response.empty?
-
-        response['result']
-      end
 
       def path
         path = Setting[:ticket_api_path]
