@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import { Grid } from 'patternfly-react';
 
 import SearchBar from 'foremanReact/components/SearchBar';
-import Pagination from 'foremanReact/components/Pagination/PaginationWrapper';
+import Pagination from 'foremanReact/components/Pagination';
 import { getControllerSearchProps } from 'foremanReact/constants';
 
 import Invocations from './Invocations';
@@ -13,8 +13,9 @@ const InvocationsPage = ({
   status,
   items,
   total,
-  searchQuery,
-  pagination,
+  search,
+  page,
+  perPage,
   handleSearch,
   handlePagination,
 }) => (
@@ -27,7 +28,7 @@ const InvocationsPage = ({
             ...getControllerSearchProps('foreman_patch/invocations'),
             autocomplete: {
               id: 'invocations_search',
-              searchQuery,
+              searchQuery: search,
               url: '/foreman_patch/invocations/auto_complete_search',
               useKeyShortcuts: true,
             },
@@ -41,7 +42,8 @@ const InvocationsPage = ({
     <Pagination
       viewType="table"
       itemCount={total}
-      pagination={pagination}
+      page={page}
+      perPage={perPage}
       onChange={handlePagination}
       dropdownButtonId="invocations-pagination-dropdown"
       className="invocations-pagination"
@@ -53,14 +55,18 @@ InvocationsPage.propTypes = {
   status: PropTypes.string,
   items: PropTypes.array.isRequired,
   total: PropTypes.number.isRequired,
-  searchQuery: PropTypes.string.isRequired,
-  pagination: PropTypes.object.isRequired,
+  search: PropTypes.string.isRequired,
+  page: PropTypes.number.isRequired,
+  perPage: PropTypes.number.isRequired,
   handleSearch: PropTypes.func.isRequired,
   handlePagination: PropTypes.func.isRequired,
 };
 
 InvocationsPage.defaultProps = {
   status: null,
+  search: '',
+  page: 1,
+  perPage: 25,
 };
 
 export default InvocationsPage;
