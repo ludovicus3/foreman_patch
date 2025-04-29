@@ -7,6 +7,12 @@ projects:
     git:
       remotes:
         origin: git@github.com:ludovicus3/foreman_patch.git
+  - name: foreman
+    git:
+      checkoutFrom:
+        revision: 3.3-stable
+      remotes:
+        origin: https://github.com/ludovicus3/foreman.git
 components:
   - name: tools
     container:
