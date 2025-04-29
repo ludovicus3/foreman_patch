@@ -7,7 +7,7 @@ import {
   stopInterval
 } from 'foremanReact/redux/middlewares/IntervalMiddleware';
 import { get } from 'foremanReact/redux/API';
-import { useForemanSettings } from 'foremanReact/Root/Context/ForemanContext';
+import { getURI } from 'foremanReact/common/urlHelpers';
 
 import {
   selectItems,
@@ -16,40 +16,36 @@ import {
   selectStatus,
   selectIntervalExists,
 } from './InvocationsSelectors';
-import { getUrl } from './InvocationsHelpers';
 import { INVOCATIONS } from './InvocationsConstants';
 import InvocationsPage from './InvocationsPage';
 
 const WrappedInvocations = ({ round }) => {
   const dispatch = useDispatch();
-  const { perPage, perPageOptions } = useForemanSettings();
 
   const items = useSelector(selectItems);
   const total = useSelector(selectTotal);
+  const search = useSelector(selectSearch);
+  const page = useSelector(selectPage);
+  const perPage = useSelector(selectPerPage);
   const autoRefresh = useSelector(selectAutoRefresh);
   const status = useSelector(selectStatus);
-  const [searchQuery, setSearchQuery] = useState('');
-  const [pagination, setPagination] = useState({
-    page: 1,
-    perPage,
-    perPageOptions,
-  });
-  const [url, setUrl] = useState(getUrl(round, searchQuery, pagination));
+
+  const [url, setUrl] = useState(getURI().path(`/foreman_patch/api/rounds/${round}/invocations`));
   const intervalExists = useSelector(selectIntervalExists);
 
-  const handleSearch = query => {
-    const defaultPagination = { page: 1, perPage: pagination.perPage };
+  const handleSearch = search => {
     stopApiInterval();
 
-    setUrl(getUrl(round, query, defaultPagination));
-    setSearchQuery(query);
-    setPagination(defaultPagination);
+    if (search) {
+      setUrl(url.setQuery({search}));
+    } else {
+      setUrl(url.removeQuery('search'))
+    }
   };
 
-  const handlePagination = args => {
+  const handlePagination = ({page, perPage}) => {
     stopApiInterval();
-    setPagination(args);
-    setUrl(getUrl(round, searchQuery, args));
+    setUrl(url.setQuery({page, per_page: perPage}));
   };
 
   const stopApiInterval = () => {
@@ -83,9 +79,10 @@ const WrappedInvocations = ({ round }) => {
       status={status}
       items={items}
       total={total}
-      searchQuery={searchQuery}
+      search={search}
+      page={page}
+      perPage={perPage}
       handleSearch={handleSearch}
-      pagination={pagination}
       handlePagination={handlePagination}
     />
   );
