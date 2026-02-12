@@ -34,6 +34,10 @@ module Actions
           end
         end
 
+        def job_invocation
+          nil
+        end
+
         def resource_locks
           :link
         end
@@ -46,7 +50,7 @@ module Actions
           provider = template.provider
           proxy_selector = provider.required_proxy_selector_for(template) || ::RemoteExecutionProxySelector.new
 
-          proxy = proxy_selector.determine_proxy(host, template.provider_type.to_s)
+          proxy = proxy_selector.determine_proxy(host, provider.proxy_feature)
 
           renderer = InputTemplateRenderer.new(template, host, invocation)
           script = renderer.render
@@ -57,6 +61,8 @@ module Actions
             execution_timeout_interval: template.execution_timeout_interval,
             script: script,
             secrets: provider.secrets(host),
+            use_batch_triggering: true,
+            alternative_names: provider.alternative_names(host)
           }
           action_options = provider.proxy_command_options(invocation, host).merge(additional_options)
 

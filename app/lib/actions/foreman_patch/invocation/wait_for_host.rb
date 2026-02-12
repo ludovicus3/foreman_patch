@@ -23,26 +23,13 @@ module Actions
 
         def poll_external_task
           return status = external_task if external_task == 'timeout'
-
-          socket = TCPSocket.new(host.ip, Setting[:remote_execution_ssh_port])
-          
-          status = starting? ? 'available' : 'waiting'
-        rescue
-          status = 'starting'
-        ensure
-          socket.close if socket
+          status = host.facts['last_boot'] > task.started_at ? 'available' : 'waiting'
           add_output("Poll result: #{status}")
+          status
         end
 
-        def poll_intervals
-          case external_task
-          when 'waiting'
-            [1]
-          when 'starting'
-            [10]
-          else
-            super
-          end
+        def poll_interval
+          30 # seconds
         end
 
         def on_finish
@@ -74,10 +61,6 @@ module Actions
 
         def host
           @host ||= ::Host.find(input[:host][:id])
-        end
-
-        def starting?
-          external_task == 'starting'
         end
 
         def add_output(message, type = 'debug', timestamp = Time.now.getlocal)
