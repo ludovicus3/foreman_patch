@@ -32,10 +32,10 @@ module Actions
               nil
             end
           end
-        end
 
-        def job_invocation
-          nil
+          def job_invocation
+            nil
+          end
         end
 
         def resource_locks
