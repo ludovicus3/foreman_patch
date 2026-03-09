@@ -56,8 +56,8 @@ jobs:
       working-directory: foreman
       run: |
         cat <<EOF > bundler.d/foreman_patch.rb
-        gem 'katello', '4.7.0'
-        gem 'qpid_proton', '~> 0.33.0'
+        #gem 'katello', '4.7.0'
+        #gem 'qpid_proton', '~> 0.33.0'
         gem 'foreman-tasks', '~> 7.2.1'
         gem 'foreman_remote_execution', '~> 8.2.1'
         gem 'foreman_patch', path: '$GITHUB_WORKSPACE/foreman_patch'
@@ -84,7 +84,7 @@ jobs:
         bundle exec bin/rake assets:clean assets:precompile
 
         echo "NodeJS Version: $(node --version)"
-        npm install webpack-bundle-analyzer@3.3.2 expect@26.6.2
+        npm install webpack-bundle-analyzer@3.3.2
         npm install --omit=optional
         ./node_modules/webpack/bin/webpack.js --config config/webpack.config.js
         npm run analyze
