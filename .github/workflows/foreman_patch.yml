@@ -84,7 +84,7 @@ jobs:
         bundle exec bin/rake assets:clean assets:precompile
 
         echo "NodeJS Version: $(node --version)"
-        npm install webpack-bundle-analyzer@3.3.2
+        npm install webpack-bundle-analyzer@3.3.2 expect@26.6.2
         npm install --omit=optional
         ./node_modules/webpack/bin/webpack.js --config config/webpack.config.js
         npm run analyze
