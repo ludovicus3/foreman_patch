@@ -22,7 +22,7 @@ env:
   RAILS_ENV: production
   FOREMAN_VERSION: 3.5-stable
   RUBY_VERSION: '2.7'
-  NODE_VERSION: '14'
+  NODE_VERSION: '12'
   DATABASE_URL: nulldb://nohost
   BUNDLER_SKIPPED_GROUPS: "test development openid libvirt journald facter console"
   FOREMAN_FQDN: foreman.example.com
@@ -84,10 +84,9 @@ jobs:
         bundle exec bin/rake assets:clean assets:precompile
 
         echo "NodeJS Version: $(node --version)"
-        npm install --omit=optional
         npm install webpack-bundle-analyzer@3.3.2 --omit=optional
+        npm install --omit=optional
         ./node_modules/webpack/bin/webpack.js --config config/webpack.config.js
-        npm run analyze
     - name: Compile Foreman Patch Assets
       working-directory: foreman
       run: |
