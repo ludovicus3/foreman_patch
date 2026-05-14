@@ -50,10 +50,7 @@ module ForemanPatch
     end
 
     def initialize(cycle)
-      @hash = Hash.new do |hash, content|
-        content.cycle_content = self
-        hash.store(content, content)
-      end
+      @hash = {}
 
       cycle.hosts.map do |host|
         host.content_view.version(host.lifecycle_environment)
@@ -62,7 +59,7 @@ module ForemanPatch
       end
     end
 
-    def [](content)
+    def [](key)
       key = Content.new(key) if key.is_a? Katello::ContentViewVersion
 
       @hash[key]
@@ -87,7 +84,7 @@ module ForemanPatch
       end
       content.environments.concat(version.environments).uniq!
 
-      content.components.each do |component|
+      version.components.each do |component|
         add(component)
       end
     end
