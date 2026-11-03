@@ -13,10 +13,9 @@ module Actions
 
           sequence do
             plan_action(Actions::ForemanPatch::Invocation::Action, host, 'katello_package_update',
-                        pre_script: 'yum clean all; subscription-manager refresh',
+                        pre_script: 'systemctl stop puppet || true; yum clean all; subscription-manager refresh',
+                        post_script: 'echo restart host && sleep 3; shutdown -r +1',
                         package: Setting[:skip_broken_patches] ? '--skip-broken' : nil)
-            plan_action(Actions::ForemanPatch::Invocation::Action, host, 'power_action',
-                        action: 'restart')
             plan_action(Actions::ForemanPatch::Invocation::WaitForHost, host)
             plan_action(Actions::ForemanPatch::Invocation::Action, host, 'ensure_services', false)
             plan_self
